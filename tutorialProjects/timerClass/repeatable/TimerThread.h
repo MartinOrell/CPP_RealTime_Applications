@@ -5,6 +5,7 @@
 #include <thread>
 #include <vector>
 #include <stop_token>
+#include <algorithm>
 
 class TimerThread{
     public:
@@ -24,6 +25,7 @@ class TimerThread{
 
         MessageHandler<int>* _outMessageHandlerPtr;
         MessageHandler<Timer> _inMessageHandler;
+        MessageHandler<int> _inCancelTimerHandler;
         std::jthread _thread;
         std::vector<Timer> _timers;
         int _nextId;

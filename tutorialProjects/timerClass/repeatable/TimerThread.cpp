@@ -8,6 +8,12 @@ TimerThread::TimerThread(MessageHandler<int>* messageHandlerPtr){
 void TimerThread::run(){
     _thread = std::jthread([this](std::stop_token stop_token){
         while(!stop_token.stop_requested()){
+            
+            while(_inCancelTimerHandler.hasMessage()){
+                int m_id = _inCancelTimerHandler.popMessage();
+                _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[m_id](Timer t) { return (t.id == m_id); }), _timers.end());
+            }
+
             auto now = std::chrono::steady_clock::now();
             for(auto it = _timers.begin(); it!=_timers.end();){
                 if(now >= it->timeoutTime){
@@ -50,4 +56,8 @@ int TimerThread::informEvery(std::chrono::steady_clock::duration interval){
     timer.interval = interval;
     _inMessageHandler.addMessage(timer);
     return timer.id;
+}
+
+void TimerThread::cancelTimer(int id){
+    _inCancelTimerHandler.addMessage(id);
 }

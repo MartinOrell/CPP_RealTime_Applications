@@ -17,6 +17,7 @@ int main(){
                 std::cout << "tick!" << std::endl;
             }
             if(message == endId){
+                timerThread.cancelTimer(tickId);
                 goto end;
             }
         }
