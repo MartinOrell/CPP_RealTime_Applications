@@ -3,7 +3,7 @@
 #include "TimerThread.h"
 #include "MessageHandler.h"
 
-//ticks ever 0.3 seconds until 3 seconds is reached
+//ticks every 0.3 seconds until 3 seconds is reached
 int main(){
     MessageHandler<int> messageHandler;
     TimerThread timerThread(&messageHandler);
