@@ -6,6 +6,7 @@
 #include <vector>
 #include <stop_token>
 #include <algorithm>
+#include <variant>
 
 class TimerThread{
     public:
@@ -28,9 +29,10 @@ class TimerThread{
             }
         };
 
+        typedef std::variant<Timer, int> Message;
+
         MessageHandler<int>* _outMessageHandlerPtr;
-        MessageHandler<Timer> _inMessageHandler;
-        MessageHandler<int> _inCancelTimerHandler;
+        MessageHandler<Message> _inMessageHandler;
         std::jthread _thread;
         std::vector<Timer> _timers;
         int _nextId;

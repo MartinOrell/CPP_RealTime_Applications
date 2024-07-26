@@ -22,7 +22,6 @@ int main(){
             timerThread.cancelTimer(tickId);
             break;
         }
-        
     }
     timerThread.stop();
     std::cout << "main: end reached\n";

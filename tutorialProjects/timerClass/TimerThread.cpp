@@ -14,8 +14,11 @@ void TimerThread::run(){
                 if(stop_token.stop_requested()){
                     break;
                 }
-                Timer message = _inMessageHandler.popMessage();
-                _timers.push_back(message);
+                Message message = _inMessageHandler.popMessage();
+                if(std::holds_alternative<Timer>(message)){
+                    Timer timer = std::get<Timer>(message);
+                    _timers.push_back(timer);
+                }
             }
             else{
                 auto nextTimerToTimeout = std::min_element(_timers.begin(), _timers.end());
@@ -23,13 +26,15 @@ void TimerThread::run(){
                     if(stop_token.stop_requested()){
                         break;
                     }
-                    Timer message = _inMessageHandler.popMessage();
-                    _timers.push_back(message);
-                }
-
-                if(_inCancelTimerHandler.hasMessage()){
-                    int m_id = _inCancelTimerHandler.popMessage();
-                    _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[m_id](Timer t) { return (t.id == m_id); }), _timers.end());
+                    Message message = _inMessageHandler.popMessage();
+                    if(std::holds_alternative<Timer>(message)){
+                        Timer timer = std::get<Timer>(message);
+                        _timers.push_back(timer);
+                    }
+                    else{ //cancel Timer message
+                        int m_id = std::get<int>(message);
+                        _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[m_id](Timer t) { return (t.id == m_id); }), _timers.end());
+                    }
                 }
             }
             auto now = std::chrono::steady_clock::now();
@@ -76,5 +81,5 @@ int TimerThread::informEvery(std::chrono::steady_clock::duration interval){
 }
 
 void TimerThread::cancelTimer(int id){
-    _inCancelTimerHandler.addMessage(id);
+    _inMessageHandler.addMessage(id);
 }
