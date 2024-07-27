@@ -7,7 +7,6 @@
 #include "Message.h"
 #include "TimerThread.h"
 
-
 class CapsuleController{
     public:
         CapsuleController(TimerThread*, MessageHandler<Message>*);

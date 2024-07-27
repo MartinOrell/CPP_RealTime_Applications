@@ -2,7 +2,7 @@
 
 CapsuleController::CapsuleController(TimerThread* timerThreadPtr, MessageHandler<Message>* messageHandlerPtr)
 :   _pinger{0,1,messageHandlerPtr, timerThreadPtr},
-    _ponger{1,0,messageHandlerPtr, timerThreadPtr},
+    _ponger{1,0,messageHandlerPtr},
     _messageHandlerPtr{messageHandlerPtr}{
 }
 
@@ -12,7 +12,7 @@ void CapsuleController::run(){
     _ponger.start();
     while(true){
         _messageHandlerPtr->waitForMessage();
-        Message message = _messageHandlerPtr->popMessage();
+        Message message = _messageHandlerPtr->receiveMessage();
         
         if(std::holds_alternative<TimeoutMessage>(message)){
             TimeoutMessage tMessage = std::get<TimeoutMessage>(message);

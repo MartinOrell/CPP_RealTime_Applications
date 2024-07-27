@@ -7,14 +7,12 @@
 
 class Pong_Capsule{
     public:
-        Pong_Capsule();
-        Pong_Capsule(int id, int connectionId, MessageHandler<Message>*messageHandlerPtr, TimerThread* timerThreadPtr);
+        Pong_Capsule(int id, int connectionToId, MessageHandler<Message>*messageHandlerPtr);
         void start();
         void handleMessage(MessageToPong message);
         void handleTimeout(TimeoutMessage message);
     private:
         int _id;
-        int _connectionId;
-        TimerThread* _timerThreadPtr;
+        int _connectionToId;
         MessageHandler<Message>* _messageHandlerPtr;
 };

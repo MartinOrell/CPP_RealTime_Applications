@@ -8,14 +8,13 @@
 
 class Ping_Capsule{
     public:
-        Ping_Capsule();
-        Ping_Capsule(int id, int connectionId, MessageHandler<Message>*messageHandlerPtr, TimerThread* timerThreadPtr);
+        Ping_Capsule(int id, int connectionToId, MessageHandler<Message>*messageHandlerPtr, TimerThread* timerThreadPtr);
         void start();
         void handleMessage(MessageToPing message);
         void handleTimeout(TimeoutMessage message);
     private:
         int _id;
-        int _connectionId;
+        int _connectionToId;
         int _count;
         TimerThread* _timerThreadPtr;
         MessageHandler<Message>* _messageHandlerPtr;
