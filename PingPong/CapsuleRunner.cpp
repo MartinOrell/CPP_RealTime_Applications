@@ -1,12 +1,12 @@
-#include "CapsuleController.h"
+#include "CapsuleRunner.h"
 
-CapsuleController::CapsuleController(TimerThread* timerThreadPtr, MessageHandler<Message>* messageHandlerPtr)
+CapsuleRunner::CapsuleRunner(TimerThread* timerThreadPtr, MessageHandler<Message>* messageHandlerPtr)
 :   _pinger{0,1,messageHandlerPtr, timerThreadPtr},
     _ponger{1,0,messageHandlerPtr},
     _messageHandlerPtr{messageHandlerPtr}{
 }
 
-void CapsuleController::run(){
+void CapsuleRunner::run(){
     
     _pinger.start();
     _ponger.start();

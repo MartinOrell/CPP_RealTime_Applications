@@ -7,9 +7,9 @@
 #include "Message.h"
 #include "TimerThread.h"
 
-class CapsuleController{
+class CapsuleRunner{
     public:
-        CapsuleController(TimerThread*, MessageHandler<Message>*);
+        CapsuleRunner(TimerThread*, MessageHandler<Message>*);
         void run();
     private:
         Ping_Capsule _pinger;
