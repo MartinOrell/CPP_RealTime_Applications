@@ -23,7 +23,7 @@ void CapsuleRunner::run(){
                 _helloTimer.handleTimeout(tMessage);
             }
             else{
-                throw std::out_of_range("CapsuleRunner unable to assign timeout with id: " + std::to_string(tMessage.toId));
+                throw std::out_of_range("CapsuleRunner unable to assign timeout to capsule with id: " + std::to_string(tMessage.toId));
             }
         }
         else{
