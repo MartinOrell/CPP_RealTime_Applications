@@ -12,8 +12,8 @@ class CapsuleRunner{
         void run();
         Message invokeMessage(Message request);
     private:
-        Client_Capsule _client;
-        Server_Capsule _server;
-        MessageHandler<Message>* _messageHandlerPtr;
         int _nextCapsuleId;
+        Server_Capsule _server;
+        Client_Capsule _client;
+        MessageHandler<Message>* _messageHandlerPtr;
 };
