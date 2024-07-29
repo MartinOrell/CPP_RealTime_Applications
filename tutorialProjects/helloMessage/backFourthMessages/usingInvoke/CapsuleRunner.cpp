@@ -30,10 +30,10 @@ void CapsuleRunner::run(){
     }
 }
 
-void CapsuleRunner::invokeMessage(Message request, Message* response){
+Message CapsuleRunner::invokeMessage(Message request){
     if(std::holds_alternative<Request>(request)){
         Request rMessage = std::get<Request>(request);
-        *response = _server.handleInvokeMessage(rMessage);
+        return _server.handleInvokeMessage(rMessage);
     }
     else{
         throw std::invalid_argument("CapsuleRunner received invokeMessage of wrong type");

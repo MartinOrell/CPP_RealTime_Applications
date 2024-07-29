@@ -10,7 +10,7 @@ class CapsuleRunner{
     public:
         CapsuleRunner(MessageHandler<Message>*);
         void run();
-        void invokeMessage(Message request, Message* response);
+        Message invokeMessage(Message request);
     private:
         Client_Capsule _client;
         Server_Capsule _server;

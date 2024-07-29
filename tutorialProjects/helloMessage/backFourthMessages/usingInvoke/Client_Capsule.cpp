@@ -21,8 +21,7 @@ void Client_Capsule::start(){
     Request requestMessage;
     requestMessage.toId = _serverId;
     requestMessage.value = i;
-    Message genericResponseMessage;
-    _capsuleRunnerPtr->invokeMessage(requestMessage, &genericResponseMessage);
+    Message genericResponseMessage = _capsuleRunnerPtr->invokeMessage(requestMessage);
     assert(std::holds_alternative<Response>(genericResponseMessage));
     Response responseMessage = std::get<Response>(genericResponseMessage);
     std::cout << "Client: Received: " << responseMessage.value << std::endl;
