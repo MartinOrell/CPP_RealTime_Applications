@@ -5,6 +5,10 @@ Server_Capsule::Server_Capsule(int id, MessageHandler<Message>* messageHandlerPt
     _messageHandlerPtr = messageHandlerPtr;
 }
 
+int Server_Capsule::getId(){
+    return _id;
+}
+
 void Server_Capsule::connect(int clientId){
     _clientId = clientId;
 }

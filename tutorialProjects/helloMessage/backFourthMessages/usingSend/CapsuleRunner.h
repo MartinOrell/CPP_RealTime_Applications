@@ -11,9 +11,10 @@ class CapsuleRunner{
         CapsuleRunner(MessageHandler<Message>*);
         void run();
     private:
-        #define CLIENTID 0
-        #define SERVERID 1
+        //#define CLIENTID 0
+        //#define SERVERID 1
         Client_Capsule _client;
         Server_Capsule _server;
         MessageHandler<Message>* _messageHandlerPtr;
+        int _nextCapsuleId = 0;
 };

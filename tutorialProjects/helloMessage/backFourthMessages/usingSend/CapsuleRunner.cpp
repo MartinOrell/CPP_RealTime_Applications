@@ -1,12 +1,13 @@
 #include "CapsuleRunner.h"
 
 CapsuleRunner::CapsuleRunner(MessageHandler<Message>* messageHandlerPtr)
-:   _client{CLIENTID,messageHandlerPtr},
-    _server{SERVERID,messageHandlerPtr},
+:   _nextCapsuleId{0},
+    _client{_nextCapsuleId++,messageHandlerPtr},
+    _server{_nextCapsuleId++,messageHandlerPtr},
     _messageHandlerPtr{messageHandlerPtr}{
 
-    _client.connect(SERVERID);
-    _server.connect(CLIENTID);
+    _client.connect(_server.getId());
+    _server.connect(_client.getId());
 }
 
 void CapsuleRunner::run(){

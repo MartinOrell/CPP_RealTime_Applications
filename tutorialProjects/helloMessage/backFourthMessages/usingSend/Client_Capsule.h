@@ -9,6 +9,7 @@
 class Client_Capsule{
     public:
         Client_Capsule(int id, MessageHandler<Message>* messageHandlerPtr);
+        int getId();
         void connect(int serverId);
         void start();
         void handleMessage(Response message);
