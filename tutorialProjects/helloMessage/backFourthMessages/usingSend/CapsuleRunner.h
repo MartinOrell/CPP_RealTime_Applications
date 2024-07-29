@@ -11,8 +11,8 @@ class CapsuleRunner{
         CapsuleRunner(MessageHandler<Message>*);
         void run();
     private:
-        Client_Capsule _client;
+        int _nextCapsuleId;
         Server_Capsule _server;
+        Client_Capsule _client;
         MessageHandler<Message>* _messageHandlerPtr;
-        int _nextCapsuleId = 0;
 };
