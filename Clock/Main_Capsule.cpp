@@ -1,6 +1,6 @@
 #include "Main_Capsule.h"
 
-Main_Capsule::Main_Capsule(int id, MessageHandler<Message>* messageHandlerPtr, TimerThread* timerThreadPtr, std::chrono::steady_clock::duration timeoutTime, int fps){
+Main_Capsule::Main_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, std::chrono::steady_clock::duration timeoutTime, int fps){
     _id = id;
     _messageHandlerPtr = messageHandlerPtr;
     _timerThreadPtr = timerThreadPtr;
@@ -13,6 +13,20 @@ Main_Capsule::Main_Capsule(int id, MessageHandler<Message>* messageHandlerPtr, T
 
 int Main_Capsule::getId(){
     return _id;
+}
+
+void Main_Capsule::handleMessage(Message message){
+    if(std::holds_alternative<TimeoutMessage>(message)){
+        TimeoutMessage tMessage = std::get<TimeoutMessage>(message);
+        handleTimeout(tMessage);
+    }
+    else if(std::holds_alternative<RespondTimeMessage>(message)){
+        RespondTimeMessage rMessage = std::get<RespondTimeMessage>(message);
+        handleMessage(rMessage);
+    }
+    else{
+        throw std::invalid_argument("Main_Capsule unable to handle that message");
+    }
 }
 
 void Main_Capsule::connect(int clockId){
@@ -30,13 +44,19 @@ void Main_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
         _state = End;
         std::cout << "Main timeout reached" << std::endl;
         NoContentMessage outMessage = EndMessage;
-        _messageHandlerPtr->sendMessage(outMessage);
+        SendMessage sendMessage;
+        sendMessage.toId = -1;
+        sendMessage.message = outMessage;
+        _messageHandlerPtr->sendMessage(sendMessage);
     }
     else if(timeoutMessage.timerId == _updateTimerId){
         if(_state == Running){
             _state = WaitForTimeResponse;
             NoContentMessage outMessage = RequestTimeMessage;
-            _messageHandlerPtr->sendMessage(outMessage);
+            SendMessage sendMessage;
+            sendMessage.toId = _clockId;
+            sendMessage.message = outMessage;
+            _messageHandlerPtr->sendMessage(sendMessage);
         }
         else{
             std::cout << "Main: unhandled update request" << std::endl;

@@ -10,9 +10,9 @@
 
 class CapsuleRunner{
     public:
-        CapsuleRunner(TimerThread*, MessageHandler<Message>*, std::chrono::steady_clock::duration timeoutTime, int fps, int speedMultiplier);
+        CapsuleRunner(TimerThread*, MessageHandler<SendMessage>*, std::chrono::steady_clock::duration timeoutTime, int fps, int speedMultiplier);
         void run();
-        Message invokeMessage(Message request);
+        Message invokeMessage(SendMessage request);
     private:
         int _nextCapsuleId;
         Main_Capsule _main;
@@ -23,5 +23,5 @@ class CapsuleRunner{
         Digit_Capsule _minute10Digit;
         Digit_Capsule _hour1Digit;
         Digit_Capsule _hour10Digit;
-        MessageHandler<Message>* _messageHandlerPtr;
+        MessageHandler<SendMessage>* _messageHandlerPtr;
 };

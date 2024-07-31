@@ -1,6 +1,6 @@
 #include "Digit_Capsule.h"
 
-Digit_Capsule::Digit_Capsule(int id, MessageHandler<Message>*messageHandlerPtr){
+Digit_Capsule::Digit_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr){
     _id = id;
     _messageHandlerPtr = messageHandlerPtr;
     _base = 10;
@@ -8,6 +8,30 @@ Digit_Capsule::Digit_Capsule(int id, MessageHandler<Message>*messageHandlerPtr){
 
 int Digit_Capsule::getId(){
     return _id;
+}
+
+void Digit_Capsule::handleMessage(Message message){
+    if(std::holds_alternative<IncMessage>(message)){
+        IncMessage iMessage = std::get<IncMessage>(message);
+        handleMessage(iMessage);
+    }
+    else if(std::holds_alternative<SetBaseMessage>(message)){
+        SetBaseMessage sMessage = std::get<SetBaseMessage>(message);
+        handleMessage(sMessage);
+    }
+    else{
+        throw std::invalid_argument("Clock_Capsule unable to handle that message");
+    }
+}
+
+Message Digit_Capsule::handleInvokeMessage(Message request){
+    if(std::holds_alternative<RequestDigitMessage>(request)){
+        RequestDigitMessage rMessage = std::get<RequestDigitMessage>(request);
+        return handleInvokeMessage(rMessage);
+    }
+    else{
+        throw std::invalid_argument("Clock_Capsule unable to handle that invokeMessage");
+    }
 }
 
 void Digit_Capsule::connect(int clockId){
@@ -31,7 +55,10 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
                 _state = Zero;
                 CarryMessage outMessage;
                 outMessage.fromId = _id;
-                _messageHandlerPtr->sendMessage(outMessage);
+                SendMessage sendMessage;
+                sendMessage.toId = _clockId;
+                sendMessage.message = outMessage;
+                _messageHandlerPtr->sendMessage(sendMessage);
             }
             else{
                 _state = Three;
@@ -42,7 +69,10 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
                 _state = Zero;
                 CarryMessage outMessage;
                 outMessage.fromId = _id;
-                _messageHandlerPtr->sendMessage(outMessage);
+                SendMessage sendMessage;
+                sendMessage.toId = _clockId;
+                sendMessage.message = outMessage;
+                _messageHandlerPtr->sendMessage(sendMessage);
             }
             else{
                 _state = Four;
@@ -56,7 +86,10 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
                 _state = Zero;
                 CarryMessage outMessage;
                 outMessage.fromId = _id;
-                _messageHandlerPtr->sendMessage(outMessage);
+                SendMessage sendMessage;
+                sendMessage.toId = _clockId;
+                sendMessage.message = outMessage;
+                _messageHandlerPtr->sendMessage(sendMessage);
             }
             else{
                 _state = Six;
@@ -75,7 +108,10 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
             _state = Zero;
             CarryMessage outMessage;
             outMessage.fromId = _id;
-            _messageHandlerPtr->sendMessage(outMessage);
+            SendMessage sendMessage;
+            sendMessage.toId = _clockId;
+            sendMessage.message = outMessage;
+            _messageHandlerPtr->sendMessage(sendMessage);
             break;
     }
 }

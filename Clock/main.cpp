@@ -4,7 +4,7 @@
 #include "CapsuleRunner.h"
 
 int main(){
-    MessageHandler<Message> messageHandler;
+    MessageHandler<SendMessage> messageHandler;
     TimerThread timerThread(&messageHandler);
     timerThread.run();
     std::chrono::steady_clock::duration timeoutTime = std::chrono::seconds(3600);

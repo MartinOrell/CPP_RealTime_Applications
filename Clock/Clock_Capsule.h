@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Capsule.h"
+
 #include <string>
 #include <iostream>
 #include "TimerThread.h"
@@ -9,10 +11,13 @@
 
 class CapsuleRunner;
 
-class Clock_Capsule{
+class Clock_Capsule: public Capsule{
     public:
-        Clock_Capsule(int id, MessageHandler<Message>*messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr, int speedMultiplier);
+        Clock_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr, int speedMultiplier);
         int getId();
+        void start();
+        void handleMessage(Message message);
+
         void connectMain(int mainId);
         void connectSecond1Digit(int digitId);
         void connectSecond10Digit(int digitId);
@@ -21,11 +26,11 @@ class Clock_Capsule{
         void connectHour1Digit(int digitId);
         void connectHour10Digit(int digitId);
         
-        void start();
+    private:
         void handleTimeout(TimeoutMessage message);
         void handleMessage(CarryMessage inMessage);
         void handleRequestTimeMessage();
-    private:
+
         int _id;
         int _mainId;
         int _second1DigitCapsuleId;
@@ -37,7 +42,7 @@ class Clock_Capsule{
         std::chrono::steady_clock::duration _tickPeriod;
         int _tickerId;
         TimerThread* _timerThreadPtr;
-        MessageHandler<Message>* _messageHandlerPtr;
+        MessageHandler<SendMessage>* _messageHandlerPtr;
         CapsuleRunner* _capsuleRunnerPtr;
         enum State{SecondTicker, Second10Ticker, MinuteTicker, Minute10Ticker, HourTicker};
         State _state;

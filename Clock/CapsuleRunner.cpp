@@ -1,6 +1,6 @@
 #include "CapsuleRunner.h"
 
-CapsuleRunner::CapsuleRunner(TimerThread* timerThreadPtr, MessageHandler<Message>* messageHandlerPtr, std::chrono::steady_clock::duration timeoutTime, int fps, int speedMultiplier)
+CapsuleRunner::CapsuleRunner(TimerThread* timerThreadPtr, MessageHandler<SendMessage>* messageHandlerPtr, std::chrono::steady_clock::duration timeoutTime, int fps, int speedMultiplier)
 :   _nextCapsuleId{0},
     _main{_nextCapsuleId++, messageHandlerPtr, timerThreadPtr, timeoutTime, fps},
     _clock{_nextCapsuleId++, messageHandlerPtr, timerThreadPtr, this, speedMultiplier},
@@ -41,122 +41,78 @@ void CapsuleRunner::run(){
 
     while(true){
         _messageHandlerPtr->waitForMessage();
-        Message message = _messageHandlerPtr->receiveMessage();
-        if(std::holds_alternative<NoContentMessage>(message)){
-            NoContentMessage emptyMessage = std::get<NoContentMessage>(message);
-            if(emptyMessage == NoContentMessage::EndMessage){
-                return;
-            }
-            else if(emptyMessage == NoContentMessage::RequestTimeMessage){
-                _clock.handleRequestTimeMessage();
-            }
-            else{
-                throw std::invalid_argument("CapsuleRunner received emptyMessage of wrong type");
-            }
-        }
-        else if(std::holds_alternative<TimeoutMessage>(message)){
-            TimeoutMessage tMessage = std::get<TimeoutMessage>(message);
-            if(tMessage.toId == _main.getId()){
-                _main.handleTimeout(tMessage);
-            }
-            else if(tMessage.toId == _clock.getId()){
-                _clock.handleTimeout(tMessage);
+        SendMessage sendMessage = _messageHandlerPtr->receiveMessage();
+        if(sendMessage.toId == -1){
+            Message message = sendMessage.message;
+            if(std::holds_alternative<NoContentMessage>(message)){
+                NoContentMessage emptyMessage = std::get<NoContentMessage>(message);
+                if(emptyMessage == NoContentMessage::EndMessage){
+                    return;
+                }
+                else{
+                    throw std::invalid_argument("CapsuleRunner received emptyMessage of wrong type");
+                }
             }
             else{
-                throw std::invalid_argument("CapsuleRunner unable to deal with timeout to capsule id: " + std::to_string(tMessage.toId));
+                throw std::invalid_argument("CapsuleRunner received message of wrong type");
             }
         }
-        else if(std::holds_alternative<RespondTimeMessage>(message)){
-            RespondTimeMessage rMessage = std::get<RespondTimeMessage>(message);
-            _main.handleMessage(rMessage);
+        else if(sendMessage.toId == _main.getId()){
+            _main.handleMessage(sendMessage.message);
         }
-        else if(std::holds_alternative<IncMessage>(message)){
-            IncMessage iMessage = std::get<IncMessage>(message);
-            if(iMessage.toId == _second1Digit.getId()){
-                _second1Digit.handleMessage(iMessage);
-            }
-            else if(iMessage.toId == _second10Digit.getId()){
-                _second10Digit.handleMessage(iMessage);
-            }
-            else if(iMessage.toId == _minute1Digit.getId()){
-                _minute1Digit.handleMessage(iMessage);
-            }
-            else if(iMessage.toId == _minute10Digit.getId()){
-                _minute10Digit.handleMessage(iMessage);
-            }
-            else if(iMessage.toId == _hour1Digit.getId()){
-                _hour1Digit.handleMessage(iMessage);
-            }
-            else if(iMessage.toId == _hour10Digit.getId()){
-                _hour10Digit.handleMessage(iMessage);
-            }
-            else{
-                throw std::invalid_argument("CapsuleRunner unable to deal with incMessage to capsule id: " + std::to_string(iMessage.toId));
-            }
+        else if(sendMessage.toId == _clock.getId()){
+            _clock.handleMessage(sendMessage.message);
         }
-        else if(std::holds_alternative<CarryMessage>(message)){
-            CarryMessage cMessage = std::get<CarryMessage>(message);
-            _clock.handleMessage(cMessage);
+        else if(sendMessage.toId == _second1Digit.getId()){
+            _second1Digit.handleMessage(sendMessage.message);
         }
-        else if(std::holds_alternative<SetBaseMessage>(message)){
-            SetBaseMessage sMessage = std::get<SetBaseMessage>(message);
-            if(sMessage.toId == _second1Digit.getId()){
-                _second1Digit.handleMessage(sMessage);
-            }
-            else if(sMessage.toId == _second10Digit.getId()){
-                _second10Digit.handleMessage(sMessage);
-            }
-            else if(sMessage.toId == _minute1Digit.getId()){
-                _minute1Digit.handleMessage(sMessage);
-            }
-            else if(sMessage.toId == _minute10Digit.getId()){
-                _minute10Digit.handleMessage(sMessage);
-            }
-            else if(sMessage.toId == _hour1Digit.getId()){
-                _hour1Digit.handleMessage(sMessage);
-            }
-            else if(sMessage.toId == _hour10Digit.getId()){
-                _hour10Digit.handleMessage(sMessage);
-            }
-            else{
-                throw std::invalid_argument("CapsuleRunner unable to deal with incMessage to capsule id: " + std::to_string(sMessage.toId));
-            }
+        else if(sendMessage.toId == _second10Digit.getId()){
+            _second10Digit.handleMessage(sendMessage.message);
+        }
+        else if(sendMessage.toId == _minute1Digit.getId()){
+            _minute1Digit.handleMessage(sendMessage.message);
+        }
+        else if(sendMessage.toId == _minute10Digit.getId()){
+            _minute10Digit.handleMessage(sendMessage.message);
+        }
+        else if(sendMessage.toId == _hour1Digit.getId()){
+            _hour1Digit.handleMessage(sendMessage.message);
+        }
+        else if(sendMessage.toId == _hour10Digit.getId()){
+            _hour10Digit.handleMessage(sendMessage.message);
         }
         else{
-            throw std::invalid_argument("CapsuleRunner unable to deal with that message");
+            throw std::invalid_argument("CapsuleRunner unable to send handleMessage to capsule with id: " + std::to_string(sendMessage.toId));
         }
     }
 }
 
-Message CapsuleRunner::invokeMessage(Message request){
-    if(std::holds_alternative<NoContentMessage>(request)){
-        throw std::invalid_argument("CapsuleRunner cannot invoke emptyMessage");
+Message CapsuleRunner::invokeMessage(SendMessage request){
+    if(request.toId == _main.getId()){
+        return _main.handleInvokeMessage(request.message);
     }
-    else if(std::holds_alternative<RequestDigitMessage>(request)){
-        RequestDigitMessage rMessage = std::get<RequestDigitMessage>(request);
-        if(rMessage.toId == _second1Digit.getId()){
-            return _second1Digit.handleInvokeMessage(rMessage);
-        }
-        else if(rMessage.toId == _second10Digit.getId()){
-            return _second10Digit.handleInvokeMessage(rMessage);
-        }
-        else if(rMessage.toId == _minute1Digit.getId()){
-            return _minute1Digit.handleInvokeMessage(rMessage);
-        }
-        else if(rMessage.toId == _minute10Digit.getId()){
-            return _minute10Digit.handleInvokeMessage(rMessage);
-        }
-        else if(rMessage.toId == _hour1Digit.getId()){
-            return _hour1Digit.handleInvokeMessage(rMessage);
-        }
-        else if(rMessage.toId == _hour10Digit.getId()){
-            return _hour10Digit.handleInvokeMessage(rMessage);
-        }
-        else{
-            throw std::invalid_argument("CapsuleRunner can't invoke RequestDigit with id: " + std::to_string(rMessage.toId));
-        }
+    else if(request.toId == _clock.getId()){
+        return _clock.handleInvokeMessage(request.message);
+    }
+    else if(request.toId == _second1Digit.getId()){
+        return _second1Digit.handleInvokeMessage(request.message);
+    }
+    else if(request.toId == _second10Digit.getId()){
+        return _second10Digit.handleInvokeMessage(request.message);
+    }
+    else if(request.toId == _minute1Digit.getId()){
+        return _minute1Digit.handleInvokeMessage(request.message);
+    }
+    else if(request.toId == _minute10Digit.getId()){
+        return _minute10Digit.handleInvokeMessage(request.message);
+    }
+    else if(request.toId == _hour1Digit.getId()){
+        return _hour1Digit.handleInvokeMessage(request.message);
+    }
+    else if(request.toId == _hour10Digit.getId()){
+        return _hour10Digit.handleInvokeMessage(request.message);
     }
     else{
-        throw std::invalid_argument("CapsuleRunner received invokeMessage of wrong type");
+        throw std::invalid_argument("CapsuleRunner can't invokeMessage to capsule with id: " + std::to_string(request.toId));
     }
 }
