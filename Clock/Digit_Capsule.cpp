@@ -11,26 +11,34 @@ int Digit_Capsule::getId(){
 }
 
 void Digit_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<IncMessage>(message)){
-        IncMessage iMessage = std::get<IncMessage>(message);
-        handleMessage(iMessage);
+    if(std::holds_alternative<VoidMessage>(message)){
+        if(std::get<VoidMessage>(message) == VoidMessage::IncMessage){
+            handleIncMessage();
+        }
+        else{
+            throw std::invalid_argument("Digit_Capsule unable to handle that voidMessage");
+        }
     }
     else if(std::holds_alternative<SetBaseMessage>(message)){
         SetBaseMessage sMessage = std::get<SetBaseMessage>(message);
         handleMessage(sMessage);
     }
     else{
-        throw std::invalid_argument("Clock_Capsule unable to handle that message");
+        throw std::invalid_argument("Digit_Capsule unable to handle that message");
     }
 }
 
 Message Digit_Capsule::handleInvokeMessage(Message request){
-    if(std::holds_alternative<RequestDigitMessage>(request)){
-        RequestDigitMessage rMessage = std::get<RequestDigitMessage>(request);
-        return handleInvokeMessage(rMessage);
+    if(std::holds_alternative<VoidMessage>(request)){
+        if(std::get<VoidMessage>(request) == VoidMessage::RequestDigitMessage){
+            return handleInvokeRequestDigitMessage();
+        }
+        else{
+            throw std::invalid_argument("Digit_Capsule unable to invoke that voidMessage");
+        }
     }
     else{
-        throw std::invalid_argument("Clock_Capsule unable to handle that invokeMessage");
+        throw std::invalid_argument("Digit_Capsule unable to handle that invokeMessage");
     }
 }
 
@@ -42,7 +50,16 @@ void Digit_Capsule::start(){
     _state = Zero;
 }
 
-void Digit_Capsule::handleMessage(IncMessage inMessage){
+void Digit_Capsule::sendCarryMessage(int toId){
+    CarryMessage outMessage;
+    outMessage.fromId = _id;
+    SendMessage sendMessage;
+    sendMessage.toId = toId;
+    sendMessage.message = outMessage;
+    _messageHandlerPtr->sendMessage(sendMessage);
+}
+
+void Digit_Capsule::handleIncMessage(){
     switch(_state){
         case Zero:
             _state = One;
@@ -53,12 +70,7 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
         case Two:
             if(_base == 3){
                 _state = Zero;
-                CarryMessage outMessage;
-                outMessage.fromId = _id;
-                SendMessage sendMessage;
-                sendMessage.toId = _clockId;
-                sendMessage.message = outMessage;
-                _messageHandlerPtr->sendMessage(sendMessage);
+                sendCarryMessage(_clockId);
             }
             else{
                 _state = Three;
@@ -67,12 +79,7 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
         case Three:
             if(_base == 4){
                 _state = Zero;
-                CarryMessage outMessage;
-                outMessage.fromId = _id;
-                SendMessage sendMessage;
-                sendMessage.toId = _clockId;
-                sendMessage.message = outMessage;
-                _messageHandlerPtr->sendMessage(sendMessage);
+                sendCarryMessage(_clockId);
             }
             else{
                 _state = Four;
@@ -84,12 +91,7 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
         case Five:
             if(_base == 6){
                 _state = Zero;
-                CarryMessage outMessage;
-                outMessage.fromId = _id;
-                SendMessage sendMessage;
-                sendMessage.toId = _clockId;
-                sendMessage.message = outMessage;
-                _messageHandlerPtr->sendMessage(sendMessage);
+                sendCarryMessage(_clockId);
             }
             else{
                 _state = Six;
@@ -106,12 +108,7 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
             break;
         case Nine:
             _state = Zero;
-            CarryMessage outMessage;
-            outMessage.fromId = _id;
-            SendMessage sendMessage;
-            sendMessage.toId = _clockId;
-            sendMessage.message = outMessage;
-            _messageHandlerPtr->sendMessage(sendMessage);
+            sendCarryMessage(_clockId);
             break;
     }
 }
@@ -120,7 +117,7 @@ void Digit_Capsule::handleMessage(SetBaseMessage inMessage){
     _base = inMessage.base;
 }
 
-Message Digit_Capsule::handleInvokeMessage(RequestDigitMessage inMessage){
+Message Digit_Capsule::handleInvokeRequestDigitMessage(){
     RespondDigitMessage outMessage;
     outMessage.fromId = _id;
     outMessage.value = _state;

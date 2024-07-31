@@ -39,24 +39,32 @@ void Main_Capsule::start(){
     _updateTimerId = _timerThreadPtr->informEvery(_id, _updateTime);
 }
 
+void Main_Capsule::sendEndMessage(){
+    VoidMessage outMessage = EndMessage;
+    SendMessage sendMessage;
+    sendMessage.toId = -1;
+    sendMessage.message = outMessage;
+    _messageHandlerPtr->sendMessage(sendMessage);
+}
+        
+void Main_Capsule::sendRequestTimeMessage(int toId){
+    VoidMessage outMessage = RequestTimeMessage;
+    SendMessage sendMessage;
+    sendMessage.toId = toId;
+    sendMessage.message = outMessage;
+    _messageHandlerPtr->sendMessage(sendMessage);
+}
+
 void Main_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
     if(timeoutMessage.timerId == _endTimerId){
         _state = End;
         std::cout << "Main timeout reached" << std::endl;
-        NoContentMessage outMessage = EndMessage;
-        SendMessage sendMessage;
-        sendMessage.toId = -1;
-        sendMessage.message = outMessage;
-        _messageHandlerPtr->sendMessage(sendMessage);
+        sendEndMessage();
     }
     else if(timeoutMessage.timerId == _updateTimerId){
         if(_state == Running){
             _state = WaitForTimeResponse;
-            NoContentMessage outMessage = RequestTimeMessage;
-            SendMessage sendMessage;
-            sendMessage.toId = _clockId;
-            sendMessage.message = outMessage;
-            _messageHandlerPtr->sendMessage(sendMessage);
+            sendRequestTimeMessage(_clockId);
         }
         else{
             std::cout << "Main: unhandled update request" << std::endl;

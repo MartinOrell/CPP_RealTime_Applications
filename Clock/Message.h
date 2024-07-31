@@ -4,19 +4,14 @@
 #include <string>
 
 struct TimeoutMessage{
-    int toId;
     int timerId;
     int timeouts;
 };
 
-enum NoContentMessage{RequestTimeMessage, EndMessage};
+enum VoidMessage{RequestTimeMessage, RequestDigitMessage, IncMessage, EndMessage};
 
 struct RespondTimeMessage{
     std::string time;
-};
-
-struct RequestDigitMessage{
-    int toId;
 };
 
 struct RespondDigitMessage{
@@ -24,26 +19,19 @@ struct RespondDigitMessage{
     int value;
 };
 
-struct IncMessage{
-    int toId;
-};
-
 struct CarryMessage{
     int fromId;
 };
 
 struct SetBaseMessage{
-    int toId;
     int base;
 };
 
 typedef std::variant<
     TimeoutMessage,
-    NoContentMessage,
+    VoidMessage,
     RespondTimeMessage,
-    RequestDigitMessage,
     RespondDigitMessage,
-    IncMessage,
     CarryMessage,
     SetBaseMessage
     > Message;

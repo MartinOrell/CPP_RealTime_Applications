@@ -27,6 +27,11 @@ class Clock_Capsule: public Capsule{
         void connectHour10Digit(int digitId);
         
     private:
+        void sendRespondTimeMessage(int toId, std::string time);
+        void sendIncMessage(int toId);
+        void sendSetBaseMessage(int toId, int base);
+        RespondDigitMessage invokeRequestDigitMessage(int toId);
+
         void handleTimeout(TimeoutMessage message);
         void handleMessage(CarryMessage inMessage);
         void handleRequestTimeMessage();

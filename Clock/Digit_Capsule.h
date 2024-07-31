@@ -17,9 +17,11 @@ class Digit_Capsule: public Capsule{
         void connect(int clockId);
         
     private:
-        void handleMessage(IncMessage inMessage);
+        void sendCarryMessage(int toId);
+
+        void handleIncMessage();
         void handleMessage(SetBaseMessage inMessage);
-        Message handleInvokeMessage(RequestDigitMessage inMessage);
+        Message handleInvokeRequestDigitMessage();
 
         int _id;
         int _clockId;
