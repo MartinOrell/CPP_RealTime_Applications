@@ -77,8 +77,7 @@ void Clock_Capsule::sendRespondTimeMessage(int toId, std::string time){
 }
 
 void Clock_Capsule::sendIncMessage(int toId){
-    IncMessage outMessage;
-    outMessage.toId = toId;
+    VoidMessage outMessage = VoidMessage::IncMessage;
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
@@ -87,7 +86,6 @@ void Clock_Capsule::sendIncMessage(int toId){
 
 void Clock_Capsule::sendSetBaseMessage(int toId, int base){
     SetBaseMessage outMessage;
-    outMessage.toId = toId;
     outMessage.base = base;
     SendMessage sendMessage;
     sendMessage.toId = toId;
@@ -95,8 +93,7 @@ void Clock_Capsule::sendSetBaseMessage(int toId, int base){
     _messageHandlerPtr->sendMessage(sendMessage);
 }
 RespondDigitMessage Clock_Capsule::invokeRequestDigitMessage(int toId){
-    RequestDigitMessage request;
-    request.toId = toId;
+    VoidMessage request = VoidMessage::RequestDigitMessage;
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = request;
