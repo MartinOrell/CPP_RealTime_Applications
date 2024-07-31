@@ -40,7 +40,7 @@ void Main_Capsule::start(){
 }
 
 void Main_Capsule::sendEndMessage(){
-    NoContentMessage outMessage = EndMessage;
+    VoidMessage outMessage = EndMessage;
     SendMessage sendMessage;
     sendMessage.toId = -1;
     sendMessage.message = outMessage;
@@ -48,7 +48,7 @@ void Main_Capsule::sendEndMessage(){
 }
         
 void Main_Capsule::sendRequestTimeMessage(int toId){
-    NoContentMessage outMessage = RequestTimeMessage;
+    VoidMessage outMessage = RequestTimeMessage;
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;

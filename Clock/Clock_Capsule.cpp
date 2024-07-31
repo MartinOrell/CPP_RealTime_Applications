@@ -17,9 +17,9 @@ int Clock_Capsule::getId(){
 }
 
 void Clock_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<NoContentMessage>(message)){
-        NoContentMessage emptyMessage = std::get<NoContentMessage>(message);
-        if(emptyMessage == NoContentMessage::RequestTimeMessage){
+    if(std::holds_alternative<VoidMessage>(message)){
+        VoidMessage voidMessage = std::get<VoidMessage>(message);
+        if(voidMessage == VoidMessage::RequestTimeMessage){
             handleRequestTimeMessage();
         }
         else{

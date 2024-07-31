@@ -44,9 +44,9 @@ void CapsuleRunner::run(){
         SendMessage sendMessage = _messageHandlerPtr->receiveMessage();
         if(sendMessage.toId == -1){
             Message message = sendMessage.message;
-            if(std::holds_alternative<NoContentMessage>(message)){
-                NoContentMessage emptyMessage = std::get<NoContentMessage>(message);
-                if(emptyMessage == NoContentMessage::EndMessage){
+            if(std::holds_alternative<VoidMessage>(message)){
+                VoidMessage voidMessage = std::get<VoidMessage>(message);
+                if(voidMessage == VoidMessage::EndMessage){
                     return;
                 }
                 else{

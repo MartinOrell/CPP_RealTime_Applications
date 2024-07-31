@@ -9,7 +9,7 @@ struct TimeoutMessage{
     int timeouts;
 };
 
-enum NoContentMessage{RequestTimeMessage, EndMessage};
+enum VoidMessage{RequestTimeMessage, EndMessage};
 
 struct RespondTimeMessage{
     std::string time;
@@ -39,7 +39,7 @@ struct SetBaseMessage{
 
 typedef std::variant<
     TimeoutMessage,
-    NoContentMessage,
+    VoidMessage,
     RespondTimeMessage,
     RequestDigitMessage,
     RespondDigitMessage,
