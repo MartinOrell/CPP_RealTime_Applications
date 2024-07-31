@@ -14,6 +14,7 @@ class CapsuleRunner{
         void run();
         Message invokeMessage(SendMessage request);
     private:
+
         int _nextCapsuleId;
         Main_Capsule _main;
         Clock_Capsule _clock;

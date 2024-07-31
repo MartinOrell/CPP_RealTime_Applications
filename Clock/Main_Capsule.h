@@ -20,6 +20,8 @@ class Main_Capsule: public Capsule{
         void connect(int clockId);
         
     private:
+        void sendEndMessage();
+        void sendRequestTimeMessage(int toId);
 
         void handleTimeout(TimeoutMessage message);
         void handleMessage(RespondTimeMessage message);

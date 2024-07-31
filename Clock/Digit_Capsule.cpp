@@ -42,6 +42,15 @@ void Digit_Capsule::start(){
     _state = Zero;
 }
 
+void Digit_Capsule::sendCarryMessage(int toId){
+    CarryMessage outMessage;
+    outMessage.fromId = _id;
+    SendMessage sendMessage;
+    sendMessage.toId = toId;
+    sendMessage.message = outMessage;
+    _messageHandlerPtr->sendMessage(sendMessage);
+}
+
 void Digit_Capsule::handleMessage(IncMessage inMessage){
     switch(_state){
         case Zero:
@@ -53,12 +62,7 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
         case Two:
             if(_base == 3){
                 _state = Zero;
-                CarryMessage outMessage;
-                outMessage.fromId = _id;
-                SendMessage sendMessage;
-                sendMessage.toId = _clockId;
-                sendMessage.message = outMessage;
-                _messageHandlerPtr->sendMessage(sendMessage);
+                sendCarryMessage(_clockId);
             }
             else{
                 _state = Three;
@@ -67,12 +71,7 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
         case Three:
             if(_base == 4){
                 _state = Zero;
-                CarryMessage outMessage;
-                outMessage.fromId = _id;
-                SendMessage sendMessage;
-                sendMessage.toId = _clockId;
-                sendMessage.message = outMessage;
-                _messageHandlerPtr->sendMessage(sendMessage);
+                sendCarryMessage(_clockId);
             }
             else{
                 _state = Four;
@@ -84,12 +83,7 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
         case Five:
             if(_base == 6){
                 _state = Zero;
-                CarryMessage outMessage;
-                outMessage.fromId = _id;
-                SendMessage sendMessage;
-                sendMessage.toId = _clockId;
-                sendMessage.message = outMessage;
-                _messageHandlerPtr->sendMessage(sendMessage);
+                sendCarryMessage(_clockId);
             }
             else{
                 _state = Six;
@@ -106,12 +100,7 @@ void Digit_Capsule::handleMessage(IncMessage inMessage){
             break;
         case Nine:
             _state = Zero;
-            CarryMessage outMessage;
-            outMessage.fromId = _id;
-            SendMessage sendMessage;
-            sendMessage.toId = _clockId;
-            sendMessage.message = outMessage;
-            _messageHandlerPtr->sendMessage(sendMessage);
+            sendCarryMessage(_clockId);
             break;
     }
 }
