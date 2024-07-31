@@ -44,6 +44,7 @@ void TimerThread::run(){
                     int timeouts = 1 + (now-it->timeoutTime)/it->interval;
                     TimeoutMessage message;
                     message.timerId = it->id;
+                    message.toId = it->toId;
                     message.timeouts = timeouts;
                     SendMessage sendMessage;
                     sendMessage.toId = it->toId;
