@@ -3,7 +3,6 @@
 #include <variant>
 
 struct TimeoutMessage{
-    int toId;
     int timerId;
     int timeouts;
 };
@@ -11,3 +10,8 @@ struct TimeoutMessage{
 enum RunInstruction{EndMessage};
 
 typedef std::variant<TimeoutMessage, RunInstruction> Message;
+
+struct SendMessage{
+    int toId;
+    Message message;
+};

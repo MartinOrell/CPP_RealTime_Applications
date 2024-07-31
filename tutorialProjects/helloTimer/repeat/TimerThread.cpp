@@ -1,6 +1,6 @@
 #include "TimerThread.h"
 
-TimerThread::TimerThread(MessageHandler<Message>* messageHandlerPtr){
+TimerThread::TimerThread(MessageHandler<SendMessage>* messageHandlerPtr){
     _outMessageHandlerPtr = messageHandlerPtr;
     _nextId = 0;
 }
@@ -44,9 +44,11 @@ void TimerThread::run(){
                     int timeouts = 1 + (now-it->timeoutTime)/it->interval;
                     TimeoutMessage message;
                     message.timerId = it->id;
-                    message.toId = it->toId;
                     message.timeouts = timeouts;
-                    _outMessageHandlerPtr->sendMessage(message);
+                    SendMessage sendMessage;
+                    sendMessage.toId = it->toId;
+                    sendMessage.message = message;
+                    _outMessageHandlerPtr->sendMessage(sendMessage);
                     if(it->isRepeating){
                         it->timeoutTime+=it->interval*timeouts;
                     }

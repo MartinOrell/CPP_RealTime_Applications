@@ -8,9 +8,9 @@
 
 class CapsuleRunner{
     public:
-        CapsuleRunner(TimerThread*, MessageHandler<Message>*);
+        CapsuleRunner(TimerThread*, MessageHandler<SendMessage>*);
         void run();
     private:
         HelloTimer_Capsule _helloTimer;
-        MessageHandler<Message>* _messageHandlerPtr;
+        MessageHandler<SendMessage>* _messageHandlerPtr;
 };

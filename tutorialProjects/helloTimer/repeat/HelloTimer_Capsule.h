@@ -9,7 +9,7 @@
 
 class HelloTimer_Capsule{
     public:
-        HelloTimer_Capsule(int id, MessageHandler<Message>*messageHandlerPtr, TimerThread* timerThreadPtr);
+        HelloTimer_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr, TimerThread* timerThreadPtr);
         void start();
         void handleTimeout(TimeoutMessage message);
     private:
@@ -17,7 +17,7 @@ class HelloTimer_Capsule{
         int _repeatTimerId;
         int _endTimerId;
         TimerThread* _timerThreadPtr;
-        MessageHandler<Message>* _messageHandlerPtr;
+        MessageHandler<SendMessage>* _messageHandlerPtr;
         enum State{
             Running,End
         };

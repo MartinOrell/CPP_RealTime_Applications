@@ -1,6 +1,6 @@
 #include "HelloTimer_Capsule.h"
 
-HelloTimer_Capsule::HelloTimer_Capsule(int id, MessageHandler<Message>* messageHandlerPtr, TimerThread* timerThreadPtr){
+HelloTimer_Capsule::HelloTimer_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr){
     _id = id;
     _messageHandlerPtr = messageHandlerPtr;
     _timerThreadPtr = timerThreadPtr;
@@ -25,7 +25,10 @@ void HelloTimer_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
         std::cout << "Goodbye World!" << std::endl;
         _timerThreadPtr->cancelTimer(_repeatTimerId);
         RunInstruction end = RunInstruction::EndMessage;
-        _messageHandlerPtr->sendMessage(end);
+        SendMessage sendMessage;
+        sendMessage.toId = -1;
+        sendMessage.message = end;
+        _messageHandlerPtr->sendMessage(sendMessage);
     }
     else{
         throw std::out_of_range("HelloTimer does not support timeout with id " + std::to_string(timeoutMessage.timerId) + " in state " + std::to_string(_state));

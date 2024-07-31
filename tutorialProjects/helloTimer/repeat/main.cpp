@@ -4,7 +4,7 @@
 #include "CapsuleRunner.h"
 
 int main(){
-    MessageHandler<Message> messageHandler;
+    MessageHandler<SendMessage> messageHandler;
     TimerThread timerThread(&messageHandler);
     timerThread.run();
     CapsuleRunner capsuleRunner(&timerThread, &messageHandler);
