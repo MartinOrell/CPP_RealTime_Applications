@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Capsule.h"
+#include "../lib/Capsule.h"
 
 #include <string>
 #include <iostream>
-#include "TimerThread.h"
-#include "Message.h"
+#include "../lib/TimerThread.h"
+#include "../lib/Message.h"
 #include <chrono>
 #include <stdexcept>
 

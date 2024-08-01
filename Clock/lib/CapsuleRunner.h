@@ -4,9 +4,7 @@
 #include "Message.h"
 #include "MessageHandler.h"
 #include "TimerThread.h"
-#include "Main_Capsule.h"
-#include "Clock_Capsule.h"
-#include "Digit_Capsule.h"
+#include "Capsule.h"
 
 class CapsuleRunner{
     public:

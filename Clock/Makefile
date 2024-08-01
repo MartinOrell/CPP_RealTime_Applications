@@ -1,4 +1,4 @@
-clock.exe: main.cpp Capsule.h CapsuleRunner.h CapsuleRunner.cpp TimerThread.h TimerThread.cpp MessageHandler.h MessageHandler.tpp Message.h Main_Capsule.h Main_Capsule.cpp Clock_Capsule.h Clock_Capsule.cpp Digit_Capsule.h Digit_Capsule.cpp
-	g++ main.cpp CapsuleRunner.cpp TimerThread.cpp Main_Capsule.cpp Clock_Capsule.cpp Digit_Capsule.cpp -std=c++20 -g -o clock.exe
+clock.exe: main.cpp lib/Capsule.h lib/CapsuleRunner.h lib/CapsuleRunner.cpp lib/TimerThread.h lib/TimerThread.cpp lib/MessageHandler.h lib/MessageHandler.tpp lib/Message.h caps/Main_Capsule.h caps/Main_Capsule.cpp caps/Clock_Capsule.h caps/Clock_Capsule.cpp caps/Digit_Capsule.h caps/Digit_Capsule.cpp
+	g++ main.cpp lib/CapsuleRunner.cpp lib/TimerThread.cpp caps/Main_Capsule.cpp caps/Clock_Capsule.cpp caps/Digit_Capsule.cpp -std=c++20 -g -o clock.exe
 clean:
 	rm -f clock.exe

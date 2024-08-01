@@ -1,5 +1,5 @@
 #include "Clock_Capsule.h"
-#include "CapsuleRunner.h"
+#include "../lib/CapsuleRunner.h"
 
 Clock_Capsule::Clock_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr, int speedMultiplier){
     _id = id;

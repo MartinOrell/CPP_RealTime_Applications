@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Capsule.h"
+#include "../lib/Capsule.h"
 
-#include "Message.h"
-#include "MessageHandler.h"
+#include "../lib/Message.h"
+#include "../lib/MessageHandler.h"
 #include <stdexcept>
 
 class Digit_Capsule: public Capsule{

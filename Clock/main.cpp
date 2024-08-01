@@ -1,7 +1,10 @@
-#include "Message.h"
-#include "MessageHandler.h"
-#include "TimerThread.h"
-#include "CapsuleRunner.h"
+#include "lib/Message.h"
+#include "lib/MessageHandler.h"
+#include "lib/TimerThread.h"
+#include "lib/CapsuleRunner.h"
+#include "caps/Main_Capsule.h"
+#include "caps/Clock_Capsule.h"
+#include "caps/Digit_Capsule.h"
 #include <vector>
 #include <memory>
 
