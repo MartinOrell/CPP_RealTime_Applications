@@ -42,7 +42,7 @@ bool CapsuleRunner::handleMessage(SendMessage sendMessage){
                 return false;
             }
             else{
-                throw std::invalid_argument("CapsuleRunner received emptyMessage of wrong type");
+                throw std::invalid_argument("CapsuleRunner received VoidMessage of wrong type");
             }
         }
         else{
