@@ -1,6 +1,6 @@
 #include "TimerThread.h"
 
-TimerThread::TimerThread(MessageHandler<Message>* messageHandlerPtr){
+TimerThread::TimerThread(MessageHandler<SendMessage>* messageHandlerPtr){
     _outMessageHandlerPtr = messageHandlerPtr;
     _nextId = 0;
 }
@@ -41,12 +41,16 @@ void TimerThread::run(){
             auto now = std::chrono::steady_clock::now();
             for(auto it = _timers.begin(); it!=_timers.end();){
                 if(now >= it->timeoutTime){
+                    int timeouts = 1 + (now-it->timeoutTime)/it->interval;
                     TimeoutMessage message;
                     message.timerId = it->id;
-                    message.toId = it->toId;
-                    _outMessageHandlerPtr->sendMessage(message);
+                    message.timeouts = timeouts;
+                    SendMessage sendMessage;
+                    sendMessage.toId = it->toId;
+                    sendMessage.message = message;
+                    _outMessageHandlerPtr->sendMessage(sendMessage);
                     if(it->isRepeating){
-                        it->timeoutTime+=it->interval;
+                        it->timeoutTime+=it->interval*timeouts;
                     }
                     else{
                         it = _timers.erase(it);
@@ -76,6 +80,7 @@ int TimerThread::informIn(int toId, std::chrono::steady_clock::duration duration
 }
 
 int TimerThread::informEvery(int toId, std::chrono::steady_clock::duration interval){
+    assert(interval > std::chrono::nanoseconds(0));
     Timer timer;
     timer.id = _nextId++;
     timer.toId = toId;
