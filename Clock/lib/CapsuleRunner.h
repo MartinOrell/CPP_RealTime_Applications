@@ -12,6 +12,8 @@ class CapsuleRunner{
         void run();
         Message invokeMessage(SendMessage request);
     private:
+        bool handleMessage(SendMessage message);
+
         MessageHandler<SendMessage>* _messageHandlerPtr;
         std::vector<std::unique_ptr<Capsule>>* _capsulesPtr;
 };

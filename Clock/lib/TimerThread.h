@@ -18,6 +18,7 @@ class TimerThread{
         int informEvery(int, std::chrono::steady_clock::duration);
         void cancelTimer(int);
     private:
+        void sendTimeoutMessage(int toId, int timerId, int timeouts);
 
         struct Timer{
             int id;

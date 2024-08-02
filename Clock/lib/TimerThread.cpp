@@ -9,55 +9,51 @@ void TimerThread::run(){
     _thread = std::jthread([this](std::stop_token stop_token){
         while(!stop_token.stop_requested()){
             
+            bool hasReceivedMessage;
             if(_timers.size() == 0){
                 _inMessageHandler.waitForMessage();
-                
-                if(stop_token.stop_requested()){
-                    break;
-                }
+                hasReceivedMessage = true;
+            }
+            else{
+                auto nextTimerToTimeout = std::min_element(_timers.begin(), _timers.end());
+                hasReceivedMessage = _inMessageHandler.waitForMessageUntil(nextTimerToTimeout->timeoutTime);
+            }
+
+            if(stop_token.stop_requested()){
+                break;
+            }
+
+            if(hasReceivedMessage){
                 InMessage message = _inMessageHandler.receiveMessage();
                 if(std::holds_alternative<Timer>(message)){
                     Timer timer = std::get<Timer>(message);
                     _timers.push_back(timer);
                 }
-            }
-            else{
-                auto nextTimerToTimeout = std::min_element(_timers.begin(), _timers.end());
-                if(_inMessageHandler.waitForMessageUntil(nextTimerToTimeout->timeoutTime)){
-                    if(stop_token.stop_requested()){
-                        break;
-                    }
-                    InMessage message = _inMessageHandler.receiveMessage();
-                    if(std::holds_alternative<Timer>(message)){
-                        Timer timer = std::get<Timer>(message);
-                        _timers.push_back(timer);
-                    }
-                    else{ //cancel Timer message
-                        int m_id = std::get<int>(message);
-                        _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[m_id](Timer t) { return (t.id == m_id); }), _timers.end());
-                    }
+                else{ //cancel Timer message
+                    int m_id = std::get<int>(message);
+                    _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[m_id](Timer t) { return (t.id == m_id); }), _timers.end());
                 }
             }
+
+            //Check for timeouts and send Timeout Messages
             auto now = std::chrono::steady_clock::now();
             for(auto it = _timers.begin(); it!=_timers.end();){
-                if(now >= it->timeoutTime){
-                    int timeouts = 1 + (now-it->timeoutTime)/it->interval;
-                    TimeoutMessage message;
-                    message.timerId = it->id;
-                    message.timeouts = timeouts;
-                    SendMessage sendMessage;
-                    sendMessage.toId = it->toId;
-                    sendMessage.message = message;
-                    _outMessageHandlerPtr->sendMessage(sendMessage);
-                    if(it->isRepeating){
-                        it->timeoutTime+=it->interval*timeouts;
-                    }
-                    else{
-                        it = _timers.erase(it);
-                    }
+
+                if(now < it->timeoutTime){
+                    it++;
+                    continue;
+                }
+
+                //Timeout reached
+                int timeouts = 1 + (now-it->timeoutTime)/it->interval;
+                sendTimeoutMessage(it->toId, it->id, timeouts);
+
+                if(it->isRepeating){
+                    it->timeoutTime+=it->interval*timeouts;
+                    it++;
                 }
                 else{
-                    it++;
+                    it = _timers.erase(it);
                 }
             }
         }
@@ -93,4 +89,14 @@ int TimerThread::informEvery(int toId, std::chrono::steady_clock::duration inter
 
 void TimerThread::cancelTimer(int id){
     _inMessageHandler.sendMessage(id);
+}
+
+void TimerThread::sendTimeoutMessage(int toId, int timerId, int timeouts){
+    TimeoutMessage message;
+    message.timerId = timerId;
+    message.timeouts = timeouts;
+    SendMessage sendMessage;
+    sendMessage.toId = toId;
+    sendMessage.message = message;
+    _outMessageHandlerPtr->sendMessage(sendMessage);
 }
