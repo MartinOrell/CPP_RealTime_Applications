@@ -47,9 +47,10 @@ void TimerThread::run(){
                 //Timeout reached
                 int timeouts = 1 + (now-it->timeoutTime)/it->interval;
                 sendTimeoutMessage(it->toId, it->id, timeouts);
-                
+
                 if(it->isRepeating){
                     it->timeoutTime+=it->interval*timeouts;
+                    it++;
                 }
                 else{
                     it = _timers.erase(it);
