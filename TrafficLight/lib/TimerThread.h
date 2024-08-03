@@ -11,13 +11,14 @@
 
 class TimerThread{
     public:
-        TimerThread(MessageHandler<Message>*);
+        TimerThread(MessageHandler<SendMessage>*);
         void run();
         void stop();
         int informIn(int, std::chrono::steady_clock::duration);
         int informEvery(int, std::chrono::steady_clock::duration);
         void cancelTimer(int);
     private:
+        void sendTimeoutMessage(int toId, int timerId, int timeouts);
 
         struct Timer{
             int id;
@@ -32,8 +33,7 @@ class TimerThread{
         };
 
         typedef std::variant<Timer, int> InMessage;
-
-        MessageHandler<Message>* _outMessageHandlerPtr;
+        MessageHandler<SendMessage>* _outMessageHandlerPtr;
         MessageHandler<InMessage> _inMessageHandler;
         std::jthread _thread;
         std::vector<Timer> _timers;

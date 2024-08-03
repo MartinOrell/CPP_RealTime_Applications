@@ -1,14 +1,27 @@
 #include "TrafficLight_Capsule.h"
 
-TrafficLight_Capsule::TrafficLight_Capsule(int id, MessageHandler<Message>* messageHandlerPtr, TimerThread* timerThreadPtr){
+TrafficLight_Capsule::TrafficLight_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr){
     _id = id;
     _messageHandlerPtr = messageHandlerPtr;
     _timerThreadPtr = timerThreadPtr;
 }
 
+int TrafficLight_Capsule::getId(){
+    return _id;
+}
+
 void TrafficLight_Capsule::start(){
     _state = Red;
     _timerThreadPtr->informEvery(_id, std::chrono::seconds(2));
+}
+
+void TrafficLight_Capsule::handleMessage(Message message){
+    if(std::holds_alternative<TimeoutMessage>(message)){
+        handleTimeout(std::get<TimeoutMessage>(message));
+    }
+    else{
+        throw std::invalid_argument("TrafficLight_Capsule unable to handle that message");
+    }
 }
 
 void TrafficLight_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
