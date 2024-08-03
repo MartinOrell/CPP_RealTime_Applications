@@ -10,6 +10,7 @@ class CapsuleRunner{
     public:
         CapsuleRunner(MessageHandler<SendMessage>*, std::vector<std::unique_ptr<Capsule>>*);
         void run();
+        void stop();
         Message invokeMessage(SendMessage request);
     private:
         bool handleMessage(SendMessage message);

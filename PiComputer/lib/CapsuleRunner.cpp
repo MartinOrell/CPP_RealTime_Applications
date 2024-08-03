@@ -18,6 +18,14 @@ void CapsuleRunner::run(){
     }
 }
 
+void CapsuleRunner::stop(){
+    VoidMessage outMessage = EndMessage;
+    SendMessage sendMessage;
+    sendMessage.toId = -1;
+    sendMessage.message = outMessage;
+    _messageHandlerPtr->sendMessage(sendMessage);
+}
+
 Message CapsuleRunner::invokeMessage(SendMessage request){
 
     for(int i = 0; i < _capsulesPtr->size();i++){

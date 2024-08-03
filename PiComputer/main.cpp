@@ -13,7 +13,7 @@ int main(){
 
     int nextCapsuleId = 0;
 
-    std::unique_ptr<PiComputer_Capsule> piComputer = std::make_unique<PiComputer_Capsule>(nextCapsuleId++, &messageHandler);
+    std::unique_ptr<PiComputer_Capsule> piComputer = std::make_unique<PiComputer_Capsule>(nextCapsuleId++, &messageHandler, &capsuleRunner);
     std::unique_ptr<Adder_Capsule> adder = std::make_unique<Adder_Capsule>(nextCapsuleId++, &messageHandler);
     std::unique_ptr<Multiplier_Capsule> multiplier = std::make_unique<Multiplier_Capsule>(nextCapsuleId++, &messageHandler);
 
