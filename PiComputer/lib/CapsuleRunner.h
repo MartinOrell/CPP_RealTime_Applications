@@ -8,13 +8,14 @@
 
 class CapsuleRunner{
     public:
-        CapsuleRunner(MessageHandler<SendMessage>*, std::vector<std::unique_ptr<Capsule>>*);
+        CapsuleRunner(int id, MessageHandler<SendMessage>*, std::vector<std::unique_ptr<Capsule>>*);
         void run();
         void stop();
         Message invokeMessage(SendMessage request);
     private:
         bool handleMessage(SendMessage message);
 
+        int _id;
         MessageHandler<SendMessage>* _messageHandlerPtr;
         std::vector<std::unique_ptr<Capsule>>* _capsulesPtr;
 };

@@ -1,7 +1,8 @@
 #include "CapsuleRunner.h"
 
-CapsuleRunner::CapsuleRunner(MessageHandler<SendMessage>* messageHandlerPtr, std::vector<std::unique_ptr<Capsule>>* capsulesPtr)
-:   _messageHandlerPtr{messageHandlerPtr},
+CapsuleRunner::CapsuleRunner(int id, MessageHandler<SendMessage>* messageHandlerPtr, std::vector<std::unique_ptr<Capsule>>* capsulesPtr)
+:   _id{id},
+    _messageHandlerPtr{messageHandlerPtr},
     _capsulesPtr{capsulesPtr}{}
 
 void CapsuleRunner::run(){
@@ -21,7 +22,7 @@ void CapsuleRunner::run(){
 void CapsuleRunner::stop(){
     VoidMessage outMessage = EndMessage;
     SendMessage sendMessage;
-    sendMessage.toId = -1;
+    sendMessage.toId = _id;
     sendMessage.message = outMessage;
     _messageHandlerPtr->sendMessage(sendMessage);
 }
@@ -42,7 +43,7 @@ Message CapsuleRunner::invokeMessage(SendMessage request){
 //Returns true if successfully called the capsule to handle the message
 //throws an error if it fails
 bool CapsuleRunner::handleMessage(SendMessage sendMessage){
-    if(sendMessage.toId == -1){ //Message to the CapsuleRunner (not to a Capsule)
+    if(sendMessage.toId == _id){ //Message to this CapsuleRunner
         Message message = sendMessage.message;
         if(std::holds_alternative<VoidMessage>(message)){
             VoidMessage voidMessage = std::get<VoidMessage>(message);
