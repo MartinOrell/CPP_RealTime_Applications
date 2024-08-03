@@ -14,6 +14,7 @@ class Multiplier_Capsule: public Capsule{
         void handleMessage(Message message);
         
         void connectAdder(int adderId);
+        
     private:
         void sendReturnIncrementMessage(int toId, double inc);
 

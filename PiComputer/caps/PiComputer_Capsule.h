@@ -17,10 +17,12 @@ class PiComputer_Capsule: public Capsule{
         void handleMessage(Message message);
         
         void connectAdder(int adderId);
+
     private:
         void sendComputeRequest(int toId, int noOfIterations);
 
         void handleMessage(ComputeResult message);
+        
         int _id;
         int _adderId;
         MessageHandler<SendMessage>* _messageHandlerPtr;
