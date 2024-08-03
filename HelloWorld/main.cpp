@@ -12,7 +12,6 @@ int main(){
     timerThread.run();
 
     std::vector<std::unique_ptr<Capsule>> capsules;
-    
     int nextCapsuleId = 0;
 
     CapsuleRunner capsuleRunner(nextCapsuleId++, &messageHandler, &capsules);
