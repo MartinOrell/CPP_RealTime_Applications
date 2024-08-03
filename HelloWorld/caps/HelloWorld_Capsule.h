@@ -14,10 +14,10 @@ class CapsuleRunner;
 class HelloWorld_Capsule: public Capsule{
     public:
         HelloWorld_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr);
-
         int getId();
         void start();
         void handleMessage(Message message);
+        
     private:
         void handleTimeout(TimeoutMessage message);
 
