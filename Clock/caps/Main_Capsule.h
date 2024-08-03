@@ -9,9 +9,11 @@
 #include <chrono>
 #include <stdexcept>
 
+class CapsuleRunner;
+
 class Main_Capsule: public Capsule{
     public:
-        Main_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
+        Main_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
         
         int getId();
         void start();
@@ -20,7 +22,6 @@ class Main_Capsule: public Capsule{
         void connect(int clockId);
         
     private:
-        void sendEndMessage();
         void sendRequestTimeMessage(int toId);
 
         void handleTimeout(TimeoutMessage message);
@@ -34,6 +35,7 @@ class Main_Capsule: public Capsule{
         int _updateTimerId;
         TimerThread* _timerThreadPtr;
         MessageHandler<SendMessage>* _messageHandlerPtr;
+        CapsuleRunner* _capsuleRunnerPtr;
         enum State{Running, WaitForTimeResponse, End};
         State _state;
 };

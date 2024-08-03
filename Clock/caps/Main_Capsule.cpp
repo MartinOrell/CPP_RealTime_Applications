@@ -1,9 +1,11 @@
 #include "Main_Capsule.h"
+#include "CapsuleRunner.h"
 
-Main_Capsule::Main_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, std::chrono::steady_clock::duration timeoutTime, int fps){
+Main_Capsule::Main_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps){
     _id = id;
     _messageHandlerPtr = messageHandlerPtr;
     _timerThreadPtr = timerThreadPtr;
+    _capsuleRunnerPtr = capsuleRunnerPtr;
     _timeoutTime = timeoutTime;
     _updateTime = std::chrono::milliseconds(1000/fps);
     if(_updateTime <= std::chrono::milliseconds(0)){
@@ -38,14 +40,6 @@ void Main_Capsule::start(){
     _endTimerId = _timerThreadPtr->informIn(_id, _timeoutTime);
     _updateTimerId = _timerThreadPtr->informEvery(_id, _updateTime);
 }
-
-void Main_Capsule::sendEndMessage(){
-    VoidMessage outMessage = EndMessage;
-    SendMessage sendMessage;
-    sendMessage.toId = -1;
-    sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
-}
         
 void Main_Capsule::sendRequestTimeMessage(int toId){
     VoidMessage outMessage = RequestTimeMessage;
@@ -59,7 +53,7 @@ void Main_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
     if(timeoutMessage.timerId == _endTimerId){
         _state = End;
         std::cout << "Main timeout reached" << std::endl;
-        sendEndMessage();
+        _capsuleRunnerPtr->stop();
     }
     else if(timeoutMessage.timerId == _updateTimerId){
         if(_state == Running){
