@@ -30,11 +30,12 @@ class Clock_Capsule: public Capsule{
         void sendRespondTimeMessage(int toId, std::string time);
         void sendIncMessage(int toId);
         void sendSetBaseMessage(int toId, int base);
-        RespondDigitMessage invokeRequestDigitMessage(int toId);
 
         void handleTimeout(TimeoutMessage message);
         void handleMessage(CarryMessage inMessage);
         void handleRequestTimeMessage();
+
+        RespondDigitMessage invokeRequestDigitMessage(int toId);
 
         int _id;
         int _mainId;

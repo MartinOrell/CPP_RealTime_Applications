@@ -21,6 +21,7 @@ class Digit_Capsule: public Capsule{
 
         void handleIncMessage();
         void handleMessage(SetBaseMessage inMessage);
+        
         Message handleInvokeRequestDigitMessage();
 
         int _id;

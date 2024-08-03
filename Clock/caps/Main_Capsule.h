@@ -14,7 +14,6 @@ class CapsuleRunner;
 class Main_Capsule: public Capsule{
     public:
         Main_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
-        
         int getId();
         void start();
         void handleMessage(Message message);
