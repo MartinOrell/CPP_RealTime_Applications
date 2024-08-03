@@ -1,12 +1,13 @@
-#include "lib/Message.h"
-#include "lib/MessageHandler.h"
-#include "lib/TimerThread.h"
-#include "lib/CapsuleRunner.h"
-#include "caps/Main_Capsule.h"
-#include "caps/Clock_Capsule.h"
-#include "caps/Digit_Capsule.h"
+#include "Message.h"
+#include "MessageHandler.h"
+#include "TimerThread.h"
+#include "Capsule.h"
+#include "CapsuleRunner.h"
 #include <vector>
 #include <memory>
+#include "Main_Capsule.h"
+#include "Clock_Capsule.h"
+#include "Digit_Capsule.h"
 
 int main(){
     MessageHandler<SendMessage> messageHandler;
@@ -61,6 +62,7 @@ int main(){
     capsules.push_back(std::move(minute10Digit));
     capsules.push_back(std::move(hour1Digit));
     capsules.push_back(std::move(hour10Digit));
+    
     capsuleRunner.run();
     timerThread.stop();
 }
