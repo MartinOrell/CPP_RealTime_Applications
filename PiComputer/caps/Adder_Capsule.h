@@ -5,6 +5,7 @@
 #include <iostream>
 #include <math.h>
 #include "Message.h"
+#include "SendMessage.h"
 #include "MessageHandler.h"
 
 class Adder_Capsule: public Capsule{

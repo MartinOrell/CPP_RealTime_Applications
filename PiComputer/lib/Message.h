@@ -34,8 +34,3 @@ typedef std::variant<
     ReturnIncrement,
     GetIncrement
     > Message;
-
-struct SendMessage{
-    int toId;
-    Message message;
-};

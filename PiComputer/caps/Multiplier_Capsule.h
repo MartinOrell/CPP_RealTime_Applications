@@ -3,6 +3,7 @@
 #include "Capsule.h"
 
 #include "Message.h"
+#include "SendMessage.h"
 #include "MessageHandler.h"
 #include <cmath>
 

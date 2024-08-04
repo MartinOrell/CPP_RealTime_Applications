@@ -46,7 +46,7 @@ void TimerThread::run(){
 
                 //Timeout reached
                 int timeouts = 1 + (now-it->timeoutTime)/it->interval;
-                sendTimeoutMessage(it->toId, it->id, timeouts);
+                mergeOrSendTimeoutMessage(it->toId, it->id, timeouts);
 
                 if(it->isRepeating){
                     it->timeoutTime+=it->interval*timeouts;
@@ -91,12 +91,12 @@ void TimerThread::cancelTimer(int id){
     _inMessageHandler.sendMessage(id);
 }
 
-void TimerThread::sendTimeoutMessage(int toId, int timerId, int timeouts){
+void TimerThread::mergeOrSendTimeoutMessage(int toId, int timerId, int timeouts){
     TimeoutMessage message;
     message.timerId = timerId;
     message.timeouts = timeouts;
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = message;
-    _outMessageHandlerPtr->sendMessage(sendMessage);
+    _outMessageHandlerPtr->mergeOrSendMessage(sendMessage);
 }
