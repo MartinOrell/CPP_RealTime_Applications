@@ -14,8 +14,3 @@ typedef std::variant<
     TimeoutMessage,
     VoidMessage
     > Message;
-
-struct SendMessage{
-    int toId;
-    Message message;
-};
