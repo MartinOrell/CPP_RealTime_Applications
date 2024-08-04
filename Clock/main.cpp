@@ -8,6 +8,7 @@
 #include "Main_Capsule.h"
 #include "Clock_Capsule.h"
 #include "Digit_Capsule.h"
+#include "SendMessage.h"
 
 int main(){
     MessageHandler<SendMessage> messageHandler;
@@ -16,7 +17,7 @@ int main(){
     
     std::chrono::steady_clock::duration timeoutTime = std::chrono::seconds(3600);
     int fps = 3;
-    int speedMultiplier = 8;
+    int speedMultiplier = 8000;
 
     std::vector<std::unique_ptr<Capsule>> capsules;
     int nextCapsuleId = 0;

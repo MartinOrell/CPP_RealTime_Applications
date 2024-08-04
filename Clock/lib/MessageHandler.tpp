@@ -12,6 +12,20 @@ void MessageHandler<T>::sendMessage(T message){
     _waitForMessageMutex.unlock();
 }
 
+template<typename T>
+void MessageHandler<T>::mergeOrSendMessage(T message){
+    _mutex.lock();
+    auto it = std::find(_messageStack.begin(), _messageStack.end(), message);
+    if(it==_messageStack.end()){
+        _messageStack.push_back(message);
+        _mutex.unlock();
+        _waitForMessageMutex.unlock();
+        return;
+    }
+    it->merge(message);
+    _mutex.unlock();
+}
+
 //receiveMessage returns the top message on the stack
 //Caller should check with hasMessage(), WaitForMessage() or WaitForMessageUntil()
 //before calling this function

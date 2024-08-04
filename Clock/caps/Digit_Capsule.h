@@ -5,6 +5,7 @@
 #include "Message.h"
 #include "MessageHandler.h"
 #include <stdexcept>
+#include "SendMessage.h"
 
 class Digit_Capsule: public Capsule{
     public:

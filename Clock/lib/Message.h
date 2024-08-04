@@ -35,8 +35,3 @@ typedef std::variant<
     CarryMessage,
     SetBaseMessage
     > Message;
-
-struct SendMessage{
-    int toId;
-    Message message;
-};

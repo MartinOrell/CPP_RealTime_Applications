@@ -8,6 +8,7 @@
 #include "Message.h"
 #include <chrono>
 #include <stdexcept>
+#include "SendMessage.h"
 
 class CapsuleRunner;
 
