@@ -12,6 +12,7 @@ void MessageHandler<T>::sendMessage(T message){
     _waitForMessageMutex.unlock();
 }
 
+//Requires equal operator and merge function for T
 template<typename T>
 void MessageHandler<T>::mergeOrSendMessage(T message){
     _mutex.lock();
