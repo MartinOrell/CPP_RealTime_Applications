@@ -6,6 +6,7 @@
 #include <iostream>
 #include "TimerThread.h"
 #include "Message.h"
+#include "SendMessage.h"
 
 class Pong_Capsule: public Capsule{
     public:

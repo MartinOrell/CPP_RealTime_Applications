@@ -19,8 +19,3 @@ typedef std::variant<
     VoidMessage,
     MessageToPong
     > Message;
-
-struct SendMessage{
-    int toId;
-    Message message;
-};
