@@ -2,6 +2,7 @@
 
 #include <variant>
 #include "Message.h"
+#include "SendMessage.h"
 #include "MessageHandler.h"
 #include "TimerThread.h"
 #include "Capsule.h"
