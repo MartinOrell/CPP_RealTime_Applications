@@ -24,13 +24,13 @@ void TimerThread::run(){
             }
 
             if(hasReceivedMessage){
-                InMessage message = _inMessageHandler.receiveMessage();
-                if(std::holds_alternative<Timer>(message)){
-                    Timer timer = std::get<Timer>(message);
+                SendMessage message = _inMessageHandler.receiveMessage();
+                if(std::holds_alternative<Timer>(message.message)){
+                    Timer timer = std::get<Timer>(message.message);
                     _timers.push_back(timer);
                 }
                 else{ //cancel Timer message
-                    int m_id = std::get<int>(message);
+                    int m_id = std::get<CancelTimer>(message.message).id;
                     _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[m_id](Timer t) { return (t.id == m_id); }), _timers.end());
                 }
             }
@@ -69,12 +69,16 @@ void TimerThread::stop(){
 }
 
 int TimerThread::informIn(int toId, std::chrono::steady_clock::duration duration){
+    
     Timer timer;
     timer.id = _nextId++;
     timer.toId = toId;
     timer.timeoutTime = std::chrono::steady_clock::now() + duration;
     timer.isRepeating = false;
-    _inMessageHandler.sendMessage(timer);
+    SendMessage message;
+    message.toId = toId;
+    message.message = timer;
+    _inMessageHandler.sendMessage(message);
     return timer.id;
 }
 
@@ -86,12 +90,20 @@ int TimerThread::informEvery(int toId, std::chrono::steady_clock::duration inter
     timer.timeoutTime = std::chrono::steady_clock::now() + interval;
     timer.isRepeating = true;
     timer.interval = interval;
-    _inMessageHandler.sendMessage(timer);
+    SendMessage message;
+    message.toId = toId;
+    message.message = timer;
+    _inMessageHandler.sendMessage(message);
     return timer.id;
 }
 
 void TimerThread::cancelTimer(int id){
-    _inMessageHandler.sendMessage(id);
+    CancelTimer cancelTimer;
+    cancelTimer.id = id;
+    SendMessage message;
+    message.toId = id;
+    message.message = cancelTimer;
+    _inMessageHandler.sendMessage(message);
 }
 
 void TimerThread::mergeOrSendTimeoutMessage(int toId, int timerId, int timeouts){

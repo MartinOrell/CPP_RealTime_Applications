@@ -20,22 +20,8 @@ class TimerThread{
         void cancelTimer(int);
     private:
         void mergeOrSendTimeoutMessage(int toId, int timerId, int timeouts);
-
-        struct Timer{
-            int id;
-            int toId;
-            std::chrono::steady_clock::time_point timeoutTime;
-            bool isRepeating;
-            std::chrono::steady_clock::duration interval;
-
-            bool operator<(Timer a){
-                return timeoutTime < a.timeoutTime;
-            }
-        };
-
-        typedef std::variant<Timer, int> InMessage;
         MessageHandler<SendMessage>* _outMessageHandlerPtr;
-        MessageHandler<InMessage> _inMessageHandler;
+        MessageHandler<SendMessage> _inMessageHandler;
         std::jthread _thread;
         std::vector<Timer> _timers;
         int _nextId;
