@@ -47,7 +47,7 @@ void TimerThread::run(){
                 //Timeout reached
                 int timeouts = 1;
                 if(it->isRepeating){
-                    int timeouts = 1 + (now-it->timeoutTime)/it->interval;
+                    timeouts = 1 + (now-it->timeoutTime)/it->interval;
                 }
                 mergeOrSendTimeoutMessage(it->toId, it->id, timeouts);
 
