@@ -1,6 +1,6 @@
 #include "TimerThread.h"
 
-TimerThread::TimerThread(MessageHandler<SendMessage>* messageHandlerPtr){
+TimerThread::TimerThread(MessageHandler* messageHandlerPtr){
     _outMessageHandlerPtr = messageHandlerPtr;
     _nextId = 0;
 }

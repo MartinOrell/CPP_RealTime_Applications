@@ -1,6 +1,6 @@
 #include "CapsuleRunner.h"
 
-CapsuleRunner::CapsuleRunner(int id, MessageHandler<SendMessage>* messageHandlerPtr, std::vector<std::unique_ptr<Capsule>>* capsulesPtr)
+CapsuleRunner::CapsuleRunner(int id, MessageHandler* messageHandlerPtr, std::vector<std::unique_ptr<Capsule>>* capsulesPtr)
 :   _id{id},
     _messageHandlerPtr{messageHandlerPtr},
     _capsulesPtr{capsulesPtr}{}

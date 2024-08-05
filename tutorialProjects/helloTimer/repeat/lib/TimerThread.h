@@ -12,7 +12,7 @@
 
 class TimerThread{
     public:
-        TimerThread(MessageHandler<SendMessage>*);
+        TimerThread(MessageHandler*);
         void run();
         void stop();
         int informIn(int, std::chrono::steady_clock::duration);
@@ -20,8 +20,8 @@ class TimerThread{
         void cancelTimer(int);
     private:
         void mergeOrSendTimeoutMessage(int toId, int timerId, int timeouts);
-        MessageHandler<SendMessage>* _outMessageHandlerPtr;
-        MessageHandler<SendMessage> _inMessageHandler;
+        MessageHandler* _outMessageHandlerPtr;
+        MessageHandler _inMessageHandler;
         std::jthread _thread;
         std::vector<Timer> _timers;
         int _nextId;

@@ -9,7 +9,7 @@
 #include "HelloTimer_Capsule.h"
 
 int main(){
-    MessageHandler<SendMessage> messageHandler;
+    MessageHandler messageHandler;
     TimerThread timerThread(&messageHandler);
     timerThread.run();
 
