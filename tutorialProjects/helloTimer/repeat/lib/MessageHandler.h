@@ -3,12 +3,14 @@
 #include <mutex>
 #include <vector>
 #include <cassert>
+#include <algorithm>
 
 template <typename T>
 class MessageHandler{
     public:
         MessageHandler();
         void sendMessage(T);
+        void mergeOrSendMessage(T);
         T receiveMessage();
         bool hasMessage();
         void waitForMessage();

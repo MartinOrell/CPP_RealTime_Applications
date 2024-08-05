@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <variant>
 #include "Message.h"
+#include "SendMessage.h"
 #include "MessageHandler.h"
 
 class TimerThread{
@@ -18,6 +19,7 @@ class TimerThread{
         int informEvery(int, std::chrono::steady_clock::duration);
         void cancelTimer(int);
     private:
+        void mergeOrSendTimeoutMessage(int toId, int timerId, int timeouts);
 
         struct Timer{
             int id;
@@ -32,7 +34,6 @@ class TimerThread{
         };
 
         typedef std::variant<Timer, int> InMessage;
-
         MessageHandler<SendMessage>* _outMessageHandlerPtr;
         MessageHandler<InMessage> _inMessageHandler;
         std::jthread _thread;
