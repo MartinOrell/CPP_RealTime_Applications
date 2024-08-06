@@ -1,9 +1,10 @@
 #include "HelloTimer_Capsule.h"
 #include "CapsuleRunner.h"
 
-HelloTimer_Capsule::HelloTimer_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
+HelloTimer_Capsule::HelloTimer_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
+    _timerRunnerPtr = timerRunnerPtr;
 }
 
 int HelloTimer_Capsule::getId(){
@@ -13,8 +14,8 @@ int HelloTimer_Capsule::getId(){
 void HelloTimer_Capsule::start(){
     _state = Running;
     std::cout << "Hello World!" << std::endl;
-    _repeatTimerId = _capsuleRunnerPtr->informEvery(_id, std::chrono::milliseconds(500));
-    _endTimerId = _capsuleRunnerPtr->informIn(_id, std::chrono::seconds(3));
+    _repeatTimerId = _timerRunnerPtr->informEvery(_id, std::chrono::milliseconds(500));
+    _endTimerId = _timerRunnerPtr->informIn(_id, std::chrono::seconds(3));
 }
 
 void HelloTimer_Capsule::handleMessage(Message message){
@@ -36,7 +37,7 @@ void HelloTimer_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
     else if(timeoutMessage.timerId == _endTimerId && _state == Running){
         _state = End;
         std::cout << "Goodbye World!" << std::endl;
-        _capsuleRunnerPtr->cancelTimer(_repeatTimerId);
+        _timerRunnerPtr->cancelTimer(_repeatTimerId);
         _capsuleRunnerPtr->stop();
     }
     else{

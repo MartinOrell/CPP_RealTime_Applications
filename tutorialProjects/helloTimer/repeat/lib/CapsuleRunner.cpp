@@ -1,11 +1,27 @@
 #include "CapsuleRunner.h"
+#include "MessageManager.h"
 
-CapsuleRunner::CapsuleRunner(int id)
+CapsuleRunner::CapsuleRunner(int id, MessageManager* messageManagerPtr)
 :   _id{id},
-    _nextTimerId{0}{}
+    _messageManagerPtr{messageManagerPtr},
+    _nextTimerId{0}{
+        _messageManagerPtr->addCapsuleRunnerPtr(this);
+    }
 
 void CapsuleRunner::addCapsule(std::unique_ptr<Capsule> capsule){
     _capsules.push_back(std::move(capsule));
+}
+
+bool CapsuleRunner::isResponsible(int id){
+    if(id == _id){
+        return true;
+    }
+    for(int i = 0; i < _capsules.size();i++){
+        if(id == _capsules.at(i)->getId()){
+            return true;
+        }
+    }
+    return false;
 }
 
 void CapsuleRunner::run(){
@@ -52,7 +68,21 @@ void CapsuleRunner::stop(){
 }
 
 void CapsuleRunner::sendMessage(SendMessage message){
-    _messageHandler.sendMessage(message);
+    if(isResponsible(message.toId)){
+        _messageHandler.sendMessage(message);
+    }
+    else{
+        _messageManagerPtr->sendMessage(message);
+    }
+}
+
+void CapsuleRunner::mergeOrSendMessage(SendMessage message){
+    if(isResponsible(message.toId)){
+        _messageHandler.mergeOrSendMessage(message);
+    }
+    else{
+        _messageManagerPtr->mergeOrSendMessage(message);
+    }
 }
 
 Message CapsuleRunner::invokeMessage(SendMessage request){
@@ -170,5 +200,10 @@ void CapsuleRunner::mergeOrSendTimeoutMessage(int toId, int timerId, int timeout
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = message;
-    _messageHandler.mergeOrSendMessage(sendMessage);
+    if(isResponsible(toId)){
+        _messageHandler.mergeOrSendMessage(sendMessage);
+    }
+    else{
+        _messageManagerPtr->mergeOrSendMessage(sendMessage);
+    }
 }
