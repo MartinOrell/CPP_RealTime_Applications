@@ -11,6 +11,7 @@ class CapsuleRunner{
         CapsuleRunner(int id, std::vector<std::unique_ptr<Capsule>>*);
         void run();
         void stop();
+        void sendMessage(SendMessage message);
         Message invokeMessage(SendMessage request);
         int informIn(int, std::chrono::steady_clock::duration);
         int informEvery(int, std::chrono::steady_clock::duration);

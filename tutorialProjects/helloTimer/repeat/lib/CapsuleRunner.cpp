@@ -48,6 +48,10 @@ void CapsuleRunner::stop(){
     _messageHandler.sendMessage(sendMessage);
 }
 
+void CapsuleRunner::sendMessage(SendMessage message){
+    _messageHandler.sendMessage(message);
+}
+
 Message CapsuleRunner::invokeMessage(SendMessage request){
 
     for(int i = 0; i < _capsulesPtr->size();i++){
