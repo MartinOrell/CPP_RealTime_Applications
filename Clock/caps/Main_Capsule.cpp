@@ -1,11 +1,10 @@
 #include "Main_Capsule.h"
 #include "CapsuleRunner.h"
 
-Main_Capsule::Main_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps){
+Main_Capsule::Main_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
-    _timerThreadPtr = timerThreadPtr;
     _capsuleRunnerPtr = capsuleRunnerPtr;
+    _timerRunnerPtr = timerRunnerPtr;
     _timeoutTime = timeoutTime;
     _updateTime = std::chrono::milliseconds(1000/fps);
     if(_updateTime <= std::chrono::milliseconds(0)){
@@ -37,8 +36,8 @@ void Main_Capsule::connect(int clockId){
 
 void Main_Capsule::start(){
     _state = Running;
-    _endTimerId = _timerThreadPtr->informIn(_id, _timeoutTime);
-    _updateTimerId = _timerThreadPtr->informEvery(_id, _updateTime);
+    _endTimerId = _timerRunnerPtr->informIn(_id, _timeoutTime);
+    _updateTimerId = _timerRunnerPtr->informEvery(_id, _updateTime);
 }
         
 void Main_Capsule::sendRequestTimeMessage(int toId){
@@ -46,7 +45,7 @@ void Main_Capsule::sendRequestTimeMessage(int toId){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Main_Capsule::handleTimeout(TimeoutMessage timeoutMessage){

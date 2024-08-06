@@ -4,17 +4,17 @@
 
 #include <string>
 #include <iostream>
-#include "TimerThread.h"
 #include "Message.h"
+#include "SendMessage.h"
 #include <chrono>
 #include <stdexcept>
-#include "SendMessage.h"
+
 
 class CapsuleRunner;
 
 class Main_Capsule: public Capsule{
     public:
-        Main_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
+        Main_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
         int getId();
         void start();
         void handleMessage(Message message);
@@ -33,9 +33,8 @@ class Main_Capsule: public Capsule{
         int _endTimerId;
         std::chrono::steady_clock::duration _updateTime;
         int _updateTimerId;
-        TimerThread* _timerThreadPtr;
-        MessageHandler<SendMessage>* _messageHandlerPtr;
         CapsuleRunner* _capsuleRunnerPtr;
+        CapsuleRunner* _timerRunnerPtr;
         enum State{Running, WaitForTimeResponse, End};
         State _state;
 };

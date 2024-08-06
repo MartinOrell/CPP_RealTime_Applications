@@ -1,8 +1,9 @@
 #include "Digit_Capsule.h"
+#include "CapsuleRunner.h"
 
-Digit_Capsule::Digit_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr){
+Digit_Capsule::Digit_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
+    _capsuleRunnerPtr = capsuleRunnerPtr;
     _base = 10;
 }
 
@@ -56,7 +57,7 @@ void Digit_Capsule::sendCarryMessage(int toId){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Digit_Capsule::handleIncMessage(){

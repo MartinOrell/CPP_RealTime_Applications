@@ -1,44 +1,31 @@
-#include "Message.h"
-#include "MessageHandler.h"
-#include "TimerThread.h"
-#include "Capsule.h"
+#include "MessageManager.h"
 #include "CapsuleRunner.h"
-#include <vector>
 #include <memory>
+#include <thread>
 #include "Main_Capsule.h"
 #include "Clock_Capsule.h"
 #include "Digit_Capsule.h"
-#include "SendMessage.h"
 
 int main(){
-    MessageHandler<SendMessage> messageHandler;
-    TimerThread timerThread(&messageHandler);
-    timerThread.run();    
     
     std::chrono::steady_clock::duration timeoutTime = std::chrono::seconds(3600);
     int fps = 3;
     int speedMultiplier = 8;
 
-    std::vector<std::unique_ptr<Capsule>> capsules;
+    MessageManager messageManager;
+
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageHandler, &capsules);
-    std::unique_ptr<Main_Capsule> main = std::make_unique
-        <Main_Capsule>(nextCapsuleId++, &messageHandler, &timerThread, &capsuleRunner, timeoutTime, fps);
-    std::unique_ptr<Clock_Capsule> clock = std::make_unique
-        <Clock_Capsule>(nextCapsuleId++, &messageHandler, &timerThread, &capsuleRunner, speedMultiplier);
-    std::unique_ptr<Digit_Capsule> second1Digit = std::make_unique
-        <Digit_Capsule>(nextCapsuleId++, &messageHandler);
-    std::unique_ptr<Digit_Capsule> second10Digit = std::make_unique
-        <Digit_Capsule>(nextCapsuleId++, &messageHandler);
-    std::unique_ptr<Digit_Capsule> minute1Digit = std::make_unique
-        <Digit_Capsule>(nextCapsuleId++, &messageHandler);
-    std::unique_ptr<Digit_Capsule> minute10Digit = std::make_unique
-        <Digit_Capsule>(nextCapsuleId++, &messageHandler);
-    std::unique_ptr<Digit_Capsule> hour1Digit = std::make_unique
-        <Digit_Capsule>(nextCapsuleId++, &messageHandler);
-    std::unique_ptr<Digit_Capsule> hour10Digit = std::make_unique
-        <Digit_Capsule>(nextCapsuleId++, &messageHandler);
+    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
+    CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
+    auto main = std::make_unique<Main_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner, timeoutTime, fps);
+    auto clock = std::make_unique<Clock_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner, speedMultiplier);
+    auto second1Digit = std::make_unique<Digit_Capsule>(nextCapsuleId++, &capsuleRunner);
+    auto second10Digit = std::make_unique<Digit_Capsule>(nextCapsuleId++, &capsuleRunner);
+    auto minute1Digit = std::make_unique<Digit_Capsule>(nextCapsuleId++, &capsuleRunner);
+    auto minute10Digit = std::make_unique<Digit_Capsule>(nextCapsuleId++, &capsuleRunner);
+    auto hour1Digit = std::make_unique<Digit_Capsule>(nextCapsuleId++, &capsuleRunner);
+    auto hour10Digit = std::make_unique<Digit_Capsule>(nextCapsuleId++, &capsuleRunner);
 
     main->connect(clock->getId());
     clock->connectMain(main->getId());
@@ -55,15 +42,16 @@ int main(){
     clock->connectHour10Digit(hour10Digit->getId());
     hour10Digit->connect(clock->getId());
     
-    capsules.push_back(std::move(main));
-    capsules.push_back(std::move(clock));
-    capsules.push_back(std::move(second1Digit));
-    capsules.push_back(std::move(second10Digit));
-    capsules.push_back(std::move(minute1Digit));
-    capsules.push_back(std::move(minute10Digit));
-    capsules.push_back(std::move(hour1Digit));
-    capsules.push_back(std::move(hour10Digit));
+    capsuleRunner.addCapsule(std::move(main));
+    capsuleRunner.addCapsule(std::move(clock));
+    capsuleRunner.addCapsule(std::move(second1Digit));
+    capsuleRunner.addCapsule(std::move(second10Digit));
+    capsuleRunner.addCapsule(std::move(minute1Digit));
+    capsuleRunner.addCapsule(std::move(minute10Digit));
+    capsuleRunner.addCapsule(std::move(hour1Digit));
+    capsuleRunner.addCapsule(std::move(hour10Digit));
     
+    std::jthread timerThread = std::jthread([&timerRunner](){timerRunner.run();});
     capsuleRunner.run();
-    timerThread.stop();
+    timerRunner.stop();
 }

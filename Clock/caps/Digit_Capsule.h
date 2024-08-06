@@ -3,13 +3,13 @@
 #include "Capsule.h"
 
 #include "Message.h"
-#include "MessageHandler.h"
 #include <stdexcept>
-#include "SendMessage.h"
+
+class CapsuleRunner;
 
 class Digit_Capsule: public Capsule{
     public:
-        Digit_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr);
+        Digit_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
         void handleMessage(Message message);
@@ -28,7 +28,7 @@ class Digit_Capsule: public Capsule{
         int _id;
         int _clockId;
         int _base;
-        MessageHandler<SendMessage>* _messageHandlerPtr;
+        CapsuleRunner* _capsuleRunnerPtr;
         enum State{Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine};
         State _state;
 };

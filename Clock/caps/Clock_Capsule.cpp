@@ -1,11 +1,10 @@
 #include "Clock_Capsule.h"
 #include "CapsuleRunner.h"
 
-Clock_Capsule::Clock_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr, int speedMultiplier){
+Clock_Capsule::Clock_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr, int speedMultiplier){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
-    _timerThreadPtr = timerThreadPtr;
     _capsuleRunnerPtr = capsuleRunnerPtr;
+    _timerRunnerPtr = timerRunnerPtr;
     _tickPeriod = std::chrono::nanoseconds(1000000000/speedMultiplier);
     if(_tickPeriod <= std::chrono::nanoseconds(0)){
         throw std::range_error("tickPeriod is too low, try a lower speedMultiplier");
@@ -73,7 +72,7 @@ void Clock_Capsule::sendRespondTimeMessage(int toId, std::string time){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Clock_Capsule::sendIncMessage(int toId){
@@ -81,7 +80,7 @@ void Clock_Capsule::sendIncMessage(int toId){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Clock_Capsule::sendSetBaseMessage(int toId, int base){
@@ -90,7 +89,7 @@ void Clock_Capsule::sendSetBaseMessage(int toId, int base){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 RespondDigitMessage Clock_Capsule::invokeRequestDigitMessage(int toId){
     VoidMessage request = VoidMessage::RequestDigitMessage;
@@ -109,7 +108,7 @@ void Clock_Capsule::start(){
     sendSetBaseMessage(_minute10DigitCapsuleId, 6);
     sendSetBaseMessage(_hour10DigitCapsuleId, 3);
 
-    _tickerId = _timerThreadPtr->informEvery(_id, _tickPeriod);
+    _tickerId = _timerRunnerPtr->informEvery(_id, _tickPeriod);
 }
 
 void Clock_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
@@ -118,9 +117,9 @@ void Clock_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
             sendIncMessage(_second1DigitCapsuleId);
             if(timeoutMessage.timeouts > 1){
                 _state = Second10Ticker;
-                _timerThreadPtr->cancelTimer(_tickerId);
+                _timerRunnerPtr->cancelTimer(_tickerId);
                 _tickPeriod *= 10;
-                _tickerId = _timerThreadPtr->informEvery(_id, _tickPeriod);
+                _tickerId = _timerRunnerPtr->informEvery(_id, _tickPeriod);
                     std::cout << "Ticking in 10 seconds interval due to "
                 << timeoutMessage.timeouts-1 << " missed timeouts." << std::endl;
             }
@@ -129,9 +128,9 @@ void Clock_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
             sendIncMessage(_second10DigitCapsuleId);
             if(timeoutMessage.timeouts > 1){
                 _state = MinuteTicker;
-                _timerThreadPtr->cancelTimer(_tickerId);
+                _timerRunnerPtr->cancelTimer(_tickerId);
                 _tickPeriod *= 6;
-                _tickerId = _timerThreadPtr->informEvery(_id, _tickPeriod);
+                _tickerId = _timerRunnerPtr->informEvery(_id, _tickPeriod);
                     std::cout << "Ticking in 1 minute interval due to "
                 << timeoutMessage.timeouts-1 << " missed timeouts." << std::endl;
             }
@@ -140,9 +139,9 @@ void Clock_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
             sendIncMessage(_minute1DigitCapsuleId);
             if(timeoutMessage.timeouts > 1){
                 _state = Minute10Ticker;
-                _timerThreadPtr->cancelTimer(_tickerId);
+                _timerRunnerPtr->cancelTimer(_tickerId);
                 _tickPeriod *= 10;
-                _tickerId = _timerThreadPtr->informEvery(_id, _tickPeriod);
+                _tickerId = _timerRunnerPtr->informEvery(_id, _tickPeriod);
                     std::cout << "Ticking in 10 minutes interval due to "
                 << timeoutMessage.timeouts-1 << " missed timeouts." << std::endl;
             }
@@ -151,9 +150,9 @@ void Clock_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
             sendIncMessage(_minute10DigitCapsuleId);
             if(timeoutMessage.timeouts > 1){
                 _state = HourTicker;
-                _timerThreadPtr->cancelTimer(_tickerId);
+                _timerRunnerPtr->cancelTimer(_tickerId);
                 _tickPeriod *= 6;
-                _tickerId = _timerThreadPtr->informEvery(_id, _tickPeriod);
+                _tickerId = _timerRunnerPtr->informEvery(_id, _tickPeriod);
                     std::cout << "Ticking in 1 hour interval due to "
                 << timeoutMessage.timeouts-1 << " missed timeouts." << std::endl;
             }
