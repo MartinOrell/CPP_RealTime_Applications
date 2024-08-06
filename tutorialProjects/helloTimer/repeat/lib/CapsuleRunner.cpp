@@ -14,46 +14,30 @@ void CapsuleRunner::run(){
 
     bool running = true;
     while(running){
-        bool hasReceivedMessage;
+
         if(_timers.size() == 0){
             _messageHandlerPtr->waitForMessage();
-            hasReceivedMessage == true;
-        }
-        else{
-            auto nextTimeout = std::min_element(_timers.begin(), _timers.end());
-            hasReceivedMessage = _messageHandlerPtr->waitForMessageUntil(nextTimeout->timeoutTime);
-        }
-
-        if(hasReceivedMessage){
             SendMessage sendMessage = _messageHandlerPtr->receiveMessage();
             running = handleMessage(sendMessage);
             continue;
         }
-        
-        //Check for timeouts and send Timeout Messages
+
+        auto nextTimeout = std::min_element(_timers.begin(), _timers.end());
         auto now = std::chrono::steady_clock::now();
-        for(auto it = _timers.begin(); it!=_timers.end();){
-
-            if(now < it->timeoutTime){
-                it++;
-                continue;
-            }
-
-            //Timeout reached
-            int timeouts = 1;
-            if(it->isRepeating){
-                timeouts = 1 + (now-it->timeoutTime)/it->interval;
-            }
-            mergeOrSendTimeoutMessage(it->toId, it->id, timeouts);
-
-            if(it->isRepeating){
-                it->timeoutTime+=it->interval*timeouts;
-                it++;
-            }
-            else{
-                it = _timers.erase(it);
-            }
+        if(now >= nextTimeout->timeoutTime){
+            handleTimeout(now, nextTimeout);
+            continue;
         }
+
+        if(_messageHandlerPtr->waitForMessageUntil(nextTimeout->timeoutTime)){
+            //message received
+            SendMessage sendMessage = _messageHandlerPtr->receiveMessage();
+            running = handleMessage(sendMessage);
+            continue;
+        }
+
+        //Timeout reached
+        handleTimeout(now,nextTimeout);
     }
 }
 
@@ -153,6 +137,21 @@ bool CapsuleRunner::handleMessage(SendMessage sendMessage){
     }
     
     throw std::invalid_argument("CapsuleRunner unable to send handleMessage to capsule with id: " + std::to_string(sendMessage.toId));
+}
+
+void CapsuleRunner::handleTimeout(std::chrono::steady_clock::time_point now, std::vector<Timer>::iterator nextTimeout){
+
+    int timeouts = 1;
+    if(nextTimeout->isRepeating){
+        timeouts = 1 + (now-nextTimeout->timeoutTime)/nextTimeout->interval;
+    }
+    mergeOrSendTimeoutMessage(nextTimeout->toId, nextTimeout->id, timeouts);
+    if(nextTimeout->isRepeating){
+        nextTimeout->timeoutTime+=nextTimeout->interval*timeouts;
+    }
+    else{
+        _timers.erase(nextTimeout);
+    }
 }
 
 void CapsuleRunner::mergeOrSendTimeoutMessage(int toId, int timerId, int timeouts){
