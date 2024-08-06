@@ -17,6 +17,7 @@ class CapsuleRunner{
         void cancelTimer(int);
     private:
         bool handleMessage(SendMessage message);
+        bool handleMessageToMe(Message message);
         void handleTimeout(std::chrono::steady_clock::time_point now, std::vector<Timer>::iterator nextTimeout);
 
         void mergeOrSendTimeoutMessage(int toId, int timerId, int timeouts);

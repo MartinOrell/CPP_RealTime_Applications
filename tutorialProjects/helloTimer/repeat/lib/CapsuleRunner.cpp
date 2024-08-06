@@ -102,30 +102,8 @@ void CapsuleRunner::cancelTimer(int id){
 //Returns true if successfully called the capsule to handle the message
 //throws an error if it fails
 bool CapsuleRunner::handleMessage(SendMessage sendMessage){
-    if(sendMessage.toId == _id){ //Message to this CapsuleRunner
-        Message message = sendMessage.message;
-        if(std::holds_alternative<VoidMessage>(message)){
-            VoidMessage voidMessage = std::get<VoidMessage>(message);
-            if(voidMessage == VoidMessage::EndMessage){
-                return false;
-            }
-            else{
-                throw std::invalid_argument("CapsuleRunner received VoidMessage of wrong type");
-            }
-        }
-        else if(std::holds_alternative<Timer>(message)){
-            Timer timer = std::get<Timer>(message);
-            _timers.push_back(timer);
-            return true;
-        }
-        else if (std::holds_alternative<CancelTimer>(message)){
-            int m_id = std::get<CancelTimer>(message).id;
-            _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[m_id](Timer t) { return (t.id == m_id); }), _timers.end());
-            return true;
-        }
-        else{
-            throw std::invalid_argument("CapsuleRunner received message of wrong type");
-        }
+    if(sendMessage.toId == _id){
+        return handleMessageToMe(sendMessage.message);
     }
 
     //Message is for a capsule, search for the capsule with matching id and send to it
@@ -136,7 +114,32 @@ bool CapsuleRunner::handleMessage(SendMessage sendMessage){
         }
     }
     
-    throw std::invalid_argument("CapsuleRunner unable to send handleMessage to capsule with id: " + std::to_string(sendMessage.toId));
+    throw std::invalid_argument("CapsuleRunner[" + std::to_string(_id) + "] unable to send handleMessage to capsule with id: " + std::to_string(sendMessage.toId));
+}
+
+bool CapsuleRunner::handleMessageToMe(Message message){
+    if(std::holds_alternative<VoidMessage>(message)){
+        VoidMessage voidMessage = std::get<VoidMessage>(message);
+        if(voidMessage == VoidMessage::EndMessage){
+            return false;
+        }
+        else{
+            throw std::invalid_argument("CapsuleRunner[" + std::to_string(_id) + "] can't handle Voidmessage: " + std::to_string(voidMessage));
+        }
+    }
+    else if(std::holds_alternative<Timer>(message)){
+        Timer timer = std::get<Timer>(message);
+        _timers.push_back(timer);
+        return true;
+    }
+    else if (std::holds_alternative<CancelTimer>(message)){
+        int m_id = std::get<CancelTimer>(message).id;
+        _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[m_id](Timer t) { return (t.id == m_id); }), _timers.end());
+        return true;
+    }
+    else{
+        throw std::invalid_argument("CapsuleRunner[" + std::to_string(_id) + "] can't handle message to him with type index: " + std::to_string(message.index()));
+    }
 }
 
 void CapsuleRunner::handleTimeout(std::chrono::steady_clock::time_point now, std::vector<Timer>::iterator nextTimeout){
