@@ -30,7 +30,7 @@ void CapsuleRunner::run(){
         }
 
         if(_messageHandlerPtr->waitForMessageUntil(nextTimeout->timeoutTime)){
-            //message received
+            //message arrived
             SendMessage sendMessage = _messageHandlerPtr->receiveMessage();
             running = handleMessage(sendMessage);
             continue;
