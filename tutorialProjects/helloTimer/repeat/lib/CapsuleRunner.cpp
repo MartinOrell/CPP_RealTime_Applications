@@ -1,14 +1,17 @@
 #include "CapsuleRunner.h"
 
-CapsuleRunner::CapsuleRunner(int id, std::vector<std::unique_ptr<Capsule>>* capsulesPtr)
+CapsuleRunner::CapsuleRunner(int id)
 :   _id{id},
-    _capsulesPtr{capsulesPtr},
     _nextTimerId{0}{}
+
+void CapsuleRunner::addCapsule(std::unique_ptr<Capsule> capsule){
+    _capsules.push_back(std::move(capsule));
+}
 
 void CapsuleRunner::run(){
     
-    for(int i = 0; i < _capsulesPtr->size();i++){
-        _capsulesPtr->at(i)->start();
+    for(int i = 0; i < _capsules.size();i++){
+        _capsules.at(i)->start();
     }
 
     bool running = true;
@@ -54,9 +57,9 @@ void CapsuleRunner::sendMessage(SendMessage message){
 
 Message CapsuleRunner::invokeMessage(SendMessage request){
 
-    for(int i = 0; i < _capsulesPtr->size();i++){
-        if(request.toId == _capsulesPtr->at(i)->getId()){
-            return _capsulesPtr->at(i)->handleInvokeMessage(request.message);
+    for(int i = 0; i < _capsules.size();i++){
+        if(request.toId == _capsules.at(i)->getId()){
+            return _capsules.at(i)->handleInvokeMessage(request.message);
         }
     }
 
@@ -110,9 +113,9 @@ bool CapsuleRunner::handleMessage(SendMessage sendMessage){
     }
 
     //Message is for a capsule, search for the capsule with matching id and send to it
-    for(int i = 0; i < _capsulesPtr->size();i++){
-        if(sendMessage.toId == _capsulesPtr->at(i)->getId()){
-            _capsulesPtr->at(i)->handleMessage(sendMessage.message);
+    for(int i = 0; i < _capsules.size();i++){
+        if(sendMessage.toId == _capsules.at(i)->getId()){
+            _capsules.at(i)->handleMessage(sendMessage.message);
             return true;
         }
     }

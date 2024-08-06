@@ -8,7 +8,8 @@
 
 class CapsuleRunner{
     public:
-        CapsuleRunner(int id, std::vector<std::unique_ptr<Capsule>>*);
+        CapsuleRunner(int id);
+        void addCapsule(std::unique_ptr<Capsule>);
         void run();
         void stop();
         void sendMessage(SendMessage message);
@@ -25,7 +26,7 @@ class CapsuleRunner{
 
         int _id;
         MessageHandler _messageHandler;
-        std::vector<std::unique_ptr<Capsule>>* _capsulesPtr;
+        std::vector<std::unique_ptr<Capsule>> _capsules;
         std::vector<Timer> _timers;
     public:
         int _nextTimerId;
