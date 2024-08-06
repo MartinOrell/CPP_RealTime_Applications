@@ -3,22 +3,11 @@
 #include <variant>
 #include <string>
 #include <chrono>
+#include "Timer.h"
 
 struct TimeoutMessage{
     int timerId;
     int timeouts;
-};
-
-struct Timer{
-    int id;
-    int toId;
-    std::chrono::steady_clock::time_point timeoutTime;
-    bool isRepeating;
-    std::chrono::steady_clock::duration interval;
-
-    bool operator<(Timer a){
-        return timeoutTime < a.timeoutTime;
-    }
 };
 
 struct CancelTimer{
@@ -29,7 +18,7 @@ enum VoidMessage{EndMessage};
 
 typedef std::variant<
     TimeoutMessage,
-    Timer,
+    Timer, //defined in Timer.h
     CancelTimer,
     VoidMessage
     > Message;
