@@ -1,9 +1,8 @@
 #include "HelloTimer_Capsule.h"
 #include "CapsuleRunner.h"
 
-HelloTimer_Capsule::HelloTimer_Capsule(int id, MessageHandler* messageHandlerPtr, CapsuleRunner* capsuleRunnerPtr){
+HelloTimer_Capsule::HelloTimer_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
     _capsuleRunnerPtr = capsuleRunnerPtr;
 }
 

@@ -8,7 +8,7 @@
 
 class CapsuleRunner{
     public:
-        CapsuleRunner(int id, MessageHandler*, std::vector<std::unique_ptr<Capsule>>*);
+        CapsuleRunner(int id, std::vector<std::unique_ptr<Capsule>>*);
         void run();
         void stop();
         Message invokeMessage(SendMessage request);
@@ -23,7 +23,7 @@ class CapsuleRunner{
         void mergeOrSendTimeoutMessage(int toId, int timerId, int timeouts);
 
         int _id;
-        MessageHandler* _messageHandlerPtr;
+        MessageHandler _messageHandler;
         std::vector<std::unique_ptr<Capsule>>* _capsulesPtr;
         std::vector<Timer> _timers;
     public:

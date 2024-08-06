@@ -1,8 +1,7 @@
 #include "CapsuleRunner.h"
 
-CapsuleRunner::CapsuleRunner(int id, MessageHandler* messageHandlerPtr, std::vector<std::unique_ptr<Capsule>>* capsulesPtr)
+CapsuleRunner::CapsuleRunner(int id, std::vector<std::unique_ptr<Capsule>>* capsulesPtr)
 :   _id{id},
-    _messageHandlerPtr{messageHandlerPtr},
     _capsulesPtr{capsulesPtr},
     _nextTimerId{0}{}
 
@@ -16,8 +15,8 @@ void CapsuleRunner::run(){
     while(running){
 
         if(_timers.size() == 0){
-            _messageHandlerPtr->waitForMessage();
-            SendMessage sendMessage = _messageHandlerPtr->receiveMessage();
+            _messageHandler.waitForMessage();
+            SendMessage sendMessage = _messageHandler.receiveMessage();
             running = handleMessage(sendMessage);
             continue;
         }
@@ -29,9 +28,9 @@ void CapsuleRunner::run(){
             continue;
         }
 
-        if(_messageHandlerPtr->waitForMessageUntil(nextTimeout->timeoutTime)){
+        if(_messageHandler.waitForMessageUntil(nextTimeout->timeoutTime)){
             //message arrived
-            SendMessage sendMessage = _messageHandlerPtr->receiveMessage();
+            SendMessage sendMessage = _messageHandler.receiveMessage();
             running = handleMessage(sendMessage);
             continue;
         }
@@ -46,7 +45,7 @@ void CapsuleRunner::stop(){
     SendMessage sendMessage;
     sendMessage.toId = _id;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _messageHandler.sendMessage(sendMessage);
 }
 
 Message CapsuleRunner::invokeMessage(SendMessage request){
@@ -69,7 +68,7 @@ int CapsuleRunner::informIn(int toId, std::chrono::steady_clock::duration durati
     SendMessage message;
     message.toId = _id;
     message.message = timer;
-    _messageHandlerPtr->sendMessage(message);
+    _messageHandler.sendMessage(message);
     return timer.id;
 }
 
@@ -84,7 +83,7 @@ int CapsuleRunner::informEvery(int toId, std::chrono::steady_clock::duration int
     SendMessage message;
     message.toId = _id;
     message.message = timer;
-    _messageHandlerPtr->sendMessage(message);
+    _messageHandler.sendMessage(message);
     return timer.id;
 }
 
@@ -94,7 +93,7 @@ void CapsuleRunner::cancelTimer(int id){
     SendMessage message;
     message.toId = _id;
     message.message = cancelTimer;
-    _messageHandlerPtr->sendMessage(message);
+    _messageHandler.sendMessage(message);
 }
 
 //handleMessage handles one message
@@ -164,5 +163,5 @@ void CapsuleRunner::mergeOrSendTimeoutMessage(int toId, int timerId, int timeout
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = message;
-    _messageHandlerPtr->mergeOrSendMessage(sendMessage);
+    _messageHandler.mergeOrSendMessage(sendMessage);
 }

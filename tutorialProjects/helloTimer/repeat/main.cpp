@@ -8,14 +8,13 @@
 #include "HelloTimer_Capsule.h"
 
 int main(){
-    MessageHandler messageHandler;
 
     std::vector<std::unique_ptr<Capsule>> capsules;
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageHandler, &capsules);
+    CapsuleRunner capsuleRunner(nextCapsuleId++, &capsules);
     std::unique_ptr<HelloTimer_Capsule> helloTimer = std::make_unique
-        <HelloTimer_Capsule>(nextCapsuleId++, &messageHandler, &capsuleRunner);
+        <HelloTimer_Capsule>(nextCapsuleId++, &capsuleRunner);
 
     capsules.push_back(std::move(helloTimer));
 

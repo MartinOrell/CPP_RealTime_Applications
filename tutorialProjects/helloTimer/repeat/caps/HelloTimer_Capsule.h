@@ -13,7 +13,7 @@ class CapsuleRunner;
 
 class HelloTimer_Capsule: public Capsule{
     public:
-        HelloTimer_Capsule(int id, MessageHandler* messageHandlerPtr, CapsuleRunner* capsuleRunnerPtr);
+        HelloTimer_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
         void handleMessage(Message message);
@@ -23,7 +23,6 @@ class HelloTimer_Capsule: public Capsule{
         int _id;
         int _repeatTimerId;
         int _endTimerId;
-        MessageHandler* _messageHandlerPtr;
         CapsuleRunner* _capsuleRunnerPtr;
         enum State{Running, End};
         State _state;
