@@ -1,25 +1,22 @@
-#include "Message.h"
-#include "MessageHandler.h"
-#include "TimerThread.h"
+#include "MessageManager.h"
 #include "CapsuleRunner.h"
-#include "Capsule.h"
+#include <memory>
+#include <thread>
 #include "HelloWorld_Capsule.h"
 
 int main(){
-    MessageHandler<SendMessage> messageHandler;
-    
-    TimerThread timerThread(&messageHandler);
-    timerThread.run();
 
-    std::vector<std::unique_ptr<Capsule>> capsules;
+    MessageManager messageManager;
+    
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageHandler, &capsules);
-    std::unique_ptr<HelloWorld_Capsule> hello = std::make_unique
-        <HelloWorld_Capsule>(nextCapsuleId++, &messageHandler, &timerThread, &capsuleRunner);
+    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
+    CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
+    auto hello = std::make_unique<HelloWorld_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner);
 
-    capsules.push_back(std::move(hello));
+    capsuleRunner.addCapsule(std::move(hello));
 
+    std::jthread timerThread = std::jthread([&timerRunner](){timerRunner.run();});
     capsuleRunner.run();
-    timerThread.stop();
+    timerRunner.stop();
 }

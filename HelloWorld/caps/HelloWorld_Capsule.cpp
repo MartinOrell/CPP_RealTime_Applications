@@ -1,11 +1,10 @@
 #include "HelloWorld_Capsule.h"
 #include "CapsuleRunner.h"
 
-HelloWorld_Capsule::HelloWorld_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr){
+HelloWorld_Capsule::HelloWorld_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
-    _timerThreadPtr = timerThreadPtr;
     _capsuleRunnerPtr = capsuleRunnerPtr;
+    _timerRunnerPtr = timerRunnerPtr;
 }
 
 int HelloWorld_Capsule::getId(){
@@ -14,7 +13,7 @@ int HelloWorld_Capsule::getId(){
 
 void HelloWorld_Capsule::start(){
     _state = S1;
-    _timerThreadPtr->informIn(_id, std::chrono::seconds(1));
+    _timerRunnerPtr->informIn(_id, std::chrono::seconds(1));
 }
 
 void HelloWorld_Capsule::handleMessage(Message message){
