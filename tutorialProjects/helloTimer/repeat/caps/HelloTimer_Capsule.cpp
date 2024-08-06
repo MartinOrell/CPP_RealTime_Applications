@@ -1,11 +1,10 @@
 #include "HelloTimer_Capsule.h"
 #include "CapsuleRunner.h"
 
-HelloTimer_Capsule::HelloTimer_Capsule(int id, MessageHandler*messageHandlerPtr, TimerThread* timerThreadPtr, CapsuleRunner* capsuleRunnerPtr){
+HelloTimer_Capsule::HelloTimer_Capsule(int id, MessageHandler* messageHandlerPtr, CapsuleRunner* capsuleRunnerPtr){
     _id = id;
     _messageHandlerPtr = messageHandlerPtr;
-    _timerThreadPtr = timerThreadPtr;
-    _capsuleRunnerPtr = _capsuleRunnerPtr;
+    _capsuleRunnerPtr = capsuleRunnerPtr;
 }
 
 int HelloTimer_Capsule::getId(){
@@ -15,8 +14,8 @@ int HelloTimer_Capsule::getId(){
 void HelloTimer_Capsule::start(){
     _state = Running;
     std::cout << "Hello World!" << std::endl;
-    _repeatTimerId = _timerThreadPtr->informEvery(_id, std::chrono::milliseconds(500));
-    _endTimerId = _timerThreadPtr->informIn(_id, std::chrono::seconds(3));
+    _repeatTimerId = _capsuleRunnerPtr->informEvery(_id, std::chrono::milliseconds(500));
+    _endTimerId = _capsuleRunnerPtr->informIn(_id, std::chrono::seconds(3));
 }
 
 void HelloTimer_Capsule::handleMessage(Message message){
@@ -24,7 +23,7 @@ void HelloTimer_Capsule::handleMessage(Message message){
         handleTimeout(std::get<TimeoutMessage>(message));
     }
     else{
-        throw std::invalid_argument("HelloTimer_Capsule unable to handle that message");
+        throw std::invalid_argument("HelloTimer_Capsule unable to handle message with type id: " + std::to_string(message.index()));
     }
 }
 
@@ -38,7 +37,7 @@ void HelloTimer_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
     else if(timeoutMessage.timerId == _endTimerId && _state == Running){
         _state = End;
         std::cout << "Goodbye World!" << std::endl;
-        _timerThreadPtr->cancelTimer(_repeatTimerId);
+        _capsuleRunnerPtr->cancelTimer(_repeatTimerId);
         _capsuleRunnerPtr->stop();
     }
     else{

@@ -3,7 +3,8 @@
 CapsuleRunner::CapsuleRunner(int id, MessageHandler* messageHandlerPtr, std::vector<std::unique_ptr<Capsule>>* capsulesPtr)
 :   _id{id},
     _messageHandlerPtr{messageHandlerPtr},
-    _capsulesPtr{capsulesPtr}{}
+    _capsulesPtr{capsulesPtr},
+    _nextTimerId{0}{}
 
 void CapsuleRunner::run(){
     
@@ -13,9 +14,46 @@ void CapsuleRunner::run(){
 
     bool running = true;
     while(running){
-        _messageHandlerPtr->waitForMessage();
-        SendMessage sendMessage = _messageHandlerPtr->receiveMessage();
-        running = handleMessage(sendMessage);
+        bool hasReceivedMessage;
+        if(_timers.size() == 0){
+            _messageHandlerPtr->waitForMessage();
+            hasReceivedMessage == true;
+        }
+        else{
+            auto nextTimeout = std::min_element(_timers.begin(), _timers.end());
+            hasReceivedMessage = _messageHandlerPtr->waitForMessageUntil(nextTimeout->timeoutTime);
+        }
+
+        if(hasReceivedMessage){
+            SendMessage sendMessage = _messageHandlerPtr->receiveMessage();
+            running = handleMessage(sendMessage);
+            continue;
+        }
+        
+        //Check for timeouts and send Timeout Messages
+        auto now = std::chrono::steady_clock::now();
+        for(auto it = _timers.begin(); it!=_timers.end();){
+
+            if(now < it->timeoutTime){
+                it++;
+                continue;
+            }
+
+            //Timeout reached
+            int timeouts = 1;
+            if(it->isRepeating){
+                timeouts = 1 + (now-it->timeoutTime)/it->interval;
+            }
+            mergeOrSendTimeoutMessage(it->toId, it->id, timeouts);
+
+            if(it->isRepeating){
+                it->timeoutTime+=it->interval*timeouts;
+                it++;
+            }
+            else{
+                it = _timers.erase(it);
+            }
+        }
     }
 }
 
@@ -38,6 +76,43 @@ Message CapsuleRunner::invokeMessage(SendMessage request){
     throw std::invalid_argument("CapsuleRunner can't invokeMessage to capsule with id: " + std::to_string(request.toId));
 }
 
+int CapsuleRunner::informIn(int toId, std::chrono::steady_clock::duration duration){
+    Timer timer;
+    timer.id = _nextTimerId++;
+    timer.toId = toId;
+    timer.timeoutTime = std::chrono::steady_clock::now() + duration;
+    timer.isRepeating = false;
+    SendMessage message;
+    message.toId = _id;
+    message.message = timer;
+    _messageHandlerPtr->sendMessage(message);
+    return timer.id;
+}
+
+int CapsuleRunner::informEvery(int toId, std::chrono::steady_clock::duration interval){
+    assert(interval > std::chrono::nanoseconds(0));
+    Timer timer;
+    timer.id = _nextTimerId++;
+    timer.toId = toId;
+    timer.timeoutTime = std::chrono::steady_clock::now() + interval;
+    timer.isRepeating = true;
+    timer.interval = interval;
+    SendMessage message;
+    message.toId = _id;
+    message.message = timer;
+    _messageHandlerPtr->sendMessage(message);
+    return timer.id;
+}
+
+void CapsuleRunner::cancelTimer(int id){
+    CancelTimer cancelTimer;
+    cancelTimer.id = id;
+    SendMessage message;
+    message.toId = _id;
+    message.message = cancelTimer;
+    _messageHandlerPtr->sendMessage(message);
+}
+
 //handleMessage handles one message
 //Returns false if the message is to stop running
 //Returns true if successfully called the capsule to handle the message
@@ -54,6 +129,16 @@ bool CapsuleRunner::handleMessage(SendMessage sendMessage){
                 throw std::invalid_argument("CapsuleRunner received VoidMessage of wrong type");
             }
         }
+        else if(std::holds_alternative<Timer>(message)){
+            Timer timer = std::get<Timer>(message);
+            _timers.push_back(timer);
+            return true;
+        }
+        else if (std::holds_alternative<CancelTimer>(message)){
+            int m_id = std::get<CancelTimer>(message).id;
+            _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[m_id](Timer t) { return (t.id == m_id); }), _timers.end());
+            return true;
+        }
         else{
             throw std::invalid_argument("CapsuleRunner received message of wrong type");
         }
@@ -68,4 +153,14 @@ bool CapsuleRunner::handleMessage(SendMessage sendMessage){
     }
     
     throw std::invalid_argument("CapsuleRunner unable to send handleMessage to capsule with id: " + std::to_string(sendMessage.toId));
+}
+
+void CapsuleRunner::mergeOrSendTimeoutMessage(int toId, int timerId, int timeouts){
+    TimeoutMessage message;
+    message.timerId = timerId;
+    message.timeouts = timeouts;
+    SendMessage sendMessage;
+    sendMessage.toId = toId;
+    sendMessage.message = message;
+    _messageHandlerPtr->mergeOrSendMessage(sendMessage);
 }
