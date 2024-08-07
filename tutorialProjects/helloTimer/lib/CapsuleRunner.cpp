@@ -32,7 +32,6 @@ void CapsuleRunner::run(){
 
     bool running = true;
     while(running){
-
         if(_timers.size() == 0){
             _messageHandler.waitForMessage();
             SendMessage sendMessage = _messageHandler.receiveMessage();
@@ -93,7 +92,7 @@ Message CapsuleRunner::invokeMessage(SendMessage request){
         }
     }
 
-    throw std::invalid_argument("CapsuleRunner[" + std::to_string(_id) + "] can't invokeMessage to capsule with id: " + std::to_string(request.toId));
+    return _messageManagerPtr->invokeMessage(request);
 }
 
 int CapsuleRunner::informIn(int toId, std::chrono::steady_clock::duration duration){
