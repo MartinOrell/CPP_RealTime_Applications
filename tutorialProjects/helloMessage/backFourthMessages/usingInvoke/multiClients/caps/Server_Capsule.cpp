@@ -1,7 +1,8 @@
 #include "Server_Capsule.h"
 
-Server_Capsule::Server_Capsule(int id){
+Server_Capsule::Server_Capsule(int id, int numClients){
     _id = id;
+    _clientIds.resize(numClients, -1);
 }
 
 int Server_Capsule::getId(){
@@ -9,7 +10,7 @@ int Server_Capsule::getId(){
 }
 
 void Server_Capsule::connect(int index, int clientId){
-    _clientIds[index] = clientId;
+    _clientIds.at(index) = clientId;
 }
 
 void Server_Capsule::start(){}

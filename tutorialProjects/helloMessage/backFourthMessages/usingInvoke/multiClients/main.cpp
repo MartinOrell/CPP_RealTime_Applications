@@ -14,7 +14,7 @@ int main(){
     int nextCapsuleId = 0;
 
     CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
-    auto server = std::make_unique<Server_Capsule>(nextCapsuleId++);
+    auto server = std::make_unique<Server_Capsule>(nextCapsuleId++, numClients);
 
     for(int i = 0; i < numClients; i++){
         auto client = std::make_unique<Client_Capsule>(nextCapsuleId++, &capsuleRunner);

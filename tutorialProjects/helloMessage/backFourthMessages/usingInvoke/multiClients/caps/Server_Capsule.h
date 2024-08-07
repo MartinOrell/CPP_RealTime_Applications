@@ -6,10 +6,11 @@
 #include <iostream>
 #include "Message.h"
 #include <stdexcept>
+#include <vector>
 
 class Server_Capsule: public Capsule{
     public:
-        Server_Capsule(int id);
+        Server_Capsule(int id, int numClients);
         int getId();
         void start();
         Message handleInvokeMessage(Message message);
@@ -20,5 +21,5 @@ class Server_Capsule: public Capsule{
         Message handleInvokeMessage(Request inMessage);
 
         int _id;
-        int _clientIds[3];
+        std::vector<int> _clientIds;
 };
