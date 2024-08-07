@@ -8,9 +8,11 @@
 #include "SendMessage.h"
 #include "MessageHandler.h"
 
+class CapsuleRunner;
+
 class Adder_Capsule: public Capsule{
     public:
-        Adder_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr);
+        Adder_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
         void handleMessage(Message message);
@@ -30,7 +32,7 @@ class Adder_Capsule: public Capsule{
         int _id;
         int _piComputerId;
         int _multiplierId;
-        MessageHandler<SendMessage>* _messageHandlerPtr;
+        CapsuleRunner* _capsuleRunnerPtr;
         int _remainingIterations = 4;
         double _result;
         

@@ -1,8 +1,9 @@
 #include "Adder_Capsule.h"
+#include "CapsuleRunner.h"
 
-Adder_Capsule::Adder_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr){
+Adder_Capsule::Adder_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
+    _capsuleRunnerPtr = capsuleRunnerPtr;
 }
 
 int Adder_Capsule::getId(){
@@ -39,7 +40,7 @@ void Adder_Capsule::sendGetIncrementMessage(int toId, int remainingIterations){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Adder_Capsule::sendComputeResultMessage(int toId, double result){
@@ -48,7 +49,7 @@ void Adder_Capsule::sendComputeResultMessage(int toId, double result){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Adder_Capsule::handleMessage(ComputeRequest inMessage){

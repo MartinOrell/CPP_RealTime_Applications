@@ -1,8 +1,9 @@
 #include "Multiplier_Capsule.h"
+#include "CapsuleRunner.h"
 
-Multiplier_Capsule::Multiplier_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr){
+Multiplier_Capsule::Multiplier_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
+    _capsuleRunnerPtr = capsuleRunnerPtr;
 }
 
 int Multiplier_Capsule::getId(){
@@ -30,7 +31,7 @@ void Multiplier_Capsule::sendReturnIncrementMessage(int toId, double inc){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Multiplier_Capsule::handleMessage(GetIncrement inMessage){

@@ -7,9 +7,11 @@
 #include "MessageHandler.h"
 #include <cmath>
 
+class CapsuleRunner;
+
 class Multiplier_Capsule: public Capsule{
     public:
-        Multiplier_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr);
+        Multiplier_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
         void handleMessage(Message message);
@@ -23,5 +25,5 @@ class Multiplier_Capsule: public Capsule{
 
         int _id;
         int _adderId;
-        MessageHandler<SendMessage>* _messageHandlerPtr;
+        CapsuleRunner* _capsuleRunnerPtr;
 };

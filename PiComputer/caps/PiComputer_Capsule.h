@@ -12,7 +12,7 @@ class CapsuleRunner;
 
 class PiComputer_Capsule: public Capsule{
     public:
-        PiComputer_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr, CapsuleRunner* capsuleRunnerPtr);
+        PiComputer_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
         void handleMessage(Message message);
@@ -26,7 +26,6 @@ class PiComputer_Capsule: public Capsule{
         
         int _id;
         int _adderId;
-        MessageHandler<SendMessage>* _messageHandlerPtr;
         CapsuleRunner* _capsuleRunnerPtr;
         enum State{WaitForComputation, Finished};
         State _state;

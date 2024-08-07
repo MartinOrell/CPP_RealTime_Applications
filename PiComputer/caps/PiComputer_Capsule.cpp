@@ -1,9 +1,8 @@
 #include "PiComputer_Capsule.h"
 #include "CapsuleRunner.h"
 
-PiComputer_Capsule::PiComputer_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, CapsuleRunner* capsuleRunnerPtr){
+PiComputer_Capsule::PiComputer_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
     _capsuleRunnerPtr = capsuleRunnerPtr;
 }
 
@@ -37,7 +36,7 @@ void PiComputer_Capsule::sendComputeRequest(int toId, int noOfIterations){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void PiComputer_Capsule::handleMessage(ComputeResult message){
