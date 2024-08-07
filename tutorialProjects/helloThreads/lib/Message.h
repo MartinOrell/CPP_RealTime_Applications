@@ -1,7 +1,6 @@
 #pragma once
 
 #include <variant>
-#include <string>
 #include "Timer.h"
 
 struct TimeoutMessage{
