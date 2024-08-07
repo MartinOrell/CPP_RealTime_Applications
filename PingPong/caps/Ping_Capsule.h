@@ -4,14 +4,16 @@
 
 #include <string>
 #include <iostream>
-#include "TimerThread.h"
 #include "Message.h"
 #include "SendMessage.h"
 #include <chrono>
+#include <stdexcept>
+
+class CapsuleRunner;
 
 class Ping_Capsule: public Capsule{
     public:
-        Ping_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr, TimerThread* timerThreadPtr);
+        Ping_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr);
         int getId();
         void start();
         void handleMessage(Message message);
@@ -26,6 +28,6 @@ class Ping_Capsule: public Capsule{
         int _id;
         int _pongId;
         int _count;
-        TimerThread* _timerThreadPtr;
-        MessageHandler<SendMessage>* _messageHandlerPtr;
+        CapsuleRunner* _capsuleRunnerPtr;
+        CapsuleRunner* _timerRunnerPtr;
 };

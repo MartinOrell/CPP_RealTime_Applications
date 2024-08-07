@@ -1,10 +1,11 @@
 #include "Ping_Capsule.h"
+#include "CapsuleRunner.h"
 
-Ping_Capsule::Ping_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr){
+Ping_Capsule::Ping_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr){
     _count = 0;
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
-    _timerThreadPtr = timerThreadPtr;
+    _capsuleRunnerPtr = capsuleRunnerPtr;
+    _timerRunnerPtr = timerRunnerPtr;
 }
 
 int Ping_Capsule::getId(){
@@ -43,11 +44,11 @@ void Ping_Capsule::sendMessageToPong(int toId, int count){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Ping_Capsule::handleMessageToPing(){
-    _timerThreadPtr->informIn(_id, std::chrono::seconds(1));
+    _timerRunnerPtr->informIn(_id, std::chrono::seconds(1));
 }
 
 void Ping_Capsule::handleTimeout(TimeoutMessage timeoutMessage){

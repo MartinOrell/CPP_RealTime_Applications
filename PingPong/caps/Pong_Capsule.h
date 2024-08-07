@@ -4,13 +4,14 @@
 
 #include <string>
 #include <iostream>
-#include "TimerThread.h"
 #include "Message.h"
 #include "SendMessage.h"
 
+class CapsuleRunner;
+
 class Pong_Capsule: public Capsule{
     public:
-        Pong_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr);
+        Pong_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
         void handleMessage(Message message);
@@ -23,5 +24,5 @@ class Pong_Capsule: public Capsule{
 
         int _id;
         int _pingId;
-        MessageHandler<SendMessage>* _messageHandlerPtr;
+        CapsuleRunner* _capsuleRunnerPtr;
 };

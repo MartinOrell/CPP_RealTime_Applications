@@ -1,8 +1,9 @@
 #include "Pong_Capsule.h"
+#include "CapsuleRunner.h"
 
-Pong_Capsule::Pong_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr){
+Pong_Capsule::Pong_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
+    _capsuleRunnerPtr = capsuleRunnerPtr;
 }
 
 int Pong_Capsule::getId(){
@@ -29,7 +30,7 @@ void Pong_Capsule::sendMessageToPing(int toId){
     SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
-    _messageHandlerPtr->sendMessage(sendMessage);
+    _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Pong_Capsule::handleMessage(MessageToPong inMessage){
