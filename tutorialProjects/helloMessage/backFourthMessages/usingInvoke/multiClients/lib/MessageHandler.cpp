@@ -1,25 +1,37 @@
+#include "MessageHandler.h"
 
-template<typename T>
-MessageHandler<T>::MessageHandler(){
+MessageHandler::MessageHandler(){
     _waitForMessageMutex.lock();
 }
 
-template<typename T>
-void MessageHandler<T>::sendMessage(T message){
+void MessageHandler::sendMessage(SendMessage message){
     _mutex.lock();
     _messageStack.push_back(message);
     _mutex.unlock();
     _waitForMessageMutex.unlock();
 }
 
+//Requires equal operator and merge function for SendMessage
+void MessageHandler::mergeOrSendMessage(SendMessage message){
+    _mutex.lock();
+    auto it = std::find(_messageStack.begin(), _messageStack.end(), message);
+    if(it==_messageStack.end()){
+        _messageStack.push_back(message);
+        _mutex.unlock();
+        _waitForMessageMutex.unlock();
+        return;
+    }
+    it->merge(message);
+    _mutex.unlock();
+}
+
 //receiveMessage returns the top message on the stack
 //Caller should check with hasMessage(), WaitForMessage() or WaitForMessageUntil()
 //before calling this function
-template<typename T>
-T MessageHandler<T>::receiveMessage(){
+SendMessage MessageHandler::receiveMessage(){
     assert(_messageStack.size() > 0);
     _mutex.lock();
-    T message = _messageStack.back();
+    SendMessage message = _messageStack.back();
     _messageStack.pop_back();
     if(_messageStack.size() > 0)
     {
@@ -33,8 +45,7 @@ T MessageHandler<T>::receiveMessage(){
 //also returns true if stop is called
 //Does not block
 //Requires caller to followup with receiveMessage if a message is found
-template<typename T>
-bool MessageHandler<T>::hasMessage(){
+bool MessageHandler::hasMessage(){
     return _waitForMessageMutex.try_lock();
 }
 
@@ -43,8 +54,7 @@ bool MessageHandler<T>::hasMessage(){
 //Blocks the thread while waiting
 //Requires caller to followup with receiveMessage if a message is found
 //caller should handle stop separately
-template<typename T>
-void MessageHandler<T>::waitForMessage(){
+void MessageHandler::waitForMessage(){
     _waitForMessageMutex.lock();
 }
 
@@ -54,13 +64,11 @@ void MessageHandler<T>::waitForMessage(){
 //Blocks the thread while waiting
 //Requires caller to followup with receiveMessage if a message is found
 //caller should handle stop seperately
-template<typename T>
-bool MessageHandler<T>::waitForMessageUntil(std::chrono::steady_clock::time_point timeoutTime){
+bool MessageHandler::waitForMessageUntil(std::chrono::steady_clock::time_point timeoutTime){
     return _waitForMessageMutex.try_lock_until(timeoutTime);
 }
 
 //stop is used to stop waiting for messages without adding a message
-template<typename T>
-void MessageHandler<T>::stop(){
+void MessageHandler::stop(){
     _waitForMessageMutex.unlock();
 }
