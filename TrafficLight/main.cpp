@@ -1,24 +1,22 @@
-#include "Message.h"
-#include "MessageHandler.h"
-#include "TimerThread.h"
+#include "MessageManager.h"
 #include "CapsuleRunner.h"
+#include <memory>
+#include <thread>
 #include "TrafficLight_Capsule.h"
 
 int main(){
-    MessageHandler<SendMessage> messageHandler;
 
-    TimerThread timerThread(&messageHandler);
-    timerThread.run();
+    MessageManager messageManager;
 
-    std::vector<std::unique_ptr<Capsule>> capsules;
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageHandler, &capsules);
-    std::unique_ptr<TrafficLight_Capsule> trafficLight = std::make_unique
-        <TrafficLight_Capsule>(nextCapsuleId++, &messageHandler, &timerThread);
+    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
+    CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
+    auto trafficLight = std::make_unique<TrafficLight_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner);
 
-    capsules.push_back(std::move(trafficLight));
+    capsuleRunner.addCapsule(std::move(trafficLight));
 
+    std::jthread timerThread = std::jthread([&timerRunner](){timerRunner.run();});
     capsuleRunner.run();
-    timerThread.stop();
+    timerRunner.stop();
 }

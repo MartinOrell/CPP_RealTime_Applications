@@ -1,9 +1,10 @@
 #include "TrafficLight_Capsule.h"
+#include "CapsuleRunner.h"
 
-TrafficLight_Capsule::TrafficLight_Capsule(int id, MessageHandler<SendMessage>* messageHandlerPtr, TimerThread* timerThreadPtr){
+TrafficLight_Capsule::TrafficLight_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr){
     _id = id;
-    _messageHandlerPtr = messageHandlerPtr;
-    _timerThreadPtr = timerThreadPtr;
+    _capsuleRunnerPtr = capsuleRunnerPtr;
+    _timerRunnerPtr = timerRunnerPtr;
 }
 
 int TrafficLight_Capsule::getId(){
@@ -12,7 +13,7 @@ int TrafficLight_Capsule::getId(){
 
 void TrafficLight_Capsule::start(){
     _state = Red;
-    _timerThreadPtr->informEvery(_id, std::chrono::seconds(2));
+    _timerRunnerPtr->informEvery(_id, std::chrono::seconds(2));
 }
 
 void TrafficLight_Capsule::handleMessage(Message message){

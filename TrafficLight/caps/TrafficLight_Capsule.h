@@ -4,15 +4,16 @@
 
 #include <string>
 #include <iostream>
-#include "TimerThread.h"
 #include "Message.h"
 #include "SendMessage.h"
 #include <chrono>
 #include <stdexcept>
 
+class CapsuleRunner;
+
 class TrafficLight_Capsule: public Capsule{
     public:
-        TrafficLight_Capsule(int id, MessageHandler<SendMessage>*messageHandlerPtr, TimerThread* timerThreadPtr);
+        TrafficLight_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr);
         int getId();
         void start();
         void handleMessage(Message message);
@@ -21,10 +22,8 @@ class TrafficLight_Capsule: public Capsule{
         void handleTimeout(TimeoutMessage message);
 
         int _id;
-        TimerThread* _timerThreadPtr;
-        MessageHandler<SendMessage>* _messageHandlerPtr;
-        enum State{
-            Red, Green, Yellow
-        };
+        CapsuleRunner* _capsuleRunnerPtr;
+        CapsuleRunner* _timerRunnerPtr;
+        enum State{Red, Green, Yellow};
         State _state;
 };
