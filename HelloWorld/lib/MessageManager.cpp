@@ -1,6 +1,8 @@
 #include "MessageManager.h"
 
-MessageManager::MessageManager(){}
+MessageManager::MessageManager(bool allowCrossInvoke){
+    _allowCrossInvoke = allowCrossInvoke; //allowing invoke through other capsuleRunners might not be thread safe
+}
 
 void MessageManager::addCapsuleRunnerPtr(CapsuleRunner* capsuleRunner){
     _capsuleRunnerPtrs.push_back(capsuleRunner);
@@ -24,5 +26,18 @@ void MessageManager::mergeOrSendMessage(SendMessage sendMessage){
         }
     }
     throw std::invalid_argument("MessageManager unable to send message to id: " + std::to_string(sendMessage.toId));
+
+}
+
+Message MessageManager::invokeMessage(SendMessage request){
+    if(!_allowCrossInvoke){
+        throw std::invalid_argument("Invoking messages across capsuleRunners is not allowed (can be set to allowed in MessageManager)");
+    }
+    for(auto it = _capsuleRunnerPtrs.begin(); it < _capsuleRunnerPtrs.end(); it++){
+        if((*it)->isResponsible(request.toId)){
+            return (*it)->invokeMessage(request);
+        }
+    }
+    throw std::invalid_argument("MessageManager unable to invoke message to id: " + std::to_string(request.toId));
 
 }
