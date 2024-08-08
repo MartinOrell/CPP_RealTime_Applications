@@ -2,6 +2,7 @@
 #include "CapsuleRunner.h"
 #include <memory>
 #include <thread>
+#include <vector>
 #include "Main_Capsule.h"
 #include "Racer_Capsule.h"
 #include "RacerProfile.h"
@@ -9,6 +10,7 @@
 int main(){
 
     int numRacers = 2;
+    int numRacerThreads = 2;
     int fps = 3;
     int goal = 100;
 
@@ -33,12 +35,15 @@ int main(){
     int nextCapsuleId = 0;
 
     CapsuleRunner mainCapsuleRunner(nextCapsuleId++, &messageManager);
-    CapsuleRunner tortoiseCapsuleRunner(nextCapsuleId++, &messageManager);
-    CapsuleRunner hareCapsuleRunner(nextCapsuleId++, &messageManager);
+
+    std::vector<CapsuleRunner> racerCapsuleRunners;
+    for(int i = 0; i < numRacerThreads; i++){
+        racerCapsuleRunners.push_back(CapsuleRunner(nextCapsuleId++, &messageManager));
+    }
     CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
     auto main = std::make_unique<Main_Capsule>(nextCapsuleId++, &mainCapsuleRunner, &timerRunner, fps, goal);
-    auto tortoise = std::make_unique<Racer_Capsule>(nextCapsuleId++, &tortoiseCapsuleRunner, &timerRunner, tortoiseP, goal);
-    auto hare = std::make_unique<Racer_Capsule>(nextCapsuleId++, &hareCapsuleRunner, &timerRunner, hareP, goal);
+    auto tortoise = std::make_unique<Racer_Capsule>(nextCapsuleId++, &racerCapsuleRunners.at(0), &timerRunner, tortoiseP, goal);
+    auto hare = std::make_unique<Racer_Capsule>(nextCapsuleId++, &racerCapsuleRunners.at(1), &timerRunner, hareP, goal);
 
     main->connectRacer(tortoise->getId(), tortoise->getName(), tortoise->getAsciiFilename());
     tortoise->connect(main->getId());
@@ -46,14 +51,14 @@ int main(){
     hare->connect(main->getId());
 
     mainCapsuleRunner.addCapsule(std::move(main));
-    tortoiseCapsuleRunner.addCapsule(std::move(tortoise));
-    hareCapsuleRunner.addCapsule(std::move(hare));
+    racerCapsuleRunners.at(0).addCapsule(std::move(tortoise));
+    racerCapsuleRunners.at(1).addCapsule(std::move(hare));
 
     std::jthread timerThread = std::jthread([&timerRunner](){timerRunner.run();});
-    std::jthread tortoiseThread = std::jthread([&tortoiseCapsuleRunner](){tortoiseCapsuleRunner.run();});
-    std::jthread hareThread = std::jthread([&hareCapsuleRunner](){hareCapsuleRunner.run();});
+    std::jthread tortoiseThread = std::jthread([&runner = racerCapsuleRunners.at(0)](){runner.run();});
+    std::jthread hareThread = std::jthread([&runner = racerCapsuleRunners.at(1)](){runner.run();});
     mainCapsuleRunner.run();
-    tortoiseCapsuleRunner.stop();
-    hareCapsuleRunner.stop();
+    racerCapsuleRunners.at(0).stop();
+    racerCapsuleRunners.at(1).stop();
     timerRunner.stop();
 }

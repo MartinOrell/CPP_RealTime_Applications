@@ -9,6 +9,7 @@
 class MessageHandler{
     public:
         MessageHandler();
+        MessageHandler(MessageHandler&&);
         void sendMessage(SendMessage);
         void mergeOrSendMessage(SendMessage);
         SendMessage receiveMessage();

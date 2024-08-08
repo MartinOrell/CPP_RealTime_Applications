@@ -4,6 +4,12 @@ MessageHandler::MessageHandler(){
     _waitForMessageMutex.lock();
 }
 
+MessageHandler::MessageHandler(MessageHandler&& rhs)
+: _messageStack(std::move(rhs._messageStack)){
+    //note: Since mutexes are unmovable they are not copied
+    _waitForMessageMutex.lock();
+}
+
 void MessageHandler::sendMessage(SendMessage message){
     _mutex.lock();
     _messageStack.push_back(message);

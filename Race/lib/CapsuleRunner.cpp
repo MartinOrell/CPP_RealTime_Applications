@@ -8,6 +8,15 @@ CapsuleRunner::CapsuleRunner(int id, MessageManager* messageManagerPtr)
         _messageManagerPtr->addCapsuleRunnerPtr(this);
     }
 
+CapsuleRunner::CapsuleRunner(CapsuleRunner&& rhs)
+: _id{std::move(rhs._id)}
+, _messageHandler{std::move(rhs._messageHandler)}
+, _messageManagerPtr{std::move(rhs._messageManagerPtr)}
+, _nextTimerId{std::move(rhs._nextTimerId)}
+, _timers{std::move(rhs._timers)}{
+    _messageManagerPtr->replaceCapsuleRunnerPtr(this, &rhs);
+}
+
 void CapsuleRunner::addCapsule(std::unique_ptr<Capsule> capsule){
     _capsules.push_back(std::move(capsule));
 }

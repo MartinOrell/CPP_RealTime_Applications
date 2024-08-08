@@ -11,6 +11,7 @@ class MessageManager;
 class CapsuleRunner{
     public:
         CapsuleRunner(int id, MessageManager* messageManagerPtr);
+        CapsuleRunner(CapsuleRunner&&);
         void addCapsule(std::unique_ptr<Capsule>);
         bool isResponsible(int id);
         void run();
