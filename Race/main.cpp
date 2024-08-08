@@ -32,22 +32,28 @@ int main(){
 
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
+    CapsuleRunner mainCapsuleRunner(nextCapsuleId++, &messageManager);
+    CapsuleRunner tortoiseCapsuleRunner(nextCapsuleId++, &messageManager);
+    CapsuleRunner hareCapsuleRunner(nextCapsuleId++, &messageManager);
     CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
-    auto main = std::make_unique<Main_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner, fps, goal);
-    auto tortoise = std::make_unique<Racer_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner, tortoiseP, goal);
-    auto hare = std::make_unique<Racer_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner, hareP, goal);
+    auto main = std::make_unique<Main_Capsule>(nextCapsuleId++, &mainCapsuleRunner, &timerRunner, fps, goal);
+    auto tortoise = std::make_unique<Racer_Capsule>(nextCapsuleId++, &tortoiseCapsuleRunner, &timerRunner, tortoiseP, goal);
+    auto hare = std::make_unique<Racer_Capsule>(nextCapsuleId++, &hareCapsuleRunner, &timerRunner, hareP, goal);
 
     main->connectRacer(tortoise->getId(), tortoise->getName(), tortoise->getAsciiFilename());
     tortoise->connect(main->getId());
     main->connectRacer(hare->getId(), hare->getName(), hare->getAsciiFilename());
     hare->connect(main->getId());
 
-    capsuleRunner.addCapsule(std::move(main));
-    capsuleRunner.addCapsule(std::move(tortoise));
-    capsuleRunner.addCapsule(std::move(hare));
+    mainCapsuleRunner.addCapsule(std::move(main));
+    tortoiseCapsuleRunner.addCapsule(std::move(tortoise));
+    hareCapsuleRunner.addCapsule(std::move(hare));
 
     std::jthread timerThread = std::jthread([&timerRunner](){timerRunner.run();});
-    capsuleRunner.run();
+    std::jthread tortoiseThread = std::jthread([&tortoiseCapsuleRunner](){tortoiseCapsuleRunner.run();});
+    std::jthread hareThread = std::jthread([&hareCapsuleRunner](){hareCapsuleRunner.run();});
+    mainCapsuleRunner.run();
+    tortoiseCapsuleRunner.stop();
+    hareCapsuleRunner.stop();
     timerRunner.stop();
 }
