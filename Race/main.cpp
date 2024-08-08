@@ -30,6 +30,10 @@ int main(){
     hareP.reactionTime = std::chrono::milliseconds(100);
     hareP.restTime = std::chrono::milliseconds(2200);
 
+    std::vector<RacerProfile> profiles;
+    profiles.push_back(tortoiseP);
+    profiles.push_back(hareP);
+
     MessageManager messageManager;
 
     int nextCapsuleId = 0;
@@ -42,23 +46,23 @@ int main(){
     }
     CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
     auto main = std::make_unique<Main_Capsule>(nextCapsuleId++, &mainCapsuleRunner, &timerRunner, fps, goal);
-    auto tortoise = std::make_unique<Racer_Capsule>(nextCapsuleId++, &racerCapsuleRunners.at(0), &timerRunner, tortoiseP, goal);
-    auto hare = std::make_unique<Racer_Capsule>(nextCapsuleId++, &racerCapsuleRunners.at(1), &timerRunner, hareP, goal);
-
-    main->connectRacer(tortoise->getId(), tortoise->getName(), tortoise->getAsciiFilename());
-    tortoise->connect(main->getId());
-    main->connectRacer(hare->getId(), hare->getName(), hare->getAsciiFilename());
-    hare->connect(main->getId());
+    for(int i = 0; i < numRacers; i++){
+        auto racer = std::make_unique<Racer_Capsule>(nextCapsuleId++, &racerCapsuleRunners.at(i%numRacerThreads), &timerRunner, profiles.at(i%profiles.size()), goal);
+        main->connectRacer(racer->getId(), racer->getName(), racer->getAsciiFilename());
+        racer->connect(main->getId());
+        racerCapsuleRunners.at(i%racerCapsuleRunners.size()).addCapsule(std::move(racer));
+    }
 
     mainCapsuleRunner.addCapsule(std::move(main));
-    racerCapsuleRunners.at(0).addCapsule(std::move(tortoise));
-    racerCapsuleRunners.at(1).addCapsule(std::move(hare));
 
     std::jthread timerThread = std::jthread([&timerRunner](){timerRunner.run();});
-    std::jthread tortoiseThread = std::jthread([&runner = racerCapsuleRunners.at(0)](){runner.run();});
-    std::jthread hareThread = std::jthread([&runner = racerCapsuleRunners.at(1)](){runner.run();});
+    std::vector<std::jthread> racerThreads;
+    for(int i = 0; i < racerCapsuleRunners.size(); i++){
+        racerThreads.push_back(std::jthread([&runner = racerCapsuleRunners.at(i)](){runner.run();}));
+    }
     mainCapsuleRunner.run();
-    racerCapsuleRunners.at(0).stop();
-    racerCapsuleRunners.at(1).stop();
+    for(int i = 0; i < racerCapsuleRunners.size(); i++){
+        racerCapsuleRunners.at(i).stop();
+    }
     timerRunner.stop();
 }
