@@ -8,6 +8,16 @@ void MessageManager::addCapsuleRunnerPtr(CapsuleRunner* capsuleRunner){
     _capsuleRunnerPtrs.push_back(capsuleRunner);
 }
 
+void MessageManager::replaceCapsuleRunnerPtr(CapsuleRunner* to, CapsuleRunner* from){
+    for(auto& ptr : _capsuleRunnerPtrs){
+        if(ptr == from){
+            ptr = to;
+            return;
+        }
+    }
+    throw std::runtime_error("MessageManager failed to find pointer during replacement");
+}
+
 void MessageManager::sendMessage(SendMessage sendMessage){
     for(auto it = _capsuleRunnerPtrs.begin(); it < _capsuleRunnerPtrs.end(); it++){
         if((*it)->isResponsible(sendMessage.toId)){
