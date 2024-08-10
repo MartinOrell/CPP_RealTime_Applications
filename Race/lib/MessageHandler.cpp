@@ -5,9 +5,22 @@ MessageHandler::MessageHandler(){
 }
 
 MessageHandler::MessageHandler(MessageHandler&& rhs)
-: _messageStack(std::move(rhs._messageStack)){
+: _messageStack(std::move(rhs._messageStack))
+, _timers(std::move(rhs._timers)){
     //note: Since mutexes are unmovable they are not copied
     _waitForMessageMutex.lock();
+}
+
+void MessageHandler::addTimer(Timer timer){
+    _mutex.lock();
+    _timers.push_back(timer);
+    _mutex.unlock();
+}
+
+void MessageHandler::removeTimer(int id){
+    _mutex.lock();
+    _timers.erase(std::remove_if(_timers.begin(), _timers.end(),[id](Timer t) { return (t.id == id); }), _timers.end());
+    _mutex.unlock();
 }
 
 void MessageHandler::sendMessage(SendMessage message){
@@ -31,50 +44,67 @@ void MessageHandler::mergeOrSendMessage(SendMessage message){
     _mutex.unlock();
 }
 
-//receiveMessage returns the top message on the stack
-//Caller should check with hasMessage(), WaitForMessage() or WaitForMessageUntil()
-//before calling this function
-SendMessage MessageHandler::receiveMessage(){
-    assert(_messageStack.size() > 0);
+//receiveMessage returns either a message from the stack or a timeoutMessage
+//Waits for a message to appear on the stack or a timer to be reached
+std::optional<SendMessage> MessageHandler::receiveMessage(){
+
+    bool receivedMessage = false;
+    std::vector<Timer>::iterator nextTimeoutPtr;
+    std::chrono::steady_clock::time_point now;
+    if(_timers.size() == 0){
+        _waitForMessageMutex.lock();
+        receivedMessage = true;
+    }
+    else{
+        _mutex.lock();
+        nextTimeoutPtr = std::min_element(_timers.begin(), _timers.end());
+        _mutex.unlock();
+        now = std::chrono::steady_clock::now();
+        if(now < nextTimeoutPtr->timeoutTime){
+            receivedMessage = _waitForMessageMutex.try_lock_until(nextTimeoutPtr->timeoutTime);
+        }
+    }
+
+    if(receivedMessage){//waitForMessageMutex is locked
+        _mutex.lock();
+        if(_messageStack.size() == 0){
+            _waitForMessageMutex.unlock();
+            _mutex.unlock();
+            return std::nullopt;
+        }
+        SendMessage message = _messageStack.back();
+        _messageStack.pop_back();
+        if(_messageStack.size() > 0){
+            _waitForMessageMutex.unlock();
+        }
+        _mutex.unlock();
+        return message;
+    }
+
+    //timeout (waitForMessageMutex is not locked)
+    int timeouts = 1;
+    if(nextTimeoutPtr->isRepeating){
+        timeouts = 1 + (now-nextTimeoutPtr->timeoutTime)/nextTimeoutPtr->interval;
+    }
+    TimeoutMessage message;
+    message.timerId = nextTimeoutPtr->id;
+    message.timeouts = timeouts;
+    SendMessage sendMessage;
+    sendMessage.toId = nextTimeoutPtr->toId;
+    sendMessage.message = message;
+
     _mutex.lock();
-    SendMessage message = _messageStack.back();
-    _messageStack.pop_back();
-    if(_messageStack.size() > 0)
-    {
-        _waitForMessageMutex.unlock();
+    auto it = std::find(_messageStack.begin(), _messageStack.end(), sendMessage);
+    if(it!=_messageStack.end()){
+        sendMessage.merge(*it);
+        _messageStack.erase(it);
+    }
+    if(nextTimeoutPtr->isRepeating){
+    nextTimeoutPtr->timeoutTime+=nextTimeoutPtr->interval*timeouts;
+    }
+    else{
+        _timers.erase(nextTimeoutPtr);
     }
     _mutex.unlock();
-    return message;
-}
-
-//hasMessage returns true if a message is on the stack
-//also returns true if stop is called
-//Does not block
-//Requires caller to followup with receiveMessage if a message is found
-bool MessageHandler::hasMessage(){
-    return _waitForMessageMutex.try_lock();
-}
-
-//waitForMessage waits until a message is on the stack
-//also stops waiting if stop is called
-//Blocks the thread while waiting
-//Requires caller to followup with receiveMessage if a message is found
-//caller should handle stop separately
-void MessageHandler::waitForMessage(){
-    _waitForMessageMutex.lock();
-}
-
-//waitForMessageUntil waits until a message is on the stack or timeoutTime is reached
-//returns true if a message is received, false if timeoutTime is reached
-//also stops waiting and returns true if stop is called
-//Blocks the thread while waiting
-//Requires caller to followup with receiveMessage if a message is found
-//caller should handle stop seperately
-bool MessageHandler::waitForMessageUntil(std::chrono::steady_clock::time_point timeoutTime){
-    return _waitForMessageMutex.try_lock_until(timeoutTime);
-}
-
-//stop is used to stop waiting for messages without adding a message
-void MessageHandler::stop(){
-    _waitForMessageMutex.unlock();
+    return sendMessage;
 }

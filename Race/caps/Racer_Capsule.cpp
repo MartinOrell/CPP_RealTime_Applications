@@ -40,7 +40,7 @@ void Racer_Capsule::handleMessage(Message message){
                 throw std::invalid_argument("Racer_Capsule[" + std::to_string(_id) + "] unable to handle voidMessage with id " + std::to_string(std::get<VoidMessage>(message)));
         }
     }
-    throw std::invalid_argument("Racer_Capsule unable to handle message with index " + std::to_string(message.index()));
+    throw std::invalid_argument("Racer_Capsule[" + std::to_string(_id) + "] unable to handle message with index " + std::to_string(message.index()));
 }
 
 void Racer_Capsule::connect(int mainId){
@@ -77,9 +77,6 @@ void Racer_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
     else if(_stepTimerId == timeoutMessage.timerId){
         handleStepTimerTimeout(timeoutMessage.timeouts);
     }
-    else{
-        //throw std::invalid_argument("Racer_Capsule[" + std::to_string(_id) + "] Received unhandled timeoutMessage with id " + std::to_string(timeoutMessage.timerId));
-    }
 }
 
 void Racer_Capsule::handleStartSignal(){
@@ -110,8 +107,11 @@ void Racer_Capsule::handleWaitTimerTimeout(int timeouts){
 }
 
 void Racer_Capsule::handleStepTimerTimeout(int timeouts){
-    if(_state != State::Running){
-        throw std::runtime_error("Racer_Capsule[" + std::to_string(_id) + "] Received StepTimerTimeout in state " + std::to_string(_state));
+    switch(_state){
+        case State::Running:
+            break;
+        default:
+            return;
     }
     _numSteps++;
     _stamina--;
