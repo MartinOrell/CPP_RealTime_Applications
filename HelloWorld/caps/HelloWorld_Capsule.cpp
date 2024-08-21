@@ -1,7 +1,7 @@
 #include "HelloWorld_Capsule.h"
 #include "CapsuleRunner.h"
 
-HelloWorld_Capsule::HelloWorld_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr){
+HelloWorld_Capsule::HelloWorld_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
     _timerRunnerPtr = timerRunnerPtr;
@@ -16,16 +16,16 @@ void HelloWorld_Capsule::start(){
     _timerRunnerPtr->informIn(_id, std::chrono::seconds(1));
 }
 
-void HelloWorld_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<TimeoutMessage>(message)){
-        handleTimeout(std::get<TimeoutMessage>(message));
+void HelloWorld_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::TimeoutMessage>(message)){
+        handleTimeout(std::get<mrt::TimeoutMessage>(message));
     }
     else{
         throw std::invalid_argument("HelloWorld_Capsule unable to handle that message");
     }
 }
 
-void HelloWorld_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
+void HelloWorld_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
     switch(_state){
         case S1:
             {
