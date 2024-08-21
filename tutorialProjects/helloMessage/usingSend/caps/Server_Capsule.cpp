@@ -1,7 +1,7 @@
 #include "Server_Capsule.h"
 #include "CapsuleRunner.h"
 
-Server_Capsule::Server_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
+Server_Capsule::Server_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
 }
@@ -15,17 +15,17 @@ void Server_Capsule::connect(int clientId){
 }
 
 void Server_Capsule::sendMessage(int toId, int value){
-    Response outMessage;
+    mrt::Response outMessage;
     outMessage.value = value;
-    SendMessage sendMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Server_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<Request>(message)){
-        handleMessage(std::get<Request>(message));
+void Server_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::Request>(message)){
+        handleMessage(std::get<mrt::Request>(message));
     }
     else{
         throw std::invalid_argument("Client_Capsule unable to handle that message");
@@ -34,7 +34,7 @@ void Server_Capsule::handleMessage(Message message){
 
 void Server_Capsule::start(){}
 
-void Server_Capsule::handleMessage(Request inMessage){
+void Server_Capsule::handleMessage(mrt::Request inMessage){
     int i = inMessage.value;
     std::cout << "Server: Received: " << i << std::endl;
     i++;

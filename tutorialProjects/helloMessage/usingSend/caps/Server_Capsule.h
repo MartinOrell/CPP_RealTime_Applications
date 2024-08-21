@@ -8,23 +8,25 @@
 #include "SendMessage.h"
 #include <stdexcept>
 
-class CapsuleRunner;
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class Server_Capsule: public Capsule{
+class Server_Capsule: public mrt::Capsule{
     public:
-        Server_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
+        Server_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
-        void handleMessage(Message message);
+        void handleMessage(mrt::Message message);
 
         void connect(int clientId);
         
     private:
         void sendMessage(int toId, int value);
 
-        void handleMessage(Request message);
+        void handleMessage(mrt::Request message);
 
         int _id;
         int _clientId;
-        CapsuleRunner* _capsuleRunnerPtr;
+        mrt::CapsuleRunner* _capsuleRunnerPtr;
 };

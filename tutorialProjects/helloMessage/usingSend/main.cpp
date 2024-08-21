@@ -6,11 +6,11 @@
 
 int main(){
 
-    MessageManager messageManager;
+    mrt::MessageManager messageManager;
 
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner{nextCapsuleId++, &messageManager};
+    mrt::CapsuleRunner capsuleRunner{nextCapsuleId++, &messageManager};
     auto server = std::make_unique<Server_Capsule>(nextCapsuleId++, &capsuleRunner);
     auto client = std::make_unique<Client_Capsule>(nextCapsuleId++, &capsuleRunner);
 

@@ -1,7 +1,7 @@
 #include "Client_Capsule.h"
 #include "CapsuleRunner.h"
 
-Client_Capsule::Client_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
+Client_Capsule::Client_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
 }
@@ -10,9 +10,9 @@ int Client_Capsule::getId(){
     return _id;
 }
 
-void Client_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<Response>(message)){
-        handleMessage(std::get<Response>(message));
+void Client_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::Response>(message)){
+        handleMessage(std::get<mrt::Response>(message));
     }
     else{
         throw std::invalid_argument("Client_Capsule unable to handle that message");
@@ -24,9 +24,9 @@ void Client_Capsule::connect(int serverId){
 }
 
 void Client_Capsule::sendMessage(int toId, int value){
-    Request outMessage;
+    mrt::Request outMessage;
     outMessage.value = value;
-    SendMessage sendMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
@@ -39,7 +39,7 @@ void Client_Capsule::start(){
     _state = WaitForResponse;
 }
 
-void Client_Capsule::handleMessage(Response message){
+void Client_Capsule::handleMessage(mrt::Response message){
     if(_state == WaitForResponse){
         std::cout << "Client: Received: " << message.value << std::endl;
         _capsuleRunnerPtr->stop();
