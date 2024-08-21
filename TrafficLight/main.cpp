@@ -6,12 +6,12 @@
 
 int main(){
 
-    MessageManager messageManager;
+    mrt::MessageManager messageManager;
 
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
-    CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
     auto trafficLight = std::make_unique<TrafficLight_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner);
 
     capsuleRunner.addCapsule(std::move(trafficLight));
