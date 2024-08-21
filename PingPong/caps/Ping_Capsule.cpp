@@ -1,7 +1,7 @@
 #include "Ping_Capsule.h"
 #include "CapsuleRunner.h"
 
-Ping_Capsule::Ping_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr){
+Ping_Capsule::Ping_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr){
     _count = 0;
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
@@ -17,12 +17,12 @@ void Ping_Capsule::start(){
     sendMessageToPong(_pongId, _count);
 }
 
-void Ping_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<TimeoutMessage>(message)){
-        handleTimeout(std::get<TimeoutMessage>(message));
+void Ping_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::TimeoutMessage>(message)){
+        handleTimeout(std::get<mrt::TimeoutMessage>(message));
     }
-    else if(std::holds_alternative<VoidMessage>(message)){
-        if(std::get<VoidMessage>(message) == VoidMessage::MessageToPing){
+    else if(std::holds_alternative<mrt::VoidMessage>(message)){
+        if(std::get<mrt::VoidMessage>(message) == mrt::VoidMessage::MessageToPing){
             handleMessageToPing();
         }
         else{
@@ -39,9 +39,9 @@ void Ping_Capsule::connect(int pongId){
 }
 
 void Ping_Capsule::sendMessageToPong(int toId, int count){
-    MessageToPong outMessage;
+    mrt::MessageToPong outMessage;
     outMessage.count = count;
-    SendMessage sendMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
@@ -51,7 +51,7 @@ void Ping_Capsule::handleMessageToPing(){
     _timerRunnerPtr->informIn(_id, std::chrono::seconds(1));
 }
 
-void Ping_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
+void Ping_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
     std::cout << "Ping: sends ping\n";
     sendMessageToPong(_pongId, ++_count);
 }

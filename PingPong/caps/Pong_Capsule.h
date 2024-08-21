@@ -7,22 +7,24 @@
 #include "Message.h"
 #include "SendMessage.h"
 
-class CapsuleRunner;
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class Pong_Capsule: public Capsule{
+class Pong_Capsule: public mrt::Capsule{
     public:
-        Pong_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
+        Pong_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
-        void handleMessage(Message message);
+        void handleMessage(mrt::Message message);
         
         void connect(int pingId);
     private:
         void sendMessageToPing(int toId);
 
-        void handleMessage(MessageToPong message);
+        void handleMessage(mrt::MessageToPong message);
 
         int _id;
         int _pingId;
-        CapsuleRunner* _capsuleRunnerPtr;
+        mrt::CapsuleRunner* _capsuleRunnerPtr;
 };

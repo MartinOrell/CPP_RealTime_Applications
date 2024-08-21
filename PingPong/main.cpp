@@ -7,12 +7,12 @@
 
 int main(){
 
-    MessageManager messageManager;
+    mrt::MessageManager messageManager;
 
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
-    CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
     auto pinger = std::make_unique<Ping_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner);
     auto ponger = std::make_unique<Pong_Capsule>(nextCapsuleId++, &capsuleRunner);
 
