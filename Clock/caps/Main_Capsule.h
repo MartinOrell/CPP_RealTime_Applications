@@ -9,23 +9,24 @@
 #include <chrono>
 #include <stdexcept>
 
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class CapsuleRunner;
-
-class Main_Capsule: public Capsule{
+class Main_Capsule: public mrt::Capsule{
     public:
-        Main_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
+        Main_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
         int getId();
         void start();
-        void handleMessage(Message message);
+        void handleMessage(mrt::Message message);
 
         void connect(int clockId);
         
     private:
         void sendRequestTimeMessage(int toId);
 
-        void handleTimeout(TimeoutMessage message);
-        void handleMessage(RespondTimeMessage message);
+        void handleTimeout(mrt::TimeoutMessage message);
+        void handleMessage(mrt::RespondTimeMessage message);
 
         int _id;
         int _clockId;
@@ -33,8 +34,8 @@ class Main_Capsule: public Capsule{
         int _endTimerId;
         std::chrono::steady_clock::duration _updateTime;
         int _updateTimerId;
-        CapsuleRunner* _capsuleRunnerPtr;
-        CapsuleRunner* _timerRunnerPtr;
+        mrt::CapsuleRunner* _capsuleRunnerPtr;
+        mrt::CapsuleRunner* _timerRunnerPtr;
         enum State{Running, WaitForTimeResponse, End};
         State _state;
 };

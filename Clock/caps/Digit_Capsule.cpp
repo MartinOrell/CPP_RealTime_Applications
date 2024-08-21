@@ -1,7 +1,7 @@
 #include "Digit_Capsule.h"
 #include "CapsuleRunner.h"
 
-Digit_Capsule::Digit_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
+Digit_Capsule::Digit_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
     _base = 10;
@@ -11,17 +11,17 @@ int Digit_Capsule::getId(){
     return _id;
 }
 
-void Digit_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<VoidMessage>(message)){
-        if(std::get<VoidMessage>(message) == VoidMessage::IncMessage){
+void Digit_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::VoidMessage>(message)){
+        if(std::get<mrt::VoidMessage>(message) == mrt::VoidMessage::IncMessage){
             handleIncMessage();
         }
         else{
             throw std::invalid_argument("Digit_Capsule unable to handle that voidMessage");
         }
     }
-    else if(std::holds_alternative<SetBaseMessage>(message)){
-        SetBaseMessage sMessage = std::get<SetBaseMessage>(message);
+    else if(std::holds_alternative<mrt::SetBaseMessage>(message)){
+        mrt::SetBaseMessage sMessage = std::get<mrt::SetBaseMessage>(message);
         handleMessage(sMessage);
     }
     else{
@@ -29,9 +29,9 @@ void Digit_Capsule::handleMessage(Message message){
     }
 }
 
-Message Digit_Capsule::handleInvokeMessage(Message request){
-    if(std::holds_alternative<VoidMessage>(request)){
-        if(std::get<VoidMessage>(request) == VoidMessage::RequestDigitMessage){
+mrt::Message Digit_Capsule::handleInvokeMessage(mrt::Message request){
+    if(std::holds_alternative<mrt::VoidMessage>(request)){
+        if(std::get<mrt::VoidMessage>(request) == mrt::VoidMessage::RequestDigitMessage){
             return handleInvokeRequestDigitMessage();
         }
         else{
@@ -52,9 +52,9 @@ void Digit_Capsule::start(){
 }
 
 void Digit_Capsule::sendCarryMessage(int toId){
-    CarryMessage outMessage;
+    mrt::CarryMessage outMessage;
     outMessage.fromId = _id;
-    SendMessage sendMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
@@ -114,12 +114,12 @@ void Digit_Capsule::handleIncMessage(){
     }
 }
 
-void Digit_Capsule::handleMessage(SetBaseMessage inMessage){
+void Digit_Capsule::handleMessage(mrt::SetBaseMessage inMessage){
     _base = inMessage.base;
 }
 
-Message Digit_Capsule::handleInvokeRequestDigitMessage(){
-    RespondDigitMessage outMessage;
+mrt::Message Digit_Capsule::handleInvokeRequestDigitMessage(){
+    mrt::RespondDigitMessage outMessage;
     outMessage.fromId = _id;
     outMessage.value = _state;
     return outMessage;

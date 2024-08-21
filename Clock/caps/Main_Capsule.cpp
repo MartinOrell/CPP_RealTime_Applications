@@ -1,7 +1,7 @@
 #include "Main_Capsule.h"
 #include "CapsuleRunner.h"
 
-Main_Capsule::Main_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps){
+Main_Capsule::Main_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
     _timerRunnerPtr = timerRunnerPtr;
@@ -16,13 +16,13 @@ int Main_Capsule::getId(){
     return _id;
 }
 
-void Main_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<TimeoutMessage>(message)){
-        TimeoutMessage tMessage = std::get<TimeoutMessage>(message);
+void Main_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::TimeoutMessage>(message)){
+        mrt::TimeoutMessage tMessage = std::get<mrt::TimeoutMessage>(message);
         handleTimeout(tMessage);
     }
-    else if(std::holds_alternative<RespondTimeMessage>(message)){
-        RespondTimeMessage rMessage = std::get<RespondTimeMessage>(message);
+    else if(std::holds_alternative<mrt::RespondTimeMessage>(message)){
+        mrt::RespondTimeMessage rMessage = std::get<mrt::RespondTimeMessage>(message);
         handleMessage(rMessage);
     }
     else{
@@ -41,14 +41,14 @@ void Main_Capsule::start(){
 }
         
 void Main_Capsule::sendRequestTimeMessage(int toId){
-    VoidMessage outMessage = RequestTimeMessage;
-    SendMessage sendMessage;
+    mrt::VoidMessage outMessage = mrt::RequestTimeMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Main_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
+void Main_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
     if(timeoutMessage.timerId == _endTimerId){
         _state = End;
         std::cout << "Main timeout reached" << std::endl;
@@ -68,7 +68,7 @@ void Main_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
     }
 }
 
-void Main_Capsule::handleMessage(RespondTimeMessage inMessage){
+void Main_Capsule::handleMessage(mrt::RespondTimeMessage inMessage){
     assert(_state == WaitForTimeResponse);
     _state = Running;
     std::cout << "Time: " << inMessage.time << std::endl;

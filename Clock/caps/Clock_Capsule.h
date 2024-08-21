@@ -8,14 +8,16 @@
 #include <chrono>
 #include <stdexcept>
 
-class CapsuleRunner;
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class Clock_Capsule: public Capsule{
+class Clock_Capsule: public mrt::Capsule{
     public:
-        Clock_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr, int speedMultiplier);
+        Clock_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, int speedMultiplier);
         int getId();
         void start();
-        void handleMessage(Message message);
+        void handleMessage(mrt::Message message);
 
         void connectMain(int mainId);
         void connectSecond1Digit(int digitId);
@@ -30,11 +32,11 @@ class Clock_Capsule: public Capsule{
         void sendIncMessage(int toId);
         void sendSetBaseMessage(int toId, int base);
 
-        void handleTimeout(TimeoutMessage message);
-        void handleMessage(CarryMessage inMessage);
+        void handleTimeout(mrt::TimeoutMessage message);
+        void handleMessage(mrt::CarryMessage inMessage);
         void handleRequestTimeMessage();
 
-        RespondDigitMessage invokeRequestDigitMessage(int toId);
+        mrt::RespondDigitMessage invokeRequestDigitMessage(int toId);
 
         int _id;
         int _mainId;
@@ -46,8 +48,8 @@ class Clock_Capsule: public Capsule{
         int _hour10DigitCapsuleId;
         std::chrono::steady_clock::duration _tickPeriod;
         int _tickerId;
-        CapsuleRunner* _capsuleRunnerPtr;
-        CapsuleRunner* _timerRunnerPtr;
+        mrt::CapsuleRunner* _capsuleRunnerPtr;
+        mrt::CapsuleRunner* _timerRunnerPtr;
         enum State{SecondTicker, Second10Ticker, MinuteTicker, Minute10Ticker, HourTicker};
         State _state;
 };

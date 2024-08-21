@@ -1,7 +1,7 @@
 #include "Clock_Capsule.h"
 #include "CapsuleRunner.h"
 
-Clock_Capsule::Clock_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr, int speedMultiplier){
+Clock_Capsule::Clock_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, int speedMultiplier){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
     _timerRunnerPtr = timerRunnerPtr;
@@ -15,22 +15,22 @@ int Clock_Capsule::getId(){
     return _id;
 }
 
-void Clock_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<VoidMessage>(message)){
-        VoidMessage voidMessage = std::get<VoidMessage>(message);
-        if(voidMessage == VoidMessage::RequestTimeMessage){
+void Clock_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::VoidMessage>(message)){
+        mrt::VoidMessage voidMessage = std::get<mrt::VoidMessage>(message);
+        if(voidMessage == mrt::VoidMessage::RequestTimeMessage){
             handleRequestTimeMessage();
         }
         else{
             throw std::invalid_argument("Clock_Capsule received emptyMessage of wrong type");
         }
     }
-    else if(std::holds_alternative<TimeoutMessage>(message)){
-        TimeoutMessage tMessage = std::get<TimeoutMessage>(message);
+    else if(std::holds_alternative<mrt::TimeoutMessage>(message)){
+        mrt::TimeoutMessage tMessage = std::get<mrt::TimeoutMessage>(message);
         handleTimeout(tMessage);
     }
-    else if(std::holds_alternative<CarryMessage>(message)){
-        CarryMessage cMessage = std::get<CarryMessage>(message);
+    else if(std::holds_alternative<mrt::CarryMessage>(message)){
+        mrt::CarryMessage cMessage = std::get<mrt::CarryMessage>(message);
         handleMessage(cMessage);
     }
     else{
@@ -67,38 +67,38 @@ void Clock_Capsule::connectHour10Digit(int digitId){
 }
 
 void Clock_Capsule::sendRespondTimeMessage(int toId, std::string time){
-    RespondTimeMessage outMessage;
+    mrt::RespondTimeMessage outMessage;
     outMessage.time = time;
-    SendMessage sendMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Clock_Capsule::sendIncMessage(int toId){
-    VoidMessage outMessage = VoidMessage::IncMessage;
-    SendMessage sendMessage;
+    mrt::VoidMessage outMessage = mrt::VoidMessage::IncMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Clock_Capsule::sendSetBaseMessage(int toId, int base){
-    SetBaseMessage outMessage;
+    mrt::SetBaseMessage outMessage;
     outMessage.base = base;
-    SendMessage sendMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
-RespondDigitMessage Clock_Capsule::invokeRequestDigitMessage(int toId){
-    VoidMessage request = VoidMessage::RequestDigitMessage;
-    SendMessage sendMessage;
+mrt::RespondDigitMessage Clock_Capsule::invokeRequestDigitMessage(int toId){
+    mrt::VoidMessage request = mrt::VoidMessage::RequestDigitMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = request;
-    Message receivedMessage = _capsuleRunnerPtr->invokeMessage(sendMessage);
-    assert(std::holds_alternative<RespondDigitMessage>(receivedMessage));
-    return std::get<RespondDigitMessage>(receivedMessage);
+    mrt::Message receivedMessage = _capsuleRunnerPtr->invokeMessage(sendMessage);
+    assert(std::holds_alternative<mrt::RespondDigitMessage>(receivedMessage));
+    return std::get<mrt::RespondDigitMessage>(receivedMessage);
 }
 
 void Clock_Capsule::start(){
@@ -111,7 +111,7 @@ void Clock_Capsule::start(){
     _tickerId = _timerRunnerPtr->informEvery(_id, _tickPeriod);
 }
 
-void Clock_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
+void Clock_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
     switch(_state){
         case SecondTicker:
             sendIncMessage(_second1DigitCapsuleId);
@@ -163,7 +163,7 @@ void Clock_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
     }
 }
 
-void Clock_Capsule::handleMessage(CarryMessage inMessage){
+void Clock_Capsule::handleMessage(mrt::CarryMessage inMessage){
     if(inMessage.fromId == _second1DigitCapsuleId){
         sendIncMessage(_second10DigitCapsuleId);
     }

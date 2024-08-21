@@ -12,12 +12,12 @@ int main(){
     int fps = 3;
     int speedMultiplier = 8;
 
-    MessageManager messageManager;
+    mrt::MessageManager messageManager;
 
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
-    CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
     auto main = std::make_unique<Main_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner, timeoutTime, fps);
     auto clock = std::make_unique<Clock_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner, speedMultiplier);
     auto second1Digit = std::make_unique<Digit_Capsule>(nextCapsuleId++, &capsuleRunner);

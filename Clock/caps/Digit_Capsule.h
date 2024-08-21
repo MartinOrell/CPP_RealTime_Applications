@@ -5,15 +5,17 @@
 #include "Message.h"
 #include <stdexcept>
 
-class CapsuleRunner;
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class Digit_Capsule: public Capsule{
+class Digit_Capsule: public mrt::Capsule{
     public:
-        Digit_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
+        Digit_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
-        void handleMessage(Message message);
-        Message handleInvokeMessage(Message request);
+        void handleMessage(mrt::Message message);
+        mrt::Message handleInvokeMessage(mrt::Message request);
 
         void connect(int clockId);
         
@@ -21,14 +23,14 @@ class Digit_Capsule: public Capsule{
         void sendCarryMessage(int toId);
 
         void handleIncMessage();
-        void handleMessage(SetBaseMessage inMessage);
+        void handleMessage(mrt::SetBaseMessage inMessage);
         
-        Message handleInvokeRequestDigitMessage();
+        mrt::Message handleInvokeRequestDigitMessage();
 
         int _id;
         int _clockId;
         int _base;
-        CapsuleRunner* _capsuleRunnerPtr;
+        mrt::CapsuleRunner* _capsuleRunnerPtr;
         enum State{Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine};
         State _state;
 };
