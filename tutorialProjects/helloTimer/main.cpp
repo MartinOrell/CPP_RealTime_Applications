@@ -1,22 +1,18 @@
-#include "Message.h"
-#include "SendMessage.h"
-#include "MessageHandler.h"
-#include "Capsule.h"
-#include "CapsuleRunner.h"
-#include <vector>
-#include <memory>
-#include "HelloTimer_Capsule.h"
-#include <thread>
 #include "MessageManager.h"
+#include "CapsuleRunner.h"
+#include <memory>
+#include <thread>
+#include <vector>
+#include "HelloTimer_Capsule.h"
 
 int main(){
 
-    MessageManager messageManager;
+    mrt::MessageManager messageManager;
 
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
-    CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
     auto helloTimer = std::make_unique<HelloTimer_Capsule>(nextCapsuleId++, &capsuleRunner, &timerRunner);
 
     capsuleRunner.addCapsule(std::move(helloTimer));

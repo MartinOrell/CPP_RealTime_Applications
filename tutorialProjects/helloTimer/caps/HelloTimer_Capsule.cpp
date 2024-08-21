@@ -1,7 +1,7 @@
 #include "HelloTimer_Capsule.h"
 #include "CapsuleRunner.h"
 
-HelloTimer_Capsule::HelloTimer_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr){
+HelloTimer_Capsule::HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
     _timerRunnerPtr = timerRunnerPtr;
@@ -18,16 +18,16 @@ void HelloTimer_Capsule::start(){
     _endTimerId = _timerRunnerPtr->informIn(_id, std::chrono::seconds(3));
 }
 
-void HelloTimer_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<TimeoutMessage>(message)){
-        handleTimeout(std::get<TimeoutMessage>(message));
+void HelloTimer_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::TimeoutMessage>(message)){
+        handleTimeout(std::get<mrt::TimeoutMessage>(message));
     }
     else{
         throw std::invalid_argument("HelloTimer_Capsule unable to handle message with type id: " + std::to_string(message.index()));
     }
 }
 
-void HelloTimer_Capsule::handleTimeout(TimeoutMessage timeoutMessage){
+void HelloTimer_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
 
     if(timeoutMessage.timerId == _repeatTimerId && _state == Running){
         for(int i = 0; i < timeoutMessage.timeouts; i++){

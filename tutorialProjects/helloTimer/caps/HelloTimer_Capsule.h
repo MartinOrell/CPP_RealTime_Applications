@@ -9,22 +9,24 @@
 #include <chrono>
 #include <stdexcept>
 
-class CapsuleRunner;
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class HelloTimer_Capsule: public Capsule{
+class HelloTimer_Capsule: public mrt::Capsule{
     public:
-        HelloTimer_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr);
+        HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr);
         int getId();
         void start();
-        void handleMessage(Message message);
+        void handleMessage(mrt::Message message);
     private:
-        void handleTimeout(TimeoutMessage message);
+        void handleTimeout(mrt::TimeoutMessage message);
 
         int _id;
         int _repeatTimerId;
         int _endTimerId;
-        CapsuleRunner* _capsuleRunnerPtr;
-        CapsuleRunner* _timerRunnerPtr;
+        mrt::CapsuleRunner* _capsuleRunnerPtr;
+        mrt::CapsuleRunner* _timerRunnerPtr;
         enum State{Running, End};
         State _state;
 };
