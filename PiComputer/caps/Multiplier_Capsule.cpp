@@ -1,7 +1,7 @@
 #include "Multiplier_Capsule.h"
 #include "CapsuleRunner.h"
 
-Multiplier_Capsule::Multiplier_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
+Multiplier_Capsule::Multiplier_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
 }
@@ -12,9 +12,9 @@ int Multiplier_Capsule::getId(){
 
 void Multiplier_Capsule::start(){}
 
-void Multiplier_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<GetIncrement>(message)){
-        handleMessage(std::get<GetIncrement>(message));
+void Multiplier_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::GetIncrement>(message)){
+        handleMessage(std::get<mrt::GetIncrement>(message));
     }
     else{
         throw std::invalid_argument("Multiplier_Capsule unable to handle that message");
@@ -26,15 +26,15 @@ void Multiplier_Capsule::connectAdder(int adderId){
 }
 
 void Multiplier_Capsule::sendReturnIncrementMessage(int toId, double inc){
-    ReturnIncrement outMessage;
+    mrt::ReturnIncrement outMessage;
     outMessage.inc = inc;
-    SendMessage sendMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Multiplier_Capsule::handleMessage(GetIncrement inMessage){
+void Multiplier_Capsule::handleMessage(mrt::GetIncrement inMessage){
     int k = inMessage.remainingIterations;
     double inc = std::pow(-3, -k) / (2 * k + 1);
     sendReturnIncrementMessage(_adderId, inc);

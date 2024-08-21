@@ -1,7 +1,7 @@
 #include "Adder_Capsule.h"
 #include "CapsuleRunner.h"
 
-Adder_Capsule::Adder_Capsule(int id, CapsuleRunner* capsuleRunnerPtr){
+Adder_Capsule::Adder_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
 }
@@ -14,12 +14,12 @@ void Adder_Capsule::start(){
     _state = Idle;
 }
 
-void Adder_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<ComputeRequest>(message)){
-        handleMessage(std::get<ComputeRequest>(message));
+void Adder_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::ComputeRequest>(message)){
+        handleMessage(std::get<mrt::ComputeRequest>(message));
     }
-    else if(std::holds_alternative<ReturnIncrement>(message)){
-        handleMessage(std::get<ReturnIncrement>(message));
+    else if(std::holds_alternative<mrt::ReturnIncrement>(message)){
+        handleMessage(std::get<mrt::ReturnIncrement>(message));
     }
     else{
         throw std::invalid_argument("Adder_Capsule unable to handle that message");
@@ -35,30 +35,30 @@ void Adder_Capsule::connectMultiplier(int multiplierId){
 }
 
 void Adder_Capsule::sendGetIncrementMessage(int toId, int remainingIterations){
-    GetIncrement outMessage;
+    mrt::GetIncrement outMessage;
     outMessage.remainingIterations = remainingIterations;
-    SendMessage sendMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
 void Adder_Capsule::sendComputeResultMessage(int toId, double result){
-    ComputeResult outMessage;
+    mrt::ComputeResult outMessage;
     outMessage.result = result;
-    SendMessage sendMessage;
+    mrt::SendMessage sendMessage;
     sendMessage.toId = toId;
     sendMessage.message = outMessage;
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Adder_Capsule::handleMessage(ComputeRequest inMessage){
+void Adder_Capsule::handleMessage(mrt::ComputeRequest inMessage){
     _state = Computing;
     _remainingIterations = inMessage.noOfIterations-1;
     sendGetIncrementMessage(_multiplierId, _remainingIterations);
 }
 
-void Adder_Capsule::handleMessage(ReturnIncrement inMessage){
+void Adder_Capsule::handleMessage(mrt::ReturnIncrement inMessage){
     double inc = inMessage.inc;
     printDouble(inc, _remainingIterations);
     _result+=inc;

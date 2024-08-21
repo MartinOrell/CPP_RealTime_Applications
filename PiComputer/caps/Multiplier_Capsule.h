@@ -7,23 +7,25 @@
 #include "MessageHandler.h"
 #include <cmath>
 
-class CapsuleRunner;
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class Multiplier_Capsule: public Capsule{
+class Multiplier_Capsule: public mrt::Capsule{
     public:
-        Multiplier_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
+        Multiplier_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
-        void handleMessage(Message message);
+        void handleMessage(mrt::Message message);
         
         void connectAdder(int adderId);
         
     private:
         void sendReturnIncrementMessage(int toId, double inc);
 
-        void handleMessage(GetIncrement message);
+        void handleMessage(mrt::GetIncrement message);
 
         int _id;
         int _adderId;
-        CapsuleRunner* _capsuleRunnerPtr;
+        mrt::CapsuleRunner* _capsuleRunnerPtr;
 };
