@@ -1,7 +1,7 @@
 #include "Main_Capsule.h"
 #include "CapsuleRunner.h"
 
-Main_Capsule::Main_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr){
+Main_Capsule::Main_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
     _timerRunnerPtr = timerRunnerPtr;
@@ -18,9 +18,9 @@ void Main_Capsule::start(){
     _endTimerId = _timerRunnerPtr->informIn(_id, std::chrono::seconds(12));
 }
         
-void Main_Capsule::handleMessage(Message message){
-    if(std::holds_alternative<TimeoutMessage>(message)){
-        TimeoutMessage timeoutMessage = std::get<TimeoutMessage>(message);
+void Main_Capsule::handleMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::TimeoutMessage>(message)){
+        mrt::TimeoutMessage timeoutMessage = std::get<mrt::TimeoutMessage>(message);
         if(timeoutMessage.timerId == _updateTimerId){
             handleRepeatTimerTimeout(timeoutMessage.timeouts);
         }

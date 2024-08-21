@@ -7,15 +7,15 @@
 
 int main(){
 
-    MessageManager messageManager;
+    mrt::MessageManager messageManager;
 
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner1(nextCapsuleId++, &messageManager);
-    CapsuleRunner capsuleRunner2(nextCapsuleId++, &messageManager);
-    CapsuleRunner capsuleRunner3(nextCapsuleId++, &messageManager);
-    CapsuleRunner capsuleRunner4(nextCapsuleId++, &messageManager);
-    CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner1(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner2(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner3(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner4(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner timerRunner(nextCapsuleId++, &messageManager);
     auto main = std::make_unique<Main_Capsule>(nextCapsuleId++, &capsuleRunner1, &timerRunner);
     auto worker1 = std::make_unique<Worker_Capsule>(nextCapsuleId++);
     auto worker2 = std::make_unique<Worker_Capsule>(nextCapsuleId++);

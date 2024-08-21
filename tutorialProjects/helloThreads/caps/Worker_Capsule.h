@@ -7,9 +7,11 @@
 #include <chrono>
 #include <thread>
 
-class CapsuleRunner;
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class Worker_Capsule: public Capsule{
+class Worker_Capsule: public mrt::Capsule{
     public:
         Worker_Capsule(int id);
         int getId();

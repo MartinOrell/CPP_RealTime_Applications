@@ -9,15 +9,16 @@
 #include <chrono>
 #include <stdexcept>
 
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class CapsuleRunner;
-
-class Main_Capsule: public Capsule{
+class Main_Capsule: public mrt::Capsule{
     public:
-        Main_Capsule(int id, CapsuleRunner* capsuleRunnerPtr, CapsuleRunner* timerRunnerPtr);
+        Main_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr);
         int getId();
         void start();
-        void handleMessage(Message message);
+        void handleMessage(mrt::Message message);
         
     private:
 
@@ -27,7 +28,7 @@ class Main_Capsule: public Capsule{
         int _id;
         int _endTimerId;
         int _updateTimerId;
-        CapsuleRunner* _capsuleRunnerPtr;
-        CapsuleRunner* _timerRunnerPtr;
+        mrt::CapsuleRunner* _capsuleRunnerPtr;
+        mrt::CapsuleRunner* _timerRunnerPtr;
         int _count;
 };
