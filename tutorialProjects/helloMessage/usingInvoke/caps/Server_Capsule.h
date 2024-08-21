@@ -8,17 +8,17 @@
 #include <stdexcept>
 #include <vector>
 
-class Server_Capsule: public Capsule{
+class Server_Capsule: public mrt::Capsule{
     public:
         Server_Capsule(int id, int numClients);
         int getId();
         void start();
-        Message handleInvokeMessage(Message message);
+        mrt::Message handleInvokeMessage(mrt::Message message);
         
         void connect(int index, int clientId);
 
     private:
-        Message handleInvokeMessage(Request inMessage);
+        mrt::Message handleInvokeMessage(mrt::Request inMessage);
 
         int _id;
         std::vector<int> _clientIds;

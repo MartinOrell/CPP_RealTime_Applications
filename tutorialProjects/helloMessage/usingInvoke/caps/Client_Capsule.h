@@ -8,19 +8,21 @@
 #include <chrono>
 #include <stdexcept>
 
-class CapsuleRunner;
+namespace mrt{
+    class CapsuleRunner;
+}
 
-class Client_Capsule: public Capsule{
+class Client_Capsule: public mrt::Capsule{
     public:
-        Client_Capsule(int id, CapsuleRunner* capsuleRunnerPtr);
+        Client_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
 
         void connect(int serverId);
     private:
-        Response invokeRequest(int toId, int value);
+        mrt::Response invokeRequest(int toId, int value);
 
         int _id;
         int _serverId;
-        CapsuleRunner* _capsuleRunnerPtr;
+        mrt::CapsuleRunner* _capsuleRunnerPtr;
 };

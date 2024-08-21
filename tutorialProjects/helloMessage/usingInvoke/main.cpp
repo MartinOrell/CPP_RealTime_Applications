@@ -9,12 +9,12 @@ int main(){
 
     int numClients = 3;
 
-    MessageManager messageManager(true);
+    mrt::MessageManager messageManager(true);
 
     int nextCapsuleId = 0;
 
-    CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
-    CapsuleRunner capsuleRunner2(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner(nextCapsuleId++, &messageManager);
+    mrt::CapsuleRunner capsuleRunner2(nextCapsuleId++, &messageManager);
     auto server = std::make_unique<Server_Capsule>(nextCapsuleId++, numClients);
 
     for(int i = 0; i < numClients; i++){

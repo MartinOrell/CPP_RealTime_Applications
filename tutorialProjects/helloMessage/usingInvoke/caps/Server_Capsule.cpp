@@ -15,21 +15,21 @@ void Server_Capsule::connect(int index, int clientId){
 
 void Server_Capsule::start(){}
 
-Message Server_Capsule::handleInvokeMessage(Message message){
-    if(std::holds_alternative<Request>(message)){
-        return handleInvokeMessage(std::get<Request>(message));
+mrt::Message Server_Capsule::handleInvokeMessage(mrt::Message message){
+    if(std::holds_alternative<mrt::Request>(message)){
+        return handleInvokeMessage(std::get<mrt::Request>(message));
     }
     else{
         throw std::invalid_argument("Server_Capsule[" + std::to_string(_id) + "] unable to invokeMessage with message type index " + std::to_string(message.index()));
     }
 }
 
-Message Server_Capsule::handleInvokeMessage(Request inMessage){
+mrt::Message Server_Capsule::handleInvokeMessage(mrt::Request inMessage){
     int i = inMessage.value;
     std::cout << "Server: Received: " << i << std::endl;
     i++;
     std::cout << "Server: Sending: " << i << std::endl;
-    Response outMessage;
+    mrt::Response outMessage;
     outMessage.value = i;
     return outMessage;
 }
