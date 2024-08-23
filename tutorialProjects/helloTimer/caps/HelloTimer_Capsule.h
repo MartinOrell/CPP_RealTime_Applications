@@ -2,12 +2,8 @@
 
 #include "Capsule.h"
 
-#include <string>
-#include <iostream>
 #include "Message.h"
-#include "MessageHandler.h"
-#include <chrono>
-#include <stdexcept>
+#include "SendMessage.h"
 
 namespace mrt{
     class CapsuleRunner;
@@ -18,9 +14,9 @@ class HelloTimer_Capsule: public mrt::Capsule{
         HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr);
         int getId();
         void start();
-        void handleMessage(mrt::Message message);
+        void handleMessage(const mrt::Message& message);
     private:
-        void handleTimeout(mrt::TimeoutMessage message);
+        void handleTimeout(const mrt::TimeoutMessage& message);
 
         int _id;
         int _repeatTimerId;
