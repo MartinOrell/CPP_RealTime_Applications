@@ -3,11 +3,8 @@
 #include "Capsule.h"
 
 #include <string>
-#include <iostream>
 #include "Message.h"
 #include "SendMessage.h"
-#include <chrono>
-#include <stdexcept>
 
 namespace mrt{
     class CapsuleRunner;
@@ -18,15 +15,15 @@ class Main_Capsule: public mrt::Capsule{
         Main_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
         int getId();
         void start();
-        void handleMessage(mrt::Message message);
+        void handleMessage(const mrt::Message& message);
 
         void connect(int clockId);
         
     private:
         void sendRequestTimeMessage(int toId);
 
-        void handleTimeout(mrt::TimeoutMessage message);
-        void handleMessage(mrt::RespondTimeMessage message);
+        void handleTimeout(const mrt::TimeoutMessage& message);
+        void handleMessage(const mrt::RespondTimeMessage& message);
 
         int _id;
         int _clockId;

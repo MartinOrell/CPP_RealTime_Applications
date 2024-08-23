@@ -1,5 +1,11 @@
 #include "Clock_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <chrono>
+#include <stdexcept>
+#include <cassert>
+#include <iostream>
 
 Clock_Capsule::Clock_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, int speedMultiplier){
     _id = id;
@@ -15,7 +21,7 @@ int Clock_Capsule::getId(){
     return _id;
 }
 
-void Clock_Capsule::handleMessage(mrt::Message message){
+void Clock_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::VoidMessage>(message)){
         mrt::VoidMessage voidMessage = std::get<mrt::VoidMessage>(message);
         if(voidMessage == mrt::VoidMessage::RequestTimeMessage){
@@ -111,7 +117,7 @@ void Clock_Capsule::start(){
     _tickerId = _timerRunnerPtr->informEvery(_id, _tickPeriod);
 }
 
-void Clock_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
+void Clock_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage){
     switch(_state){
         case SecondTicker:
             sendIncMessage(_second1DigitCapsuleId);
@@ -163,7 +169,7 @@ void Clock_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
     }
 }
 
-void Clock_Capsule::handleMessage(mrt::CarryMessage inMessage){
+void Clock_Capsule::handleMessage(const mrt::CarryMessage& inMessage){
     if(inMessage.fromId == _second1DigitCapsuleId){
         sendIncMessage(_second10DigitCapsuleId);
     }

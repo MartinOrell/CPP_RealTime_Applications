@@ -1,5 +1,8 @@
 #include "Digit_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <stdexcept>
 
 Digit_Capsule::Digit_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
@@ -11,7 +14,7 @@ int Digit_Capsule::getId(){
     return _id;
 }
 
-void Digit_Capsule::handleMessage(mrt::Message message){
+void Digit_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::VoidMessage>(message)){
         if(std::get<mrt::VoidMessage>(message) == mrt::VoidMessage::IncMessage){
             handleIncMessage();
@@ -29,7 +32,7 @@ void Digit_Capsule::handleMessage(mrt::Message message){
     }
 }
 
-mrt::Message Digit_Capsule::handleInvokeMessage(mrt::Message request){
+mrt::Message Digit_Capsule::handleInvokeMessage(const mrt::Message& request){
     if(std::holds_alternative<mrt::VoidMessage>(request)){
         if(std::get<mrt::VoidMessage>(request) == mrt::VoidMessage::RequestDigitMessage){
             return handleInvokeRequestDigitMessage();

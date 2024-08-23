@@ -3,7 +3,7 @@
 #include "Capsule.h"
 
 #include "Message.h"
-#include <stdexcept>
+#include "SendMessage.h"
 
 namespace mrt{
     class CapsuleRunner;
@@ -14,8 +14,8 @@ class Digit_Capsule: public mrt::Capsule{
         Digit_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
-        void handleMessage(mrt::Message message);
-        mrt::Message handleInvokeMessage(mrt::Message request);
+        void handleMessage(const mrt::Message& message);
+        mrt::Message handleInvokeMessage(const mrt::Message& request);
 
         void connect(int clockId);
         
