@@ -2,9 +2,14 @@
 
 #include "Capsule.h"
 
+#include "Message.h"
+#include "SendMessage.h"
 #include <string>
-#include "CapsuleRunner.h"
 #include "RacerProfile.h"
+
+namespace mrt{
+    class CapsuleRunner;
+}
 
 class Racer_Capsule: public mrt::Capsule{
     public:
@@ -12,7 +17,7 @@ class Racer_Capsule: public mrt::Capsule{
         int getId();
         std::string getName();
         std::string getAsciiFilename();
-        void handleMessage(mrt::Message message);
+        void handleMessage(const mrt::Message& message);
         void start();
 
         void connect(int mainId);
@@ -20,7 +25,7 @@ class Racer_Capsule: public mrt::Capsule{
         void sendDistanceResponse(int toId);
         void sendGoalReached(int toId);
 
-        void handleTimeout(mrt::TimeoutMessage timeoutMessage);
+        void handleTimeout(const mrt::TimeoutMessage& timeoutMessage);
         void handleStartSignal();
         void handleDistanceRequest();
         void handleWaitTimerTimeout(int timeouts);

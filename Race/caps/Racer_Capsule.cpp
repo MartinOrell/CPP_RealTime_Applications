@@ -1,5 +1,10 @@
 #include "Racer_Capsule.h"
 
+#include "CapsuleRunner.h"
+
+#include <chrono>
+#include <stdexcept>
+
 Racer_Capsule::Racer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, RacerProfile racerProfile, int goal){
     _id = id;
     _capsuleRunnerPtr = capsuleRunnerPtr;
@@ -23,7 +28,7 @@ std::string Racer_Capsule::getAsciiFilename(){
     return _profile.asciiFilename;
 }
 
-void Racer_Capsule::handleMessage(mrt::Message message){
+void Racer_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::TimeoutMessage>(message)){
         handleTimeout(std::get<mrt::TimeoutMessage>(message));
         return;
@@ -70,7 +75,7 @@ void Racer_Capsule::start(){
     _state = State::WaitForStartSignal;
 }
 
-void Racer_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
+void Racer_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage){
     if(_waitTimerId == timeoutMessage.timerId){
         handleWaitTimerTimeout(timeoutMessage.timeouts);
     }
