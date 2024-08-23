@@ -2,14 +2,12 @@
 
 #include "Capsule.h"
 
-#include <iostream>
-#include <math.h>
 #include "Message.h"
 #include "SendMessage.h"
-#include "MessageHandler.h"
 
 namespace mrt{
     class CapsuleRunner;
+    class MessageHandler;
 }
 
 class Adder_Capsule: public mrt::Capsule{
@@ -17,7 +15,7 @@ class Adder_Capsule: public mrt::Capsule{
         Adder_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
-        void handleMessage(mrt::Message message);
+        void handleMessage(const mrt::Message& message);
         
         void connectPiComputer(int piComputerId);
         void connectMultiplier(int multiplierId);
@@ -26,8 +24,8 @@ class Adder_Capsule: public mrt::Capsule{
         void sendGetIncrementMessage(int toId, int remainingIterations);
         void sendComputeResultMessage(int toId, double result);
 
-        void handleMessage(mrt::ComputeRequest message);
-        void handleMessage(mrt::ReturnIncrement message);
+        void handleMessage(const mrt::ComputeRequest& message);
+        void handleMessage(const mrt::ReturnIncrement& message);
 
         void printDouble(double p1, int inc);
 

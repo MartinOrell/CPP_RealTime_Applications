@@ -1,5 +1,8 @@
 #include "PiComputer_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <iostream>
 
 PiComputer_Capsule::PiComputer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
@@ -17,7 +20,7 @@ void PiComputer_Capsule::start(){
     sendComputeRequest(_adderId, noOfIterations);
 }
 
-void PiComputer_Capsule::handleMessage(mrt::Message message){
+void PiComputer_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::ComputeResult>(message)){
         handleMessage(std::get<mrt::ComputeResult>(message));
     }
@@ -39,7 +42,7 @@ void PiComputer_Capsule::sendComputeRequest(int toId, int noOfIterations){
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void PiComputer_Capsule::handleMessage(mrt::ComputeResult message){
+void PiComputer_Capsule::handleMessage(const mrt::ComputeResult& message){
     _state = Finished;
     std::cout << "Result is : " << std::setprecision(20) << std::fixed << message.result << std::endl;
     _capsuleRunnerPtr->stop();

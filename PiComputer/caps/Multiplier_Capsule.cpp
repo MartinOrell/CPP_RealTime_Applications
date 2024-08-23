@@ -1,5 +1,8 @@
 #include "Multiplier_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <cmath>
 
 Multiplier_Capsule::Multiplier_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
@@ -12,7 +15,7 @@ int Multiplier_Capsule::getId(){
 
 void Multiplier_Capsule::start(){}
 
-void Multiplier_Capsule::handleMessage(mrt::Message message){
+void Multiplier_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::GetIncrement>(message)){
         handleMessage(std::get<mrt::GetIncrement>(message));
     }
@@ -34,7 +37,7 @@ void Multiplier_Capsule::sendReturnIncrementMessage(int toId, double inc){
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Multiplier_Capsule::handleMessage(mrt::GetIncrement inMessage){
+void Multiplier_Capsule::handleMessage(const mrt::GetIncrement& inMessage){
     int k = inMessage.remainingIterations;
     double inc = std::pow(-3, -k) / (2 * k + 1);
     sendReturnIncrementMessage(_adderId, inc);

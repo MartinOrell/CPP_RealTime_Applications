@@ -4,8 +4,6 @@
 
 #include "Message.h"
 #include "SendMessage.h"
-#include "MessageHandler.h"
-#include <cmath>
 
 namespace mrt{
     class CapsuleRunner;
@@ -16,14 +14,14 @@ class Multiplier_Capsule: public mrt::Capsule{
         Multiplier_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
-        void handleMessage(mrt::Message message);
+        void handleMessage(const mrt::Message& message);
         
         void connectAdder(int adderId);
         
     private:
         void sendReturnIncrementMessage(int toId, double inc);
 
-        void handleMessage(mrt::GetIncrement message);
+        void handleMessage(const mrt::GetIncrement& message);
 
         int _id;
         int _adderId;
