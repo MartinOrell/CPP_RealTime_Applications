@@ -1,5 +1,10 @@
 #include "TrafficLight_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <chrono>
+#include <stdexcept>
+#include <iostream>
 
 TrafficLight_Capsule::TrafficLight_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr){
     _id = id;
@@ -16,7 +21,7 @@ void TrafficLight_Capsule::start(){
     _timerRunnerPtr->informEvery(_id, std::chrono::seconds(2));
 }
 
-void TrafficLight_Capsule::handleMessage(mrt::Message message){
+void TrafficLight_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::TimeoutMessage>(message)){
         handleTimeout(std::get<mrt::TimeoutMessage>(message));
     }
@@ -25,7 +30,7 @@ void TrafficLight_Capsule::handleMessage(mrt::Message message){
     }
 }
 
-void TrafficLight_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
+void TrafficLight_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage){
     switch(_state){
         case Red:
             {

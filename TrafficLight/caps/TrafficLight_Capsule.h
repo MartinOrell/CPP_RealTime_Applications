@@ -2,12 +2,8 @@
 
 #include "Capsule.h"
 
-#include <string>
-#include <iostream>
 #include "Message.h"
 #include "SendMessage.h"
-#include <chrono>
-#include <stdexcept>
 
 namespace mrt{
     class CapsuleRunner;
@@ -18,10 +14,10 @@ class TrafficLight_Capsule: public mrt::Capsule{
         TrafficLight_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr);
         int getId();
         void start();
-        void handleMessage(mrt::Message message);
+        void handleMessage(const mrt::Message& message);
         
     private:
-        void handleTimeout(mrt::TimeoutMessage message);
+        void handleTimeout(const mrt::TimeoutMessage& message);
 
         int _id;
         mrt::CapsuleRunner* _capsuleRunnerPtr;
