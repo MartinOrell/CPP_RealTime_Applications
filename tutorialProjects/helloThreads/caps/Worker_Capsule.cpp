@@ -1,5 +1,10 @@
 #include "Worker_Capsule.h"
 
+#include <string>
+#include <iostream>
+#include <chrono>
+#include <thread>
+
 Worker_Capsule::Worker_Capsule(int id){
     _id = id;
 }
