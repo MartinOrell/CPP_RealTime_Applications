@@ -2,11 +2,8 @@
 
 #include "Capsule.h"
 
-#include <string>
-#include <iostream>
 #include "Message.h"
-#include <chrono>
-#include <stdexcept>
+#include "SendMessage.h"
 
 namespace mrt{
     class CapsuleRunner;

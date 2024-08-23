@@ -1,5 +1,8 @@
 #include "Server_Capsule.h"
 
+#include <stdexcept>
+#include <iostream>
+
 Server_Capsule::Server_Capsule(int id, int numClients){
     _id = id;
     _clientIds.resize(numClients, -1);
@@ -15,7 +18,7 @@ void Server_Capsule::connect(int index, int clientId){
 
 void Server_Capsule::start(){}
 
-mrt::Message Server_Capsule::handleInvokeMessage(mrt::Message message){
+mrt::Message Server_Capsule::handleInvokeMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::Request>(message)){
         return handleInvokeMessage(std::get<mrt::Request>(message));
     }
@@ -24,7 +27,7 @@ mrt::Message Server_Capsule::handleInvokeMessage(mrt::Message message){
     }
 }
 
-mrt::Message Server_Capsule::handleInvokeMessage(mrt::Request inMessage){
+mrt::Message Server_Capsule::handleInvokeMessage(const mrt::Request& inMessage){
     int i = inMessage.value;
     std::cout << "Server: Received: " << i << std::endl;
     i++;

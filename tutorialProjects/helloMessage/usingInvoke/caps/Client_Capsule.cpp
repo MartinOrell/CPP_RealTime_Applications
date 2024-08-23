@@ -1,5 +1,9 @@
 #include "Client_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <cassert>
+#include <iostream>
 
 Client_Capsule::Client_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
