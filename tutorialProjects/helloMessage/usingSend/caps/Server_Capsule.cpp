@@ -1,5 +1,9 @@
 #include "Server_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <stdexcept>
+#include <iostream>
 
 Server_Capsule::Server_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
@@ -23,7 +27,7 @@ void Server_Capsule::sendMessage(int toId, int value){
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Server_Capsule::handleMessage(mrt::Message message){
+void Server_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::Request>(message)){
         handleMessage(std::get<mrt::Request>(message));
     }
@@ -34,7 +38,7 @@ void Server_Capsule::handleMessage(mrt::Message message){
 
 void Server_Capsule::start(){}
 
-void Server_Capsule::handleMessage(mrt::Request inMessage){
+void Server_Capsule::handleMessage(const mrt::Request& inMessage){
     int i = inMessage.value;
     std::cout << "Server: Received: " << i << std::endl;
     i++;

@@ -1,5 +1,9 @@
 #include "Client_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <stdexcept>
+#include <iostream>
 
 Client_Capsule::Client_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
@@ -10,7 +14,7 @@ int Client_Capsule::getId(){
     return _id;
 }
 
-void Client_Capsule::handleMessage(mrt::Message message){
+void Client_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::Response>(message)){
         handleMessage(std::get<mrt::Response>(message));
     }
@@ -39,7 +43,7 @@ void Client_Capsule::start(){
     _state = WaitForResponse;
 }
 
-void Client_Capsule::handleMessage(mrt::Response message){
+void Client_Capsule::handleMessage(const mrt::Response& message){
     if(_state == WaitForResponse){
         std::cout << "Client: Received: " << message.value << std::endl;
         _capsuleRunnerPtr->stop();
