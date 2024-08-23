@@ -1,5 +1,10 @@
 #include "Ping_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <chrono>
+#include <stdexcept>
+#include <iostream>
 
 Ping_Capsule::Ping_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr){
     _count = 0;
@@ -17,7 +22,7 @@ void Ping_Capsule::start(){
     sendMessageToPong(_pongId, _count);
 }
 
-void Ping_Capsule::handleMessage(mrt::Message message){
+void Ping_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::TimeoutMessage>(message)){
         handleTimeout(std::get<mrt::TimeoutMessage>(message));
     }
@@ -51,7 +56,7 @@ void Ping_Capsule::handleMessageToPing(){
     _timerRunnerPtr->informIn(_id, std::chrono::seconds(1));
 }
 
-void Ping_Capsule::handleTimeout(mrt::TimeoutMessage timeoutMessage){
+void Ping_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage){
     std::cout << "Ping: sends ping\n";
     sendMessageToPong(_pongId, ++_count);
 }

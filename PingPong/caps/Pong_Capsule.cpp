@@ -1,5 +1,9 @@
 #include "Pong_Capsule.h"
+
 #include "CapsuleRunner.h"
+
+#include <stdexcept>
+#include <iostream>
 
 Pong_Capsule::Pong_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr){
     _id = id;
@@ -12,7 +16,7 @@ int Pong_Capsule::getId(){
 
 void Pong_Capsule::start(){}
 
-void Pong_Capsule::handleMessage(mrt::Message message){
+void Pong_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::MessageToPong>(message)){
         handleMessage(std::get<mrt::MessageToPong>(message));
     }
@@ -33,7 +37,7 @@ void Pong_Capsule::sendMessageToPing(int toId){
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Pong_Capsule::handleMessage(mrt::MessageToPong inMessage){
+void Pong_Capsule::handleMessage(const mrt::MessageToPong& inMessage){
     std::cout << "Pong: sends pong (count = " << inMessage.count << ")" << std::endl;
     sendMessageToPing(_pingId);
 }

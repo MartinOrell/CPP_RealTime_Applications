@@ -2,8 +2,6 @@
 
 #include "Capsule.h"
 
-#include <string>
-#include <iostream>
 #include "Message.h"
 #include "SendMessage.h"
 
@@ -16,13 +14,13 @@ class Pong_Capsule: public mrt::Capsule{
         Pong_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId();
         void start();
-        void handleMessage(mrt::Message message);
+        void handleMessage(const mrt::Message& message);
         
         void connect(int pingId);
     private:
         void sendMessageToPing(int toId);
 
-        void handleMessage(mrt::MessageToPong message);
+        void handleMessage(const mrt::MessageToPong& message);
 
         int _id;
         int _pingId;
