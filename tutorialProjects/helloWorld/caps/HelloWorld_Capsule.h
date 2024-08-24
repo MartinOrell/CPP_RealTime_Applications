@@ -19,7 +19,6 @@ class HelloWorld_Capsule: public mrt::Capsule{
 
         int _id;
         mrt::CapsuleRunner* _capsuleRunnerPtr;
-        mrt::CapsuleRunner* _timerRunnerPtr;
         enum State{Hello};
         State _state;
 };
