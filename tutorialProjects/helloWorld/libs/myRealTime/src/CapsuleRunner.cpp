@@ -210,7 +210,12 @@ bool CapsuleRunner::handleMessageToMe(const Message& message){
             return false;
         }
         else{
-            throw std::invalid_argument("CapsuleRunner[" + std::to_string(_id) + "] can't handle Voidmessage: " + std::to_string(voidMessage));
+            std::string errorMsg =
+                "CapsuleRunner[" +
+                std::to_string(_id) + 
+                "] can't handle Voidmessage: " +
+                std::to_string(voidMessage);
+            throw std::invalid_argument(errorMsg);
         }
     }
     else if(std::holds_alternative<Timer>(message)){
@@ -224,6 +229,11 @@ bool CapsuleRunner::handleMessageToMe(const Message& message){
         return true;
     }
     else{
-        throw std::invalid_argument("CapsuleRunner[" + std::to_string(_id) + "] can't handle message to him with type index: " + std::to_string(message.index()));
+        std::string errorMsg =
+            "CapsuleRunner[" +
+            std::to_string(_id) +
+            "] can't handle message to him with type index: " +
+            std::to_string(message.index());
+        throw std::invalid_argument(errorMsg);
     }
 }

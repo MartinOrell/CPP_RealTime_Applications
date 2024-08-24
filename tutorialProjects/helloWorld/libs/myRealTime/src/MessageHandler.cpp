@@ -107,7 +107,7 @@ std::optional<SendMessage> MessageHandler::receiveMessage(){
         _messageStack.erase(it);
     }
     if(nextTimeoutPtr->isRepeating){
-    nextTimeoutPtr->timeoutTime+=nextTimeoutPtr->interval*timeouts;
+        nextTimeoutPtr->timeoutTime+=nextTimeoutPtr->interval*timeouts;
     }
     else{
         _timers.erase(nextTimeoutPtr);
