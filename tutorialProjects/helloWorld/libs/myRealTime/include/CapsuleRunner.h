@@ -13,7 +13,7 @@ namespace mrt{
 
     class CapsuleRunner{
         public:
-            CapsuleRunner(int id, MessageManager* messageManagerPtr);
+            CapsuleRunner(int id, MessageManager* messageManagerPtr = nullptr);
             CapsuleRunner(CapsuleRunner&&);
             void addCapsule(std::unique_ptr<Capsule>);
             bool isResponsible(int id);
