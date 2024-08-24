@@ -3,13 +3,13 @@
 #include <memory>
 #include <vector>
 #include "Message.h"
+#include "SendMessage.h"
 #include "MessageHandler.h"
 
 namespace mrt{
 
     class Capsule;
     class MessageManager;
-    struct SendMessage;
 
     class CapsuleRunner{
         public:

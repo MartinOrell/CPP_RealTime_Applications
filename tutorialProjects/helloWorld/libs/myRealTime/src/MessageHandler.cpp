@@ -1,8 +1,5 @@
 #include "MessageHandler.h"
 
-#include "SendMessage.h"
-#include "Timer.h"
-
 #include <algorithm>
 
 using namespace mrt;

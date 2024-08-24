@@ -2,7 +2,6 @@
 
 #include "Capsule.h"
 #include "MessageManager.h"
-#include "SendMessage.h"
 
 #include <stdexcept>
 #include <string>

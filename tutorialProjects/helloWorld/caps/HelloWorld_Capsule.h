@@ -2,9 +2,6 @@
 
 #include "Capsule.h"
 
-#include "Message.h"
-#include "SendMessage.h"
-
 namespace mrt{
     class CapsuleRunner;
 }
