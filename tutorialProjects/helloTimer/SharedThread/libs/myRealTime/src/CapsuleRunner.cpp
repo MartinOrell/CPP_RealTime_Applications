@@ -155,9 +155,9 @@ int CapsuleRunner::informEvery(int toId, std::chrono::steady_clock::duration int
     return timer.id;
 }
 
-void CapsuleRunner::cancelTimer(int id){
+void CapsuleRunner::cancelTimer(int timerId){
     CancelTimer cancelTimer;
-    cancelTimer.id = id;
+    cancelTimer.timerId = timerId;
     SendMessage message;
     message.toId = _id;
     message.message = cancelTimer;
@@ -224,7 +224,7 @@ bool CapsuleRunner::handleMessageToMe(const Message& message){
         return true;
     }
     else if (std::holds_alternative<CancelTimer>(message)){
-        int timerId = std::get<CancelTimer>(message).id;
+        int timerId = std::get<CancelTimer>(message).timerId;
         _messageHandler.removeTimer(timerId);
         return true;
     }
