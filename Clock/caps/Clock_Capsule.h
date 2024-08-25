@@ -13,9 +13,9 @@ namespace mrt{
 class Clock_Capsule: public mrt::Capsule{
     public:
         Clock_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, int speedMultiplier);
-        int getId();
-        void start();
-        void handleMessage(const mrt::Message& message);
+        int getId() override;
+        void start() override;
+        void handleMessage(const mrt::Message&) override;
 
         void connectMain(int mainId);
         void connectSecond1Digit(int digitId);

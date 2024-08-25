@@ -12,10 +12,10 @@ namespace mrt{
 class Digit_Capsule: public mrt::Capsule{
     public:
         Digit_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
-        int getId();
-        void start();
-        void handleMessage(const mrt::Message& message);
-        mrt::Message handleInvokeMessage(const mrt::Message& request);
+        int getId() override;
+        void start() override;
+        void handleMessage(const mrt::Message&) override;
+        mrt::Message handleInvokeMessage(const mrt::Message&) override;
 
         void connect(int clockId);
         
@@ -23,7 +23,7 @@ class Digit_Capsule: public mrt::Capsule{
         void sendCarryMessage(int toId);
 
         void handleIncMessage();
-        void handleMessage(mrt::SetBaseMessage inMessage);
+        void handleMessage(mrt::SetBaseMessage);
         
         mrt::Message handleInvokeRequestDigitMessage();
 

@@ -13,17 +13,17 @@ namespace mrt{
 class Main_Capsule: public mrt::Capsule{
     public:
         Main_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
-        int getId();
-        void start();
-        void handleMessage(const mrt::Message& message);
+        int getId() override;
+        void start() override;
+        void handleMessage(const mrt::Message&) override;
 
         void connect(int clockId);
         
     private:
         void sendRequestTimeMessage(int toId);
 
-        void handleTimeout(const mrt::TimeoutMessage& message);
-        void handleMessage(const mrt::RespondTimeMessage& message);
+        void handleTimeout(const mrt::TimeoutMessage&);
+        void handleMessage(const mrt::RespondTimeMessage&);
 
         int _id;
         int _clockId;
