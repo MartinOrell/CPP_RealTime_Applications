@@ -12,16 +12,16 @@ namespace mrt{
 class Ping_Capsule: public mrt::Capsule{
     public:
         Ping_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr);
-        int getId();
-        void start();
-        void handleMessage(const mrt::Message& message);
+        int getId() override;
+        void start() override;
+        void handleMessage(const mrt::Message&) override;
         
         void connect(int pongId);
     private:
         void sendMessageToPong(int toId, int count);
 
         void handleMessageToPing();
-        void handleTimeout(const mrt::TimeoutMessage& message);
+        void handleTimeout(const mrt::TimeoutMessage&);
 
         int _id;
         int _pongId;

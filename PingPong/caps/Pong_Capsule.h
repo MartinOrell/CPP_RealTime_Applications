@@ -12,15 +12,15 @@ namespace mrt{
 class Pong_Capsule: public mrt::Capsule{
     public:
         Pong_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
-        int getId();
-        void start();
-        void handleMessage(const mrt::Message& message);
+        int getId() override;
+        void start() override;
+        void handleMessage(const mrt::Message&) override;
         
         void connect(int pingId);
     private:
         void sendMessageToPing(int toId);
 
-        void handleMessage(const mrt::MessageToPong& message);
+        void handleMessage(const mrt::MessageToPong&);
 
         int _id;
         int _pingId;
