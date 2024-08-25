@@ -12,16 +12,16 @@ namespace mrt{
 class PiComputer_Capsule: public mrt::Capsule{
     public:
         PiComputer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
-        int getId();
-        void start();
-        void handleMessage(const mrt::Message& message);
+        int getId() override;
+        void start() override;
+        void handleMessage(const mrt::Message&) override;
         
         void connectAdder(int adderId);
 
     private:
         void sendComputeRequest(int toId, int noOfIterations);
 
-        void handleMessage(const mrt::ComputeResult& message);
+        void handleMessage(const mrt::ComputeResult&);
         
         int _id;
         int _adderId;

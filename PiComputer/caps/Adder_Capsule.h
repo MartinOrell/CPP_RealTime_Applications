@@ -13,9 +13,9 @@ namespace mrt{
 class Adder_Capsule: public mrt::Capsule{
     public:
         Adder_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
-        int getId();
-        void start();
-        void handleMessage(const mrt::Message& message);
+        int getId() override;
+        void start() override;
+        void handleMessage(const mrt::Message&) override;
         
         void connectPiComputer(int piComputerId);
         void connectMultiplier(int multiplierId);
@@ -24,8 +24,8 @@ class Adder_Capsule: public mrt::Capsule{
         void sendGetIncrementMessage(int toId, int remainingIterations);
         void sendComputeResultMessage(int toId, double result);
 
-        void handleMessage(const mrt::ComputeRequest& message);
-        void handleMessage(const mrt::ReturnIncrement& message);
+        void handleMessage(const mrt::ComputeRequest&);
+        void handleMessage(const mrt::ReturnIncrement&);
 
         void printDouble(double p1, int inc);
 
