@@ -5,8 +5,8 @@
 class Worker_Capsule: public mrt::Capsule{
     public:
         Worker_Capsule(int id);
-        int getId();
-        void start();
+        int getId() override;
+        void start() override;
         
     private:
         int _id;
