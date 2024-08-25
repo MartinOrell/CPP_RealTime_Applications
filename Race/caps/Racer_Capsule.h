@@ -14,18 +14,18 @@ namespace mrt{
 class Racer_Capsule: public mrt::Capsule{
     public:
         Racer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, RacerProfile racerProfile, int goal);
-        int getId();
+        int getId() override;
         std::string getName();
         std::string getAsciiFilename();
-        void handleMessage(const mrt::Message& message);
-        void start();
+        void handleMessage(const mrt::Message&) override;
+        void start() override;
 
         void connect(int mainId);
     private:
         void sendDistanceResponse(int toId);
         void sendGoalReached(int toId);
 
-        void handleTimeout(const mrt::TimeoutMessage& timeoutMessage);
+        void handleTimeout(const mrt::TimeoutMessage&);
         void handleStartSignal();
         void handleDistanceRequest();
         void handleWaitTimerTimeout(int timeouts);
