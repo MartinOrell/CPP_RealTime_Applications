@@ -13,10 +13,10 @@ namespace mrt{
 class HelloTimer_Capsule: public mrt::Capsule{
     public:
         HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, std::chrono::steady_clock::duration updateTime, std::chrono::steady_clock::duration runDuration);
-        int getId();
-        void start();
+        int getId() override;
+        void start() override;
         
-        void handleMessage(const mrt::Message& message);
+        void handleMessage(const mrt::Message& message) override;
     private:
         void handleTimeout(const mrt::TimeoutMessage& message);
 
