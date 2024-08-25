@@ -12,9 +12,9 @@ namespace mrt{
 class Server_Capsule: public mrt::Capsule{
     public:
         Server_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
-        int getId();
-        void start();
-        void handleMessage(const mrt::Message& message);
+        int getId() override;
+        void start() override;
+        void handleMessage(const mrt::Message& message) override;
 
         void connect(int clientId);
         
