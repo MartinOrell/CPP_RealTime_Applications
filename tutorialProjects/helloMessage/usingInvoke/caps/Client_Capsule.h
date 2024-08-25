@@ -12,8 +12,8 @@ namespace mrt{
 class Client_Capsule: public mrt::Capsule{
     public:
         Client_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
-        int getId();
-        void start();
+        int getId() override;
+        void start() override;
 
         void connect(int serverId);
     private:
