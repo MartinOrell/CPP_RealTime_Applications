@@ -12,12 +12,12 @@ namespace mrt{
 class HelloWorld_Capsule: public mrt::Capsule{
     public:
         HelloWorld_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr);
-        int getId();
-        void start();
-        void handleMessage(const mrt::Message& message);
+        int getId() override;
+        void start() override;
+        void handleMessage(const mrt::Message&) override;
         
     private:
-        void handleTimeout(const mrt::TimeoutMessage& message);
+        void handleTimeout(const mrt::TimeoutMessage&);
 
         int _id;
         mrt::CapsuleRunner* _capsuleRunnerPtr;
