@@ -9,8 +9,8 @@ namespace mrt{
 class HelloWorld_Capsule: public mrt::Capsule{
     public:
         HelloWorld_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
-        int getId();
-        void start();
+        int getId() override;
+        void start() override;
         
     private:
 
