@@ -2,51 +2,71 @@
 
 #include "CapsuleRunner.h"
 
-#include <chrono>
 #include <stdexcept>
-#include <string>
 #include <iostream>
 
-HelloTimer_Capsule::HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr){
-    _id = id;
-    _capsuleRunnerPtr = capsuleRunnerPtr;
-    _timerRunnerPtr = timerRunnerPtr;
-}
+HelloTimer_Capsule::HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration updateTime, std::chrono::steady_clock::duration runDuration)
+: _id{id}
+, _capsuleRunnerPtr{capsuleRunnerPtr}
+, _timerRunnerPtr{timerRunnerPtr}
+, _updateTime{updateTime}
+, _runDuration{runDuration}{}
 
 int HelloTimer_Capsule::getId(){
     return _id;
 }
 
-void HelloTimer_Capsule::start(){
-    _state = Running;
-    std::cout << "Hello World!" << std::endl;
-    _repeatTimerId = _timerRunnerPtr->informEvery(_id, std::chrono::milliseconds(500));
-    _endTimerId = _timerRunnerPtr->informIn(_id, std::chrono::seconds(3));
-}
-
 void HelloTimer_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::TimeoutMessage>(message)){
         handleTimeout(std::get<mrt::TimeoutMessage>(message));
+        return;
     }
-    else{
-        throw std::invalid_argument("HelloTimer_Capsule unable to handle message with type id: " + std::to_string(message.index()));
-    }
+    
+    std::string errorMsg =
+        "HelloTimer_Capsule unable to handle message with type id: " +
+        std::to_string(message.index());
+    throw std::invalid_argument(errorMsg);
 }
 
 void HelloTimer_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage){
 
-    if(timeoutMessage.timerId == _repeatTimerId && _state == Running){
-        for(int i = 0; i < timeoutMessage.timeouts; i++){
-            std::cout << "Hello World!" << std::endl;
-        }
+    if(timeoutMessage.timerId == _updateTimerId){
+        update(timeoutMessage.timeouts);
+        return;
     }
-    else if(timeoutMessage.timerId == _endTimerId && _state == Running){
-        _state = End;
-        std::cout << "Goodbye World!" << std::endl;
-        _timerRunnerPtr->cancelTimer(_repeatTimerId);
-        _capsuleRunnerPtr->stop();
+    if(timeoutMessage.timerId == _endTimerId){
+        end();
+        return;
     }
-    else{
-        throw std::out_of_range("HelloTimer does not support timeout with id " + std::to_string(timeoutMessage.timerId) + " in state " + std::to_string(_state));
+    
+    std::string errorMsg =
+        "HelloTimer does not support timeout with id " +
+        std::to_string(timeoutMessage.timerId);
+    throw std::invalid_argument(errorMsg);
+}
+
+void HelloTimer_Capsule::start(){
+    std::cout << "Hello World!" << std::endl;
+    _updateTimerId = _timerRunnerPtr->informEvery(_id, _updateTime);
+    _endTimerId = _timerRunnerPtr->informIn(_id, _runDuration);
+    _state = State::Running;
+}
+
+void HelloTimer_Capsule::update(int timeouts){
+    if(_state != State::Running){
+        return;
     }
+    for(int i = 0; i < timeouts; i++){
+        std::cout << "Hello World!" << std::endl;
+    }
+}
+
+void HelloTimer_Capsule::end(){
+    if(_state != State::Running){
+        return;
+    }
+    std::cout << "Goodbye World!" << std::endl;
+    _timerRunnerPtr->cancelTimer(_updateTimerId);
+    _capsuleRunnerPtr->stop();
+    _state = State::End;
 }

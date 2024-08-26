@@ -4,6 +4,7 @@
 
 #include "Message.h"
 #include "SendMessage.h"
+#include <chrono>
 
 namespace mrt{
     class CapsuleRunner;
@@ -11,18 +12,24 @@ namespace mrt{
 
 class HelloTimer_Capsule: public mrt::Capsule{
     public:
-        HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr);
+        HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration updateTime, std::chrono::steady_clock::duration runDuration);
         int getId() override;
         void start() override;
         void handleMessage(const mrt::Message& message) override;
     private:
         void handleTimeout(const mrt::TimeoutMessage& message);
 
+        void update(int timeouts);
+        void end();
+
         int _id;
-        int _repeatTimerId;
-        int _endTimerId;
         mrt::CapsuleRunner* _capsuleRunnerPtr;
         mrt::CapsuleRunner* _timerRunnerPtr;
         enum State{Running, End};
         State _state;
+
+        int _updateTimerId;
+        std::chrono::steady_clock::duration _updateTime;
+        int _endTimerId;
+        std::chrono::steady_clock::duration _runDuration;
 };
