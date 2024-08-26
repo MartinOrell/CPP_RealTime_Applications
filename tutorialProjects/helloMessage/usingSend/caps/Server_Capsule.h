@@ -21,7 +21,7 @@ class Server_Capsule: public mrt::Capsule{
     private:
         void sendMessage(int toId, int value);
 
-        void handleMessage(const mrt::Request& message);
+        void receiveMessage(const mrt::Request& message);
 
         int _id;
         int _clientId;

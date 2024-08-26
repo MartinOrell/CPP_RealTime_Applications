@@ -1,4 +1,3 @@
-#include "MessageManager.h"
 #include "CapsuleRunner.h"
 #include <memory>
 #include "Server_Capsule.h"
@@ -6,11 +5,9 @@
 
 int main(){
 
-    mrt::MessageManager messageManager;
-
     int nextCapsuleId = 0;
 
-    mrt::CapsuleRunner capsuleRunner{nextCapsuleId++, &messageManager};
+    mrt::CapsuleRunner capsuleRunner{nextCapsuleId++};
     auto server = std::make_unique<Server_Capsule>(nextCapsuleId++, &capsuleRunner);
     auto client = std::make_unique<Client_Capsule>(nextCapsuleId++, &capsuleRunner);
 

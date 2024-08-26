@@ -29,16 +29,20 @@ void Server_Capsule::sendMessage(int toId, int value){
 
 void Server_Capsule::handleMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::Request>(message)){
-        handleMessage(std::get<mrt::Request>(message));
+        receiveMessage(std::get<mrt::Request>(message));
+        return;
     }
-    else{
-        throw std::invalid_argument("Client_Capsule unable to handle that message");
-    }
+
+    std::string errorMsg =
+        "Server_Capsule unable receive Message[" +
+        std::to_string(message.index()) +
+        "]";
+    throw std::invalid_argument(errorMsg);
 }
 
 void Server_Capsule::start(){}
 
-void Server_Capsule::handleMessage(const mrt::Request& inMessage){
+void Server_Capsule::receiveMessage(const mrt::Request& inMessage){
     int i = inMessage.value;
     std::cout << "Server: Received: " << i << std::endl;
     i++;

@@ -21,13 +21,11 @@ class Client_Capsule: public mrt::Capsule{
     private:
         void sendMessage(int toId, int value);
 
-        void handleMessage(const mrt::Response& message);
+        void receiveMessage(const mrt::Response& message);
 
         int _id;
         int _serverId;
         mrt::CapsuleRunner* _capsuleRunnerPtr;
-        enum State{
-            WaitForResponse, End
-        };
+        enum State{WaitForResponse, End};
         State _state;
 };

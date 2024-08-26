@@ -14,15 +14,6 @@ int Client_Capsule::getId(){
     return _id;
 }
 
-void Client_Capsule::handleMessage(const mrt::Message& message){
-    if(std::holds_alternative<mrt::Response>(message)){
-        handleMessage(std::get<mrt::Response>(message));
-    }
-    else{
-        throw std::invalid_argument("Client_Capsule unable to handle that message");
-    }
-}
-
 void Client_Capsule::connect(int serverId){
     _serverId = serverId;
 }
@@ -36,20 +27,36 @@ void Client_Capsule::sendMessage(int toId, int value){
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
+void Client_Capsule::handleMessage(const mrt::Message& message){
+    if(std::holds_alternative<mrt::Response>(message)){
+        receiveMessage(std::get<mrt::Response>(message));
+        return;
+    }
+    
+    std::string errorMsg =
+        "Client_Capsule unable receive Message[" +
+        std::to_string(message.index()) +
+        "]";
+    throw std::invalid_argument(errorMsg);
+}
+
 void Client_Capsule::start(){
     int i = 5;
     std::cout << "Client: Sending: " << i << std::endl;
     sendMessage(_serverId, i);
-    _state = WaitForResponse;
+    _state = State::WaitForResponse;
 }
 
-void Client_Capsule::handleMessage(const mrt::Response& message){
-    if(_state == WaitForResponse){
-        std::cout << "Client: Received: " << message.value << std::endl;
-        _capsuleRunnerPtr->stop();
-        _state = End;
+void Client_Capsule::receiveMessage(const mrt::Response& message){
+    if(_state != State::WaitForResponse){
+        std::string errorMsg =
+            "Client_Capsule received a Response message, but can't receive it in state[" +
+            std::to_string(_state) +
+            "]";
+        throw std::invalid_argument(errorMsg);
     }
-    else{
-        throw std::invalid_argument("Client can not handle a Response message in state " + std::to_string(_state));
-    }
+
+    std::cout << "Client: Received: " << message.value << std::endl;
+    _capsuleRunnerPtr->stop();
+    _state = State::End;
 }
