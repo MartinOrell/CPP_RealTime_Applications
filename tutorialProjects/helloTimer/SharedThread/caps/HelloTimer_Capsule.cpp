@@ -2,6 +2,7 @@
 
 #include "CapsuleRunner.h"
 
+#include <stdexcept>
 #include <iostream>
 
 HelloTimer_Capsule::HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, std::chrono::steady_clock::duration updateTime, std::chrono::steady_clock::duration runDuration)
