@@ -53,7 +53,9 @@ void HelloTimer_Capsule::update(int timeouts){
     if(_state != State::Running){
         return;
     }
-    std::cout << "Hello World!" << std::endl;
+    for(int i = 0; i < timeouts; i++){
+        std::cout << "Hello World!" << std::endl;
+    }
 }
 
 void HelloTimer_Capsule::end(){
