@@ -17,32 +17,44 @@ Main_Capsule::Main_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::Ca
 int Main_Capsule::getId(){
     return _id;
 }
+        
+void Main_Capsule::receiveMessage(const mrt::Message& message){
+    if(std::holds_alternative<mrt::TimeoutMessage>(message)){
+        receiveTimeout(std::get<mrt::TimeoutMessage>(message));
+        return;
+    }
+
+    std::string errorMsg =
+        "Main_Capsule unable to handle Message[" +
+        std::to_string(message.index()) +
+        "]";
+    throw std::invalid_argument(errorMsg);
+}
+
+void Main_Capsule::receiveTimeout(const mrt::TimeoutMessage& timeoutMessage){
+    if(timeoutMessage.timerId == _updateTimerId){
+        update(timeoutMessage.timeouts);
+        return;
+    }
+    if(timeoutMessage.timerId == _endTimerId){
+        end();
+        return;
+    }
+    
+    std::string errorMsg =
+        "Main_Capsule unable to receive Timeout[" +
+        std::to_string(timeoutMessage.timerId) +
+        "]";
+    throw std::invalid_argument(errorMsg);
+}
 
 void Main_Capsule::start(){
-    std::cout << "Main: Start repeatTimer every second\n";
+    std::cout << "Main: Start updateTimer every second\n";
     _updateTimerId = _timerRunnerPtr->informEvery(_id, std::chrono::seconds(1));
     _endTimerId = _timerRunnerPtr->informIn(_id, std::chrono::seconds(12));
 }
-        
-void Main_Capsule::handleMessage(const mrt::Message& message){
-    if(std::holds_alternative<mrt::TimeoutMessage>(message)){
-        mrt::TimeoutMessage timeoutMessage = std::get<mrt::TimeoutMessage>(message);
-        if(timeoutMessage.timerId == _updateTimerId){
-            handleRepeatTimerTimeout(timeoutMessage.timeouts);
-        }
-        else if(timeoutMessage.timerId == _endTimerId){
-            handleEndTimerTimeout();
-        }
-        else{
-            throw std::invalid_argument("Main_Capsule unable to handle that timeout");
-        }
-    }
-    else{
-        throw std::invalid_argument("Main_Capsule unable to handle that message");
-    }
-}
 
-void Main_Capsule::handleRepeatTimerTimeout(int timeouts){
+void Main_Capsule::update(int timeouts){
     _count++;
     if(timeouts > 1){
         std::cout << "Main: Missed timeouts: " + std::to_string(timeouts-1) + "\n"; 
@@ -50,6 +62,6 @@ void Main_Capsule::handleRepeatTimerTimeout(int timeouts){
     std::cout << "Main: Count: " + std::to_string(_count) + "\n";
 }
 
-void Main_Capsule::handleEndTimerTimeout(){
+void Main_Capsule::end(){
     _capsuleRunnerPtr->stop();
 }

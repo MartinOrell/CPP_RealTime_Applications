@@ -14,12 +14,13 @@ class Main_Capsule: public mrt::Capsule{
         Main_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr);
         int getId() override;
         void start() override;
-        void handleMessage(const mrt::Message& message) override;
+        void receiveMessage(const mrt::Message&) override;
         
     private:
+        void receiveTimeout(const mrt::TimeoutMessage&);
 
-        void handleRepeatTimerTimeout(int timeouts);
-        void handleEndTimerTimeout();
+        void update(int timeouts);
+        void end();
 
         int _id;
         int _endTimerId;
