@@ -14,7 +14,7 @@ class Ping_Capsule: public mrt::Capsule{
         Ping_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr);
         int getId() override;
         void start() override;
-        void handleMessage(const mrt::Message&) override;
+        void receiveMessage(const mrt::Message&) override;
         
         void connect(int pongId);
     private:

@@ -22,7 +22,7 @@ void Ping_Capsule::start(){
     sendMessageToPong(_pongId, _count);
 }
 
-void Ping_Capsule::handleMessage(const mrt::Message& message){
+void Ping_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::TimeoutMessage>(message)){
         handleTimeout(std::get<mrt::TimeoutMessage>(message));
     }

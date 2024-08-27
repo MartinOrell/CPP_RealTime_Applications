@@ -16,7 +16,7 @@ int Pong_Capsule::getId(){
 
 void Pong_Capsule::start(){}
 
-void Pong_Capsule::handleMessage(const mrt::Message& message){
+void Pong_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::MessageToPong>(message)){
         handleMessage(std::get<mrt::MessageToPong>(message));
     }
