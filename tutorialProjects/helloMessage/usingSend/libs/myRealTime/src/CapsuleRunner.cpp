@@ -212,8 +212,9 @@ bool CapsuleRunner::handleMessageToMe(const Message& message){
             std::string errorMsg =
                 "CapsuleRunner[" +
                 std::to_string(_id) + 
-                "] can't handle Voidmessage: " +
-                std::to_string(voidMessage);
+                "] can't handle VoidMessage[" +
+                std::to_string(voidMessage) +
+                "]";
             throw std::invalid_argument(errorMsg);
         }
     }
@@ -231,8 +232,9 @@ bool CapsuleRunner::handleMessageToMe(const Message& message){
         std::string errorMsg =
             "CapsuleRunner[" +
             std::to_string(_id) +
-            "] can't handle message to him with type index: " +
-            std::to_string(message.index());
+            "] can't handle Message[" +
+            std::to_string(message.index()) +
+            "]";
         throw std::invalid_argument(errorMsg);
     }
 }
