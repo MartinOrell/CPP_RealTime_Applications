@@ -35,20 +35,10 @@ void HelloTimer_Capsule::receiveTimeout(const mrt::TimeoutMessage& timeoutMessag
 
     if(timeoutMessage.timerId == _updateTimerId){
         update(timeoutMessage.timeouts);
-        return;
     }
-    if(timeoutMessage.timerId == _endTimerId){
+    else if(timeoutMessage.timerId == _endTimerId){
         end();
-        return;
     }
-    
-    std::string errorMsg =
-        "HelloTimer_Capsule[" +
-        std::to_string(_id) +
-        "] can not receive timeout from Timer[" +
-        std::to_string(timeoutMessage.timerId) +
-        "]";
-    throw std::invalid_argument(errorMsg);
 }
 
 void HelloTimer_Capsule::start(){
