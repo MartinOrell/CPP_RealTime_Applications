@@ -15,9 +15,9 @@ int HelloTimer_Capsule::getId(){
     return _id;
 }
 
-void HelloTimer_Capsule::handleMessage(const mrt::Message& message){
+void HelloTimer_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::TimeoutMessage>(message)){
-        handleTimeout(std::get<mrt::TimeoutMessage>(message));
+        receiveTimeout(std::get<mrt::TimeoutMessage>(message));
         return;
     }
 
@@ -27,7 +27,7 @@ void HelloTimer_Capsule::handleMessage(const mrt::Message& message){
     throw std::invalid_argument(errorMsg);
 }
 
-void HelloTimer_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage){
+void HelloTimer_Capsule::receiveTimeout(const mrt::TimeoutMessage& timeoutMessage){
     if(timeoutMessage.timerId == _updateTimerId){
         update(timeoutMessage.timeouts);
         return;
@@ -38,8 +38,9 @@ void HelloTimer_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage
     }
 
     std::string errorMsg =
-        "HelloTimer_Capsule does not support timeout with id " +
-        std::to_string(timeoutMessage.timerId);
+        "HelloTimer_Capsule unable to receive timeout from Timer[" +
+        std::to_string(timeoutMessage.timerId) +
+        "]";
     throw std::invalid_argument(errorMsg);
 }
 
