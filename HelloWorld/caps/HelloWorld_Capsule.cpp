@@ -21,26 +21,30 @@ void HelloWorld_Capsule::start(){
     _timerRunnerPtr->informIn(_id, std::chrono::seconds(1));
 }
 
-void HelloWorld_Capsule::handleMessage(const mrt::Message& message){
+void HelloWorld_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::TimeoutMessage>(message)){
-        handleTimeout(std::get<mrt::TimeoutMessage>(message));
+        receiveTimeout(std::get<mrt::TimeoutMessage>(message));
+        return;
     }
-    else{
-        throw std::invalid_argument("HelloWorld_Capsule unable to handle that message");
-    }
+    
+    std::string errorMsg =
+        "HelloWorld_Capsule[" +
+        std::to_string(_id) +
+        "] unable to receive Message[" +
+        std::to_string(message.index()) +
+        "]";
+        throw std::invalid_argument(errorMsg);
 }
 
-void HelloWorld_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage){
-    switch(_state){
-        case S1:
-            {
-                _state = S2;
-                std::cout << "Hello World!" << std::endl;
-                _capsuleRunnerPtr->stop();
-            }
-            break;
-        default:
-            throw std::runtime_error("Timeout not handled in this state");
-            break;
+void HelloWorld_Capsule::receiveTimeout(const mrt::TimeoutMessage& timeoutMessage){
+    hello();
+}
+
+void HelloWorld_Capsule::hello(){
+    if(_state != State::S1){
+        return;
     }
+    std::cout << "Hello World!" << std::endl;
+    _capsuleRunnerPtr->stop();
+    _state = S2;
 }
