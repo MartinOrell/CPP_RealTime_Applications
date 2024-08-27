@@ -18,7 +18,7 @@ void Adder_Capsule::start(){
     _state = Idle;
 }
 
-void Adder_Capsule::handleMessage(const mrt::Message& message){
+void Adder_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::ComputeRequest>(message)){
         handleMessage(std::get<mrt::ComputeRequest>(message));
     }

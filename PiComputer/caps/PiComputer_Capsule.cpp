@@ -20,7 +20,7 @@ void PiComputer_Capsule::start(){
     sendComputeRequest(_adderId, noOfIterations);
 }
 
-void PiComputer_Capsule::handleMessage(const mrt::Message& message){
+void PiComputer_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::ComputeResult>(message)){
         handleMessage(std::get<mrt::ComputeResult>(message));
     }

@@ -14,7 +14,7 @@ class PiComputer_Capsule: public mrt::Capsule{
         PiComputer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId() override;
         void start() override;
-        void handleMessage(const mrt::Message&) override;
+        void receiveMessage(const mrt::Message&) override;
         
         void connectAdder(int adderId);
 

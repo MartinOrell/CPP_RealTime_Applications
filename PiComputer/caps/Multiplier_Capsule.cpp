@@ -15,7 +15,7 @@ int Multiplier_Capsule::getId(){
 
 void Multiplier_Capsule::start(){}
 
-void Multiplier_Capsule::handleMessage(const mrt::Message& message){
+void Multiplier_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::GetIncrement>(message)){
         handleMessage(std::get<mrt::GetIncrement>(message));
     }
