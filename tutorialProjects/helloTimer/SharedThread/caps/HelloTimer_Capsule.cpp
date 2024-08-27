@@ -22,26 +22,21 @@ void HelloTimer_Capsule::receiveMessage(const mrt::Message& message){
     }
 
     std::string errorMsg =
-        "HelloTimer_Capsule unable to handle message with type id: " +
-        std::to_string(message.index());
+        "HelloTimer_Capsule[" +
+        std::to_string(_id) +
+        "[unable to receive Message[" +
+        std::to_string(message.index()) +
+        "]";
     throw std::invalid_argument(errorMsg);
 }
 
 void HelloTimer_Capsule::receiveTimeout(const mrt::TimeoutMessage& timeoutMessage){
     if(timeoutMessage.timerId == _updateTimerId){
         update(timeoutMessage.timeouts);
-        return;
     }
-    if(timeoutMessage.timerId == _endTimerId){
+    else if(timeoutMessage.timerId == _endTimerId){
         end();
-        return;
     }
-
-    std::string errorMsg =
-        "HelloTimer_Capsule unable to receive timeout from Timer[" +
-        std::to_string(timeoutMessage.timerId) +
-        "]";
-    throw std::invalid_argument(errorMsg);
 }
 
 void HelloTimer_Capsule::start(){
