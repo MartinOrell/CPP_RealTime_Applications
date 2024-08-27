@@ -21,11 +21,11 @@ int Clock_Capsule::getId(){
     return _id;
 }
 
-void Clock_Capsule::handleMessage(const mrt::Message& message){
+void Clock_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::VoidMessage>(message)){
         mrt::VoidMessage voidMessage = std::get<mrt::VoidMessage>(message);
         if(voidMessage == mrt::VoidMessage::RequestTimeMessage){
-            handleRequestTimeMessage();
+            receiveRequestTimeMessage();
         }
         else{
             throw std::invalid_argument("Clock_Capsule received emptyMessage of wrong type");
@@ -33,11 +33,11 @@ void Clock_Capsule::handleMessage(const mrt::Message& message){
     }
     else if(std::holds_alternative<mrt::TimeoutMessage>(message)){
         mrt::TimeoutMessage tMessage = std::get<mrt::TimeoutMessage>(message);
-        handleTimeout(tMessage);
+        receiveTimeout(tMessage);
     }
     else if(std::holds_alternative<mrt::CarryMessage>(message)){
         mrt::CarryMessage cMessage = std::get<mrt::CarryMessage>(message);
-        handleMessage(cMessage);
+        receiveMessage(cMessage);
     }
     else{
         throw std::invalid_argument("Clock_Capsule unable to handle that message");
@@ -117,7 +117,7 @@ void Clock_Capsule::start(){
     _tickerId = _timerRunnerPtr->informEvery(_id, _tickPeriod);
 }
 
-void Clock_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage){
+void Clock_Capsule::receiveTimeout(const mrt::TimeoutMessage& timeoutMessage){
     switch(_state){
         case SecondTicker:
             sendIncMessage(_second1DigitCapsuleId);
@@ -169,7 +169,7 @@ void Clock_Capsule::handleTimeout(const mrt::TimeoutMessage& timeoutMessage){
     }
 }
 
-void Clock_Capsule::handleMessage(const mrt::CarryMessage& inMessage){
+void Clock_Capsule::receiveMessage(const mrt::CarryMessage& inMessage){
     if(inMessage.fromId == _second1DigitCapsuleId){
         sendIncMessage(_second10DigitCapsuleId);
     }
@@ -198,7 +198,7 @@ void Clock_Capsule::handleMessage(const mrt::CarryMessage& inMessage){
     }
 }
 
-void Clock_Capsule::handleRequestTimeMessage(){
+void Clock_Capsule::receiveRequestTimeMessage(){
 
     int sec1 = invokeRequestDigitMessage(_second1DigitCapsuleId).value;
     int sec10 = invokeRequestDigitMessage(_second10DigitCapsuleId).value;

@@ -14,18 +14,18 @@ class Digit_Capsule: public mrt::Capsule{
         Digit_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId() override;
         void start() override;
-        void handleMessage(const mrt::Message&) override;
-        mrt::Message handleInvokeMessage(const mrt::Message&) override;
+        void receiveMessage(const mrt::Message&) override;
+        mrt::Message receiveInvokeMessage(const mrt::Message&) override;
 
         void connect(int clockId);
         
     private:
         void sendCarryMessage(int toId);
 
-        void handleIncMessage();
-        void handleMessage(mrt::SetBaseMessage);
+        void receiveIncMessage();
+        void receiveMessage(mrt::SetBaseMessage);
         
-        mrt::Message handleInvokeRequestDigitMessage();
+        mrt::Message receiveInvokeRequestDigitMessage();
 
         int _id;
         int _clockId;

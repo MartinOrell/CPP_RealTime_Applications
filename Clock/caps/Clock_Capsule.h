@@ -15,7 +15,7 @@ class Clock_Capsule: public mrt::Capsule{
         Clock_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, int speedMultiplier);
         int getId() override;
         void start() override;
-        void handleMessage(const mrt::Message&) override;
+        void receiveMessage(const mrt::Message&) override;
 
         void connectMain(int mainId);
         void connectSecond1Digit(int digitId);
@@ -30,9 +30,9 @@ class Clock_Capsule: public mrt::Capsule{
         void sendIncMessage(int toId);
         void sendSetBaseMessage(int toId, int base);
 
-        void handleTimeout(const mrt::TimeoutMessage& message);
-        void handleMessage(const mrt::CarryMessage& inMessage);
-        void handleRequestTimeMessage();
+        void receiveTimeout(const mrt::TimeoutMessage& message);
+        void receiveMessage(const mrt::CarryMessage& inMessage);
+        void receiveRequestTimeMessage();
 
         mrt::RespondDigitMessage invokeRequestDigitMessage(int toId);
 

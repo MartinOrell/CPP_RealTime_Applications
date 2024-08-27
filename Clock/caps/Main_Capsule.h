@@ -15,15 +15,15 @@ class Main_Capsule: public mrt::Capsule{
         Main_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration timeoutTime, int fps);
         int getId() override;
         void start() override;
-        void handleMessage(const mrt::Message&) override;
+        void receiveMessage(const mrt::Message&) override;
 
         void connect(int clockId);
         
     private:
         void sendRequestTimeMessage(int toId);
 
-        void handleTimeout(const mrt::TimeoutMessage&);
-        void handleMessage(const mrt::RespondTimeMessage&);
+        void receiveTimeout(const mrt::TimeoutMessage&);
+        void receiveMessage(const mrt::RespondTimeMessage&);
 
         int _id;
         int _clockId;

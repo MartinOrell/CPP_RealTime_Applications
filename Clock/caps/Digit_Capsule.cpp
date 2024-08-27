@@ -14,10 +14,10 @@ int Digit_Capsule::getId(){
     return _id;
 }
 
-void Digit_Capsule::handleMessage(const mrt::Message& message){
+void Digit_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::VoidMessage>(message)){
         if(std::get<mrt::VoidMessage>(message) == mrt::VoidMessage::IncMessage){
-            handleIncMessage();
+            receiveIncMessage();
         }
         else{
             throw std::invalid_argument("Digit_Capsule unable to handle that voidMessage");
@@ -25,17 +25,17 @@ void Digit_Capsule::handleMessage(const mrt::Message& message){
     }
     else if(std::holds_alternative<mrt::SetBaseMessage>(message)){
         mrt::SetBaseMessage sMessage = std::get<mrt::SetBaseMessage>(message);
-        handleMessage(sMessage);
+        receiveMessage(sMessage);
     }
     else{
         throw std::invalid_argument("Digit_Capsule unable to handle that message");
     }
 }
 
-mrt::Message Digit_Capsule::handleInvokeMessage(const mrt::Message& request){
+mrt::Message Digit_Capsule::receiveInvokeMessage(const mrt::Message& request){
     if(std::holds_alternative<mrt::VoidMessage>(request)){
         if(std::get<mrt::VoidMessage>(request) == mrt::VoidMessage::RequestDigitMessage){
-            return handleInvokeRequestDigitMessage();
+            return receiveInvokeRequestDigitMessage();
         }
         else{
             throw std::invalid_argument("Digit_Capsule unable to invoke that voidMessage");
@@ -63,7 +63,7 @@ void Digit_Capsule::sendCarryMessage(int toId){
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Digit_Capsule::handleIncMessage(){
+void Digit_Capsule::receiveIncMessage(){
     switch(_state){
         case Zero:
             _state = One;
@@ -117,11 +117,11 @@ void Digit_Capsule::handleIncMessage(){
     }
 }
 
-void Digit_Capsule::handleMessage(mrt::SetBaseMessage inMessage){
+void Digit_Capsule::receiveMessage(mrt::SetBaseMessage inMessage){
     _base = inMessage.base;
 }
 
-mrt::Message Digit_Capsule::handleInvokeRequestDigitMessage(){
+mrt::Message Digit_Capsule::receiveInvokeRequestDigitMessage(){
     mrt::RespondDigitMessage outMessage;
     outMessage.fromId = _id;
     outMessage.value = _state;
