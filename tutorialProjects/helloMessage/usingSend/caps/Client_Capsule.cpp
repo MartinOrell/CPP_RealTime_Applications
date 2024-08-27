@@ -27,7 +27,7 @@ void Client_Capsule::sendMessage(int toId, int value){
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Client_Capsule::handleMessage(const mrt::Message& message){
+void Client_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::Response>(message)){
         receiveMessage(std::get<mrt::Response>(message));
         return;

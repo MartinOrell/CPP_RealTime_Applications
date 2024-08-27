@@ -109,7 +109,7 @@ Message CapsuleRunner::invokeMessage(const SendMessage& request){
 
     for(int i = 0; i < _capsules.size();i++){
         if(request.toId == _capsules.at(i)->getId()){
-            return _capsules.at(i)->handleInvokeMessage(request.message);
+            return _capsules.at(i)->receiveInvokeMessage(request.message);
         }
     }
 
@@ -175,7 +175,7 @@ bool CapsuleRunner::handleMessage(const SendMessage& sendMessage){
     //check if message is to a capsule owned by this capsuleRunner
     for(int i = 0; i < _capsules.size();i++){
         if(sendMessage.toId == _capsules.at(i)->getId()){
-            _capsules.at(i)->handleMessage(sendMessage.message);
+            _capsules.at(i)->receiveMessage(sendMessage.message);
             return true;
         }
     }

@@ -14,7 +14,7 @@ class Server_Capsule: public mrt::Capsule{
         Server_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr);
         int getId() override;
         void start() override;
-        void handleMessage(const mrt::Message& message) override;
+        void receiveMessage(const mrt::Message& message) override;
 
         void connect(int clientId);
         

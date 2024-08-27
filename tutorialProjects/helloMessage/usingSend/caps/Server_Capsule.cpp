@@ -27,7 +27,7 @@ void Server_Capsule::sendMessage(int toId, int value){
     _capsuleRunnerPtr->sendMessage(sendMessage);
 }
 
-void Server_Capsule::handleMessage(const mrt::Message& message){
+void Server_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::Request>(message)){
         receiveMessage(std::get<mrt::Request>(message));
         return;
