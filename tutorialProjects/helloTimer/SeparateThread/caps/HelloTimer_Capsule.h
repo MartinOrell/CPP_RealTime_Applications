@@ -15,9 +15,9 @@ class HelloTimer_Capsule: public mrt::Capsule{
         HelloTimer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, std::chrono::steady_clock::duration updateTime, std::chrono::steady_clock::duration runDuration);
         int getId() override;
         void start() override;
-        void handleMessage(const mrt::Message& message) override;
+        void receiveMessage(const mrt::Message& message) override;
     private:
-        void handleTimeout(const mrt::TimeoutMessage& message);
+        void receiveTimeout(const mrt::TimeoutMessage& message);
 
         void update(int timeouts);
         void end();
