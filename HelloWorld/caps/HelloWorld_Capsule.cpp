@@ -33,7 +33,7 @@ void HelloWorld_Capsule::receiveMessage(const mrt::Message& message){
         "] unable to receive Message[" +
         std::to_string(message.index()) +
         "]";
-        throw std::invalid_argument(errorMsg);
+    throw std::invalid_argument(errorMsg);
 }
 
 void HelloWorld_Capsule::receiveTimeout(const mrt::TimeoutMessage& timeoutMessage){
