@@ -21,7 +21,7 @@ void TrafficLight_Capsule::start(){
     _timerRunnerPtr->informEvery(_id, std::chrono::seconds(2));
 }
 
-void TrafficLight_Capsule::handleMessage(const mrt::Message& message){
+void TrafficLight_Capsule::receiveMessage(const mrt::Message& message){
     if(std::holds_alternative<mrt::TimeoutMessage>(message)){
         handleTimeout(std::get<mrt::TimeoutMessage>(message));
     }

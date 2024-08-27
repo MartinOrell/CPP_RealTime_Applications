@@ -1,6 +1,6 @@
 exFile := trafficlight.exe
 srcDirs := . caps libs/myRealTime/src
-incDirs := . ./caps/ ./libs/myRealTime/include
+incDirs := . ./caps/ ./libs/myRealTime/include ./libs/myRealTime/mod_include
 
 #Flags to make rules for .h dependencies (look for changes in included files)
 DEPFLAGS := -MP -MD
