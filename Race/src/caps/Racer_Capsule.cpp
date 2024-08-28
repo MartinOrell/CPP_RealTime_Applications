@@ -24,8 +24,8 @@ std::string Racer_Capsule::getName(){
     return _profile.name;
 }
 
-std::string Racer_Capsule::getAsciiFilename(){
-    return _profile.asciiFilename;
+std::string Racer_Capsule::getArtFilename(){
+    return _profile.artFilename;
 }
 
 void Racer_Capsule::receiveMessage(const mrt::Message& message){

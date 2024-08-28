@@ -16,7 +16,7 @@ class Racer_Capsule: public mrt::Capsule{
         Racer_Capsule(int id, mrt::CapsuleRunner* capsuleRunnerPtr, mrt::CapsuleRunner* timerRunnerPtr, RacerProfile racerProfile, int goal);
         int getId() override;
         std::string getName();
-        std::string getAsciiFilename();
+        std::string getArtFilename();
         void receiveMessage(const mrt::Message&) override;
         void start() override;
 
