@@ -16,7 +16,7 @@ int main(){
 
     RacerProfile tortoiseP;
     tortoiseP.name = "The Tortoise";
-    tortoiseP.asciiFilename = "racerAscii/tortoise.txt";
+    tortoiseP.asciiFilename = "res/ascii/tortoise.txt";
     tortoiseP.speed = 15;
     tortoiseP.stamina = 100;
     tortoiseP.reactionTime = std::chrono::milliseconds(600);
@@ -24,7 +24,7 @@ int main(){
 
     RacerProfile hareP;
     hareP.name = "The Hare";
-    hareP.asciiFilename = "racerAscii/hare.txt";
+    hareP.asciiFilename = "res/ascii/hare.txt";
     hareP.speed = 20;
     hareP.stamina = 60;
     hareP.reactionTime = std::chrono::milliseconds(100);
