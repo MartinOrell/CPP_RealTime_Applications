@@ -25,10 +25,15 @@ class Main_Capsule: public mrt::Capsule{
         void sendDistanceRequest(int toId);
 
         void handleTimeout(const mrt::TimeoutMessage&);
-
-        void handleUpdateTimerTimeout(int timeouts);
         void handleDistanceResponse(const mrt::DistanceResponse&);
         void handleGoalReachedMessage(const mrt::GoalReached&);
+
+        void updateRacerPosition(const mrt::DistanceResponse& message);
+
+        void update(int timeouts);
+        void updateRacerPositionDuringRace(const mrt::DistanceResponse& message);
+        void updateRacerPositionAfterRace(const mrt::DistanceResponse& message);
+        void goalReached(const mrt::GoalReached&);
 
         int _id;
         std::vector<int> _racerIds;

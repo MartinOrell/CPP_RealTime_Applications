@@ -12,6 +12,7 @@ class RacePrinter{
         RacePrinter(int goal);
         void addRacer(int id, std::string asciiFilename);
         void initPrint();
+        void updateText(std::string text);
         void print(std::vector<int>);
     private:
         void initTrack(int trackHeight, int airHeight);

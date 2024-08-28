@@ -110,6 +110,10 @@ void RacePrinter::initPrint(){
     initTrack(trackHeight, airHeight);
 }
 
+void RacePrinter::updateText(std::string text){
+    std::cout << text << std::endl;
+}
+
 void RacePrinter::print(std::vector<int> stepPositions){
 
     //Update positions for racers
