@@ -1,6 +1,8 @@
-#include "RacePrinter.h"
+#include "UI.h"
 
-void RacePrinter::initTrack(int trackHeight, int airHeight){
+using namespace cli;
+
+void UI::initTrack(int trackHeight, int airHeight){
     
     std::string airLine = std::string(_printWidth, ' ');
     std::string trackEdgeLine =
@@ -35,7 +37,7 @@ void RacePrinter::initTrack(int trackHeight, int airHeight){
     }
 }
 
-RacePrinter::RacePrinter(int goal){
+UI::UI(int goal){
     _goal = goal;
     _trackHeight = 4;
     _printWidth = 50;
@@ -45,7 +47,7 @@ RacePrinter::RacePrinter(int goal){
     _goalText = "GOAL";
 }
 
-void RacePrinter::addRacer(int id, std::string asciiFilename){
+void UI::addRacer(int id, std::string asciiFilename){
     
     Racer racer;
     racer.id = id;
@@ -74,7 +76,7 @@ void RacePrinter::addRacer(int id, std::string asciiFilename){
 }
 
 //initPrint should be called after all racers have been added
-void RacePrinter::initPrint(){
+void UI::initPrint(){
     //Sort racers by id to give them correct positions
     std::sort(_racers.begin(),_racers.end(),[](Racer &a, Racer &b){return a.id<b.id;});
 
@@ -110,11 +112,11 @@ void RacePrinter::initPrint(){
     initTrack(trackHeight, airHeight);
 }
 
-void RacePrinter::updateText(std::string text){
+void UI::updateText(std::string text){
     std::cout << text << std::endl;
 }
 
-void RacePrinter::print(std::vector<int> stepPositions){
+void UI::print(std::vector<int> stepPositions){
 
     //Update positions for racers
     for(int i = 0; i < _racers.size(); i++){

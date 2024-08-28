@@ -5,7 +5,7 @@
 #include "Message.h"
 #include "SendMessage.h"
 #include <string>
-#include "RacePrinter.h"
+#include "UI.h"
 
 namespace mrt{
     class CapsuleRunner;
@@ -43,7 +43,7 @@ class Main_Capsule: public mrt::Capsule{
         mrt::CapsuleRunner* _timerRunnerPtr;
         int _updateTimerId;
         std::chrono::steady_clock::duration _updateTime;
-        RacePrinter _racePrinter;
+        cli::UI _ui;
         int _responseCount;
         int _goal;
         int _winnerIndex;
