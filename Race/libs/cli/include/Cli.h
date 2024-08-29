@@ -8,14 +8,15 @@
 #include <stdexcept>
 
 namespace cli{
+//Command-line interface
 
     class UI{
         public:
             UI(int goal);
             void addRacer(int id, std::string asciiFilename);
             void initPrint();
-            void updateText(std::string text);
-            void print(std::vector<int>);
+            void printText(std::string text);
+            void update(std::vector<int>);
         private:
             void initTrack(int trackHeight, int airHeight);
 

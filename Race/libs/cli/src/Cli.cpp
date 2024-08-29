@@ -1,4 +1,4 @@
-#include "UI.h"
+#include "Cli.h"
 
 using namespace cli;
 
@@ -112,11 +112,11 @@ void UI::initPrint(){
     initTrack(trackHeight, airHeight);
 }
 
-void UI::updateText(std::string text){
+void UI::printText(std::string text){
     std::cout << text << std::endl;
 }
 
-void UI::print(std::vector<int> stepPositions){
+void UI::update(std::vector<int> stepPositions){
 
     //Update positions for racers
     for(int i = 0; i < _racers.size(); i++){

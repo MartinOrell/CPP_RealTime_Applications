@@ -20,13 +20,15 @@ class Racer_Capsule: public mrt::Capsule{
         void receiveMessage(const mrt::Message&) override;
         void start() override;
 
-        void connect(int mainId);
+        void connectMain(int mainId);
+        void connectUI(int uiId);
     private:
         void sendDistanceResponse(int toId);
         void sendGoalReached(int toId);
 
         void handleTimeout(const mrt::TimeoutMessage&);
         void handleStartSignal();
+        void handleStopSignal();
         void handleDistanceRequest();
         void handleWaitTimerTimeout(int timeouts);
         void handleStepTimerTimeout(int timeouts);
@@ -34,9 +36,11 @@ class Racer_Capsule: public mrt::Capsule{
         void hearStartSignal();
         void startRunning();
         void step(int timeouts);
+        void stop();
 
         int _id;
         int _mainId;
+        int _uiId;
         mrt::CapsuleRunner* _capsuleRunnerPtr;
         mrt::CapsuleRunner* _timerRunnerPtr;
         RacerProfile _profile;

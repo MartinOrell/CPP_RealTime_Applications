@@ -14,7 +14,7 @@ namespace mrt{
         int timerId;
     };
 
-    enum VoidMessage{EndMessage, StartSignal, DistanceRequest};
+    enum VoidMessage{EndMessage, StartSignal, StopSignal, DistanceRequest, ClickMessage};
 
     struct DistanceResponse{
         int fromId;
@@ -22,7 +22,7 @@ namespace mrt{
     };
 
     struct GoalReached{
-        int fromId;
+        int racerId;
     };
 
     typedef std::variant<
@@ -32,6 +32,6 @@ namespace mrt{
         VoidMessage,
         DistanceResponse,
         GoalReached
-        > Message;
-        
+    > Message;
+
 }
