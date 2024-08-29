@@ -24,7 +24,7 @@ void HelloTimer_Capsule::receiveMessage(const mrt::Message& message){
     std::string errorMsg =
         "HelloTimer_Capsule[" +
         std::to_string(_id) +
-        "[unable to receive Message[" +
+        "] unable to receive Message[" +
         std::to_string(message.index()) +
         "]";
     throw std::invalid_argument(errorMsg);
